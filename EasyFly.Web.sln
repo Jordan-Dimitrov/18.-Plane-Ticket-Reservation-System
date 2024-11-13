@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyFly.Web", "EasyFly.Web\EasyFly.Web.csproj", "{BD98DE37-3D44-4DCF-AEAA-788AFDF19F4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyFly.Tests", "EasyFly.Tests\EasyFly.Tests.csproj", "{DF73CCFE-CE25-4198-BB0D-C8EE69B88247}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD98DE37-3D44-4DCF-AEAA-788AFDF19F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD98DE37-3D44-4DCF-AEAA-788AFDF19F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD98DE37-3D44-4DCF-AEAA-788AFDF19F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD98DE37-3D44-4DCF-AEAA-788AFDF19F4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF73CCFE-CE25-4198-BB0D-C8EE69B88247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF73CCFE-CE25-4198-BB0D-C8EE69B88247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF73CCFE-CE25-4198-BB0D-C8EE69B88247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF73CCFE-CE25-4198-BB0D-C8EE69B88247}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9E78D161-3996-4E97-A556-06C44109C760}
+	EndGlobalSection
+EndGlobal
