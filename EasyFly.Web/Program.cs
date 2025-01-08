@@ -21,6 +21,8 @@ namespace EasyFly.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
 
             builder.Services
                 .AddInfrastructure()
