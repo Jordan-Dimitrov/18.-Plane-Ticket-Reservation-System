@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
-namespace EasyFly.Persistence.Models
+namespace EasyFly.Domain.Models
 {
     public class User : IdentityUser
     {
@@ -8,11 +9,11 @@ namespace EasyFly.Persistence.Models
         {
             Ticket = new List<Ticket>();
         }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+
+        [Required]
         public string Address { get; set; }
+        [Required]
         public uint Phone { get; set; }
         public ICollection<Ticket> Ticket { get; set; }
-
     }
 }

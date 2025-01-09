@@ -22,7 +22,7 @@ namespace EasyFly.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Airport", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Airport", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("Airports");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Flight", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Flight", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +79,7 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("Flights");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Plane", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Plane", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +94,7 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("Planes");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Seat", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Seat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,11 +121,19 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("Seats");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Ticket", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PersonFirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PersonLastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PersonType")
                         .HasColumnType("int");
@@ -146,7 +154,7 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.User", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -168,14 +176,6 @@ namespace EasyFly.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -363,21 +363,21 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Flight", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Flight", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.Airport", "ArrivalAirport")
+                    b.HasOne("EasyFly.Domain.Models.Airport", "ArrivalAirport")
                         .WithMany()
                         .HasForeignKey("ArrivalAirportId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Persistence.Models.Airport", "DepartureAirport")
+                    b.HasOne("EasyFly.Domain.Models.Airport", "DepartureAirport")
                         .WithMany("Flights")
                         .HasForeignKey("DepartureAirportId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Persistence.Models.Plane", "Plane")
+                    b.HasOne("EasyFly.Domain.Models.Plane", "Plane")
                         .WithMany("Flights")
                         .HasForeignKey("PlaneId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -390,30 +390,30 @@ namespace EasyFly.Persistence.Migrations
                     b.Navigation("Plane");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Seat", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Seat", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.Flight", "Flight")
+                    b.HasOne("EasyFly.Domain.Models.Flight", "Flight")
                         .WithMany()
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Persistence.Models.Plane", null)
+                    b.HasOne("EasyFly.Domain.Models.Plane", null)
                         .WithMany("Seats")
                         .HasForeignKey("PlaneId");
 
                     b.Navigation("Flight");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Ticket", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Ticket", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.Seat", "Seat")
+                    b.HasOne("EasyFly.Domain.Models.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Persistence.Models.User", "User")
+                    b.HasOne("EasyFly.Domain.Models.User", "User")
                         .WithMany("Ticket")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -435,7 +435,7 @@ namespace EasyFly.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.User", null)
+                    b.HasOne("EasyFly.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,7 +444,7 @@ namespace EasyFly.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.User", null)
+                    b.HasOne("EasyFly.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -459,7 +459,7 @@ namespace EasyFly.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Persistence.Models.User", null)
+                    b.HasOne("EasyFly.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -468,26 +468,26 @@ namespace EasyFly.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("EasyFly.Persistence.Models.User", null)
+                    b.HasOne("EasyFly.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Airport", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Airport", b =>
                 {
                     b.Navigation("Flights");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.Plane", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.Plane", b =>
                 {
                     b.Navigation("Flights");
 
                     b.Navigation("Seats");
                 });
 
-            modelBuilder.Entity("EasyFly.Persistence.Models.User", b =>
+            modelBuilder.Entity("EasyFly.Domain.Models.User", b =>
                 {
                     b.Navigation("Ticket");
                 });

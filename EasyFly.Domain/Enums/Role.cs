@@ -1,4 +1,4 @@
-﻿namespace EasyFly.Persistence.Enums
+﻿namespace EasyFly.Domain.Enums
 {
     public enum Role
     {

@@ -1,4 +1,4 @@
-﻿using EasyFly.Persistence.Models;
+﻿using EasyFly.Domain.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,18 +21,7 @@ namespace EasyFly.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Flight>()
-                .HasOne(f => f.DepartureAirport)
-                .WithMany(a => a.Flights)
-                .HasForeignKey(f => f.DepartureAirportId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Flight>()
-                .HasOne(f => f.ArrivalAirport)
-                .WithMany()
-                .HasForeignKey(f => f.ArrivalAirportId)
-                .OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }

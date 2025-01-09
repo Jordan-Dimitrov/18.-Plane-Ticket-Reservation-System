@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EasyFly.Common\EasyFly.Common.csproj" />
-    <ProjectReference Include="..\EasyFly.Domain\EasyFly.Domain.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

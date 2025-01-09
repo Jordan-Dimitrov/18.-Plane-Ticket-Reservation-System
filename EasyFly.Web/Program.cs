@@ -1,6 +1,6 @@
+using EasyFly.Domain.Models;
 using EasyFly.Infrastructure;
 using EasyFly.Persistence;
-using EasyFly.Persistence.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace EasyFly.Web

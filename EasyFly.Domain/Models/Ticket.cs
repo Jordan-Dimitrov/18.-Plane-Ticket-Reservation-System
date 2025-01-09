@@ -1,8 +1,8 @@
-﻿using EasyFly.Persistence.Enums;
+﻿using EasyFly.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EasyFly.Persistence.Models
+namespace EasyFly.Domain.Models
 {
     public class Ticket
     {
@@ -21,5 +21,9 @@ namespace EasyFly.Persistence.Models
         [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
+        [Required]
+        public string PersonFirstName { get; set; }
+        [Required]
+        public string PersonLastName { get; set; }
     }
 }

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyFly.Infrastructure", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyFly.Persistence", "EasyFly.Persistence\EasyFly.Persistence.csproj", "{E0FDDD2E-5CC9-4612-A241-E2A6B30D1945}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyFly.Domain", "EasyFly.Domain\EasyFly.Domain.csproj", "{7358CE0F-FBFD-486E-8EED-ADE6759FB4D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{E0FDDD2E-5CC9-4612-A241-E2A6B30D1945}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0FDDD2E-5CC9-4612-A241-E2A6B30D1945}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0FDDD2E-5CC9-4612-A241-E2A6B30D1945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7358CE0F-FBFD-486E-8EED-ADE6759FB4D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7358CE0F-FBFD-486E-8EED-ADE6759FB4D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7358CE0F-FBFD-486E-8EED-ADE6759FB4D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7358CE0F-FBFD-486E-8EED-ADE6759FB4D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EasyFly.Domain.Abstractions;
+using EasyFly.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -15,6 +17,13 @@ namespace EasyFly.Persistence
             {
                 options.UseSqlServer(connectionString, x => x.MigrationsAssembly(assemblyName));
             });
+
+            services.AddScoped<IAirportRepository, AirportRepository>();
+            services.AddScoped<IFlightRepository, FlightRepository>();
+            services.AddScoped<IPlaneRepository, PlaneRepository>();
+            services.AddScoped<ISeatRepository, SeatRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

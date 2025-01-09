@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EasyFly.Application.Abstractions;
+using EasyFly.Infrastructure.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace EasyFly.Infrastructure
@@ -9,6 +11,8 @@ namespace EasyFly.Infrastructure
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             string assemblyName = currentAssembly.GetName().Name;
+
+            services.AddScoped<IPlaneService, PlaneService>();
 
             return services;
         }

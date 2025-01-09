@@ -44,8 +44,6 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<long>(type: "bigint", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -195,17 +193,24 @@ namespace EasyFly.Persistence.Migrations
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DepartureAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ArrivalAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Flights", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Flights_Airports_ArrivalAirportId",
+                        column: x => x.ArrivalAirportId,
+                        principalTable: "Airports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Flights_Airports_DepartureAirportId",
                         column: x => x.DepartureAirportId,
                         principalTable: "Airports",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Flights_Planes_PlaneId",
                         column: x => x.PlaneId,
@@ -247,7 +252,9 @@ namespace EasyFly.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PersonType = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PersonFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonLastName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -304,6 +311,11 @@ namespace EasyFly.Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flights_ArrivalAirportId",
+                table: "Flights",
+                column: "ArrivalAirportId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Flights_DepartureAirportId",

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EasyFly.Persistence.Models
+namespace EasyFly.Domain.Models
 {
     public class Plane
     {
