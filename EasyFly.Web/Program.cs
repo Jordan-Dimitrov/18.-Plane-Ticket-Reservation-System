@@ -24,11 +24,21 @@ namespace EasyFly.Web
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
 
+            builder.Services.AddScoped<Seed>();
+
             builder.Services
                 .AddInfrastructure()
                 .AddPersistence(connectionString);
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<ApplicationDbContext>();
+                var seed = services.GetRequiredService<Seed>();
+                seed.SeedContext().Wait();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -1,54 +1,68 @@
 ﻿using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
     internal class SeatRepository : ISeatRepository
     {
-        public Task<bool> DeleteAsync(Seat value)
+        private readonly ApplicationDbContext _Context;
+
+        public SeatRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _Context = context;
         }
 
-        public Task<bool> ExistsAsync(Expression<Func<Seat, bool>> condition)
+        public async Task<bool> DeleteAsync(Seat value)
         {
-            throw new NotImplementedException();
+            _Context.Remove(value);
+            return await _Context.SaveChangesAsync() > 0;
         }
 
-        public Task<IEnumerable<Seat>> GetAllAsync(bool trackChanges)
+        public async Task<bool> ExistsAsync(Expression<Func<Seat, bool>> condition)
         {
-            throw new NotImplementedException();
+            return await _Context.Seats.AnyAsync(condition);
         }
 
-        public Task<Seat?> GetByAsync(Expression<Func<Seat, bool>> condition)
+        public async Task<IEnumerable<Seat>> GetAllAsync(bool trackChanges)
         {
-            throw new NotImplementedException();
+            var query = _Context.Seats;
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
-        public Task<Seat?> GetByIdAsync(Guid id, bool trackChanges)
+        public async Task<Seat?> GetByAsync(Expression<Func<Seat, bool>> condition)
         {
-            throw new NotImplementedException();
+            return await _Context.Seats.FirstOrDefaultAsync(condition);
         }
 
-        public Task<int> GetPageCount(int size)
+        public async Task<Seat?> GetByIdAsync(Guid id, bool trackChanges)
         {
-            throw new NotImplementedException();
+            var query = _Context.Seats.Where(x => x.Id == id);
+            return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
-        public Task<IEnumerable<Seat>> GetPagedAsync(bool trackChanges, int page, int size)
+        public async Task<int> GetPageCount(int size)
         {
-            throw new NotImplementedException();
+            return Math.Max(await _Context.Seats.CountAsync() / size, 1);
         }
 
-        public Task<bool> InsertAsync(Seat value)
+        public async Task<IEnumerable<Seat>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            throw new NotImplementedException();
+            var query = _Context.Seats.Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
-        public Task<bool> UpdateAsync(Seat value)
+        public async Task<bool> InsertAsync(Seat value)
         {
-            throw new NotImplementedException();
+            await _Context.AddAsync(value);
+            return await _Context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateAsync(Seat value)
+        {
+            _Context.Update(value);
+            return await _Context.SaveChangesAsync() > 0;
         }
     }
 }

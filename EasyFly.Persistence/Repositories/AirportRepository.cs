@@ -1,54 +1,68 @@
 ﻿using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
     internal class AirportRepository : IAirportRepository
     {
-        public Task<bool> DeleteAsync(Airport value)
+        private readonly ApplicationDbContext _Context;
+
+        public AirportRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _Context = context;
         }
 
-        public Task<bool> ExistsAsync(Expression<Func<Airport, bool>> condition)
+        public async Task<bool> DeleteAsync(Airport value)
         {
-            throw new NotImplementedException();
+            _Context.Remove(value);
+            return await _Context.SaveChangesAsync() > 0;
         }
 
-        public Task<IEnumerable<Airport>> GetAllAsync(bool trackChanges)
+        public async Task<bool> ExistsAsync(Expression<Func<Airport, bool>> condition)
         {
-            throw new NotImplementedException();
+            return await _Context.Airports.AnyAsync(condition);
         }
 
-        public Task<Airport?> GetByAsync(Expression<Func<Airport, bool>> condition)
+        public async Task<IEnumerable<Airport>> GetAllAsync(bool trackChanges)
         {
-            throw new NotImplementedException();
+            var query = _Context.Airports;
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
-        public Task<Airport?> GetByIdAsync(Guid id, bool trackChanges)
+        public async Task<Airport?> GetByAsync(Expression<Func<Airport, bool>> condition)
         {
-            throw new NotImplementedException();
+            return await _Context.Airports.FirstOrDefaultAsync(condition);
         }
 
-        public Task<int> GetPageCount(int size)
+        public async Task<Airport?> GetByIdAsync(Guid id, bool trackChanges)
         {
-            throw new NotImplementedException();
+            var query = _Context.Airports.Where(x => x.Id == id);
+            return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
-        public Task<IEnumerable<Airport>> GetPagedAsync(bool trackChanges, int page, int size)
+        public async Task<int> GetPageCount(int size)
         {
-            throw new NotImplementedException();
+            return Math.Max(await _Context.Airports.CountAsync() / size, 1);
         }
 
-        public Task<bool> InsertAsync(Airport value)
+        public async Task<IEnumerable<Airport>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            throw new NotImplementedException();
+            var query = _Context.Airports.Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
-        public Task<bool> UpdateAsync(Airport value)
+        public async Task<bool> InsertAsync(Airport value)
         {
-            throw new NotImplementedException();
+            await _Context.AddAsync(value);
+            return await _Context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateAsync(Airport value)
+        {
+            _Context.Update(value);
+            return await _Context.SaveChangesAsync() > 0;
         }
     }
 }
