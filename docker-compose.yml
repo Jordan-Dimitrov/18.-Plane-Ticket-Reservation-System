@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  easyfly.web:
+    image: ${DOCKER_REGISTRY-}easyflyweb
+    container_name: EasyFly
+    ports:
+      - 8081:443
+    environment:
+      ASPNETCORE_URLS: https://+
+      ASPNETCORE_HTTPS_PORT: 8081
+      ASPNETCORE_ENVIRONMENT: "Development"
+    build:
+      context: .
+      dockerfile: EasyFly.Web/Dockerfile
+    depends_on:
+      - sqlserverdb
+
+  sqlserverdb:
+    container_name: SqlServerContainer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8002:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=z@malo_Dap0g1nem#

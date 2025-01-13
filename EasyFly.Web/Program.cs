@@ -36,6 +36,7 @@ namespace EasyFly.Web
             {
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
                 var seed = services.GetRequiredService<Seed>();
                 seed.SeedContext().Wait();
             }
