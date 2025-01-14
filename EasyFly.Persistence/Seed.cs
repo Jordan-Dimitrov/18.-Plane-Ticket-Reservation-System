@@ -36,16 +36,9 @@ namespace EasyFly.Persistence
                     await _RoleManager.CreateAsync(new IdentityRole(Role.Admin.ToString()));
                 }
 
-                User user = new User
-                {
-                    Address = "123 Main St",
-                    Phone = 1234567890
-                };
-                User admin = new User
-                {
-                    Address = "456 Admin St",
-                    Phone = 0828342405
-                };
+                User user = new User();
+
+                User admin = new User();
 
                 await _UserStore.SetUserNameAsync(admin, "admin@easyfly.com", default);
                 await ((IUserEmailStore<User>)_UserStore).SetEmailAsync(admin, "admin@easyfly.com", default);

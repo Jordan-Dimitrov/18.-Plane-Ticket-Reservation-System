@@ -12,6 +12,7 @@ namespace EasyFly.Domain.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(Constants.FlightNumberLength)]
         public string FlightNumber { get; set; }
         [Required]
         public DateTime DepartureTime { get; set; }

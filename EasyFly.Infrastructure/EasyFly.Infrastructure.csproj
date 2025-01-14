@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyFly.Application\EasyFly.Application.csproj" />
-    <ProjectReference Include="..\EasyFly.Common\EasyFly.Common.csproj" />
   </ItemGroup>
 
 </Project>

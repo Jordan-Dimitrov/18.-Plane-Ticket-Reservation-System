@@ -12,6 +12,7 @@ namespace EasyFly.Persistence
         public DbSet<Plane> Planes { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Audit> Audits { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

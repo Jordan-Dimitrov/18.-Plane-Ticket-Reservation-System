@@ -13,6 +13,7 @@ namespace EasyFly.Domain.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(Constants.NameLength)]
         public string Name { get; set; }
         public ICollection<Seat> Seats { get; set; }
         public ICollection<Flight> Flights { get; set; }

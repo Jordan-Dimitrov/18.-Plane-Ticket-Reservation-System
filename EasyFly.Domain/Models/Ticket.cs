@@ -22,8 +22,10 @@ namespace EasyFly.Domain.Models
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         [Required]
+        [MaxLength(Constants.NameLength)]
         public string PersonFirstName { get; set; }
         [Required]
+        [MaxLength(Constants.NameLength)]
         public string PersonLastName { get; set; }
     }
 }

@@ -12,6 +12,8 @@ namespace EasyFly.Domain.Models
         }
         [Key]
         public Guid Id { get; set; }
+        [Required]
+        [MaxLength(Constants.RowLength)]
         public int Row { get; set; }
         public SeatLetter SeatLetter { get; set; }
         [Required]
