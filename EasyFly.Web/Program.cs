@@ -1,6 +1,7 @@
 using EasyFly.Domain.Models;
 using EasyFly.Infrastructure;
 using EasyFly.Persistence;
+using EasyFly.Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace EasyFly.Web
@@ -41,6 +42,7 @@ namespace EasyFly.Web
                 seed.SeedContext().Wait();
             }
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
