@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PheasantBench.Web.Areas.Identity.Pages.Account
+namespace EasyFly.Web.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {

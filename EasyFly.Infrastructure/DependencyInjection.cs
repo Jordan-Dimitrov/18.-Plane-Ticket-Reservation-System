@@ -1,5 +1,6 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -13,6 +14,7 @@ namespace EasyFly.Infrastructure
             string assemblyName = currentAssembly.GetName().Name;
 
             services.AddScoped<IPlaneService, PlaneService>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             return services;
         }

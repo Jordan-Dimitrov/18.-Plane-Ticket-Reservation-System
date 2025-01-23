@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
-namespace PheasantBench.Web.Areas.Identity.Pages.Account
+namespace EasyFly.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
