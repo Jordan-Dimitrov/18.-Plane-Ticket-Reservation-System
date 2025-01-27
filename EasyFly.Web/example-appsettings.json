@@ -1,0 +1,20 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "temp",
+    "ApplicationDbContextConnection": "temp"
+  },
+  "EmailSettings": {
+    "Sender": "temp",
+    "SmtpServer": "temp",
+    "Port": 587,
+    "Username": "temp",
+    "Password": "temp"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

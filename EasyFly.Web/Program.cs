@@ -2,7 +2,6 @@ using EasyFly.Domain.Models;
 using EasyFly.Infrastructure;
 using EasyFly.Persistence;
 using EasyFly.Web.Middlewares;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace EasyFly.Web
@@ -27,10 +26,6 @@ namespace EasyFly.Web
             builder.Services.AddControllersWithViews();
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
-
-            builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "keys")))
-    .SetApplicationName("EasyFly");
 
             builder.Services.AddScoped<Seed>();
 
