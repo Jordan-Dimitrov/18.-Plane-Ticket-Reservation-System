@@ -30,7 +30,7 @@ namespace EasyFly.Web
             builder.Services.AddScoped<Seed>();
 
             builder.Services
-                .AddInfrastructure()
+                .AddInfrastructure(builder.Configuration)
                 .AddPersistence(connectionString);
 
             var app = builder.Build();
