@@ -20,6 +20,7 @@ namespace EasyFly.Infrastructure
             StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
             services.AddScoped<IPlaneService, PlaneService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             return services;

@@ -10,6 +10,9 @@
     "Username": "temp",
     "Password": "temp"
   },
+  "Stripe": {
+    "SecretKey": "temp"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
