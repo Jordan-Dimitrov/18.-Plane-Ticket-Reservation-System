@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace EasyFly.Infrastructure.Services
 {
-    public class PaymentService : IPaymentService
+    internal class PaymentService : IPaymentService
     {
         private readonly IConfiguration _Configuration;
         public PaymentService(IConfiguration configuration)

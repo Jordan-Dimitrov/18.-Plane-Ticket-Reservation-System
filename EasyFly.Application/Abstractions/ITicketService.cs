@@ -1,0 +1,20 @@
+﻿using EasyFly.Application.Dtos;
+using EasyFly.Application.Responses;
+using EasyFly.Application.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EasyFly.Application.Abstractions
+{
+    public interface ITicketService
+    {
+        Task<Response> CreateTicket(TicketDto plane);
+        Task<Response> DeleteTicket(Guid id);
+        Task<Response> UpdateTicket(TicketDto plane, Guid id);
+        Task<DataResponse<TicketViewModel>> GetTicket(Guid id);
+        Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size);
+    }
+}

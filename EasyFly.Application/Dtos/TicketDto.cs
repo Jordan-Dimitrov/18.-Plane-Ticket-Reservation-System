@@ -1,25 +1,23 @@
 ﻿using EasyFly.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+using EasyFly.Domain.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using EasyFly.Domain;
 
-namespace EasyFly.Domain.Models
+namespace EasyFly.Application.Dtos
 {
-    public class Ticket
+    public class TicketDto
     {
-        public Ticket()
-        {
-            Id = Guid.NewGuid();
-        }
-        [Key]
-        public Guid Id { get; set; }
-        public Seat Seat { get; set; }
         [Required]
-        [ForeignKey(nameof(Seat))]
         public Guid SeatId { get; set; }
-        public PersonType PersonType { get; set; }
-        public User User { get; set; }
         [Required]
-        [ForeignKey(nameof(User))]
+        public PersonType PersonType { get; set; }
+        [Required]
         public string UserId { get; set; }
         [Required]
         [MaxLength(Constants.NameLength)]
@@ -30,6 +28,7 @@ namespace EasyFly.Domain.Models
         [Required]
         public Gender Gender { get; set; }
         [Required]
+        [Range(0,99999)]
         public decimal Price { get; set; }
     }
 }

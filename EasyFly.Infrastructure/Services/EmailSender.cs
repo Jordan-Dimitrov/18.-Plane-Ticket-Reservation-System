@@ -5,7 +5,7 @@ using System.Net.Mail;
 
 namespace EasyFly.Infrastructure.Services
 {
-    public class EmailSender : IEmailSender
+    internal class EmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
 

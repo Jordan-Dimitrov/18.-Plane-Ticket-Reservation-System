@@ -2,32 +2,37 @@
 using EasyFly.Application.Dtos;
 using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class PlaneService : IPlaneService
+    internal class AirportService : IAirportService
     {
-        public Task<Response> CreatePlane(PlaneDto plane)
+        public Task<Response> CreateAirport(AirportDto airport)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Response> DeletePlane(Guid id)
+        public Task<Response> DeleteAirport(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<DataResponse<PlaneViewModel>> GetPlane(Guid id)
+        public Task<DataResponse<AirportViewModel>> GetAirport(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<DataResponse<PlanePagedViewModel>> GetPlanesPaged(int page, int size)
+        public Task<DataResponse<AirportPagedViewModel>> GetAirportsPaged(int page, int size)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Response> UpdatePlane(PlaneDto plane, Guid id)
+        public Task<Response> UpdateAirport(AirportDto airport, Guid id)
         {
             throw new NotImplementedException();
         }

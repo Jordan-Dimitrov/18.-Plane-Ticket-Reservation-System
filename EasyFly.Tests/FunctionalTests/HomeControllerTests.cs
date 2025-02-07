@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using EasyFly.Infrastructure.Services;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace EasyFly.Tests.FunctionalTests
@@ -15,7 +16,7 @@ namespace EasyFly.Tests.FunctionalTests
         {
             _Driver = new ChromeDriver();
             _Driver.Manage().Window.Maximize();
-            _Driver.Url = "https://localhost:8081/";
+            _Driver.Url = Helper.RetrieveUrl();
 
         }
 
