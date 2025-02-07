@@ -1,4 +1,4 @@
-namespace EasyFly.Tests
+namespace EasyFly.Tests.ServiceTests
 {
     public class Tests
     {

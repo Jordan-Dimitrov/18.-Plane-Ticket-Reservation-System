@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Stripe.Checkout;
-using Stripe;
+﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
-using EasyFly.Application.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EasyFly.Web.Controllers
 {
@@ -16,10 +14,10 @@ namespace EasyFly.Web.Controllers
             _PaymentService = paymentService;
         }
         [HttpPost("create-checkout-session")]
-        public IActionResult CreateCheckoutSession([FromBody] PayDto model)
+        public IActionResult CreateCheckoutSession([FromBody] CheckoutDto model)
         {
             var session = _PaymentService.Checkout(model, Request.Host, Request.Scheme);
-            
+
             return Ok(new { sessionId = session.Id });
         }
         [HttpGet("success")]

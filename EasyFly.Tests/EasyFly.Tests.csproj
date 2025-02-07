@@ -11,10 +11,21 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.28.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="133.0.6943.5300" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasyFly.Application\EasyFly.Application.csproj" />
+    <ProjectReference Include="..\EasyFly.Domain\EasyFly.Domain.csproj" />
+    <ProjectReference Include="..\EasyFly.Infrastructure\EasyFly.Infrastructure.csproj" />
+    <ProjectReference Include="..\EasyFly.Persistence\EasyFly.Persistence.csproj" />
+    <ProjectReference Include="..\EasyFly.Web\EasyFly.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

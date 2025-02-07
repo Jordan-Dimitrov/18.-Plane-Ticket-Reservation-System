@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-
-namespace EasyFly.Application.Dtos
+﻿namespace EasyFly.Application.Dtos
 {
-    public class PayDto
+    public class CheckoutDto
     {
         public string? ProductName { get; set; }
         public string? ProductDescription { get; set; }
