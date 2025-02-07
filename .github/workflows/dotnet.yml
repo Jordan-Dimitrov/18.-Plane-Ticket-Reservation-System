@@ -7,9 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     strategy:
       matrix:
         configuration: [Debug, Release]
@@ -18,7 +16,7 @@ jobs:
 
     env:
       Solution_Name: EasyFly.Web.sln
-      Test_Project_Path: EasyFly.Tests/EasyFly.Tests.csproj
+      Test_Project_Path: EasyFly.Tests/ServiceTests/*.csproj
 
     steps:
     - name: Checkout
@@ -31,5 +29,5 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Run tests
-      run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults
+    - name: ServiceTests
+      run: dotnet test ServiceTests --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults
