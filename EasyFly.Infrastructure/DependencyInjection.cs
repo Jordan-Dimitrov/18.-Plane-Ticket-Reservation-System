@@ -26,7 +26,9 @@ namespace EasyFly.Infrastructure
             services.AddScoped<ISeatService, SeatService>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IUserService, UserService>();
+
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IQrCodeService, QrCodeService>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             return services;

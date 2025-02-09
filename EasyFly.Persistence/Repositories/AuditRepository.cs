@@ -31,6 +31,11 @@ namespace EasyFly.Persistence.Repositories
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
+        public async Task<ICollection<Audit>?> GetAllByAsync(Expression<Func<Audit, bool>> condition)
+        {
+            return await _Context.Audits.Where(condition).ToListAsync();
+        }
+
         public async Task<Audit?> GetByAsync(Expression<Func<Audit, bool>> condition)
         {
             return await _Context.Audits.FirstOrDefaultAsync(condition);

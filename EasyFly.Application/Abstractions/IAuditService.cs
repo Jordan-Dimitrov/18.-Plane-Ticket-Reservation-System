@@ -11,7 +11,7 @@ namespace EasyFly.Application.Abstractions
 {
     public interface IAuditService
     {
-        Task<Response> CreateAudit(string userId, AuditDto auditDto);
+        Task<Response> CreateAudit(Guid userId, AuditDto auditDto);
         Task<Response> DeleteAudit(Guid id);
         Task<Response> DeleteOldestAudits(DateTime before);
         Task<DataResponse<AuditViewModel>> GetAudit(Guid id);

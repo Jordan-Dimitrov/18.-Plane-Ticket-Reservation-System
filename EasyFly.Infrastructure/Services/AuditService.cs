@@ -2,39 +2,160 @@
 using EasyFly.Application.Dtos;
 using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
+using EasyFly.Domain.Abstractions;
+using EasyFly.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
     internal class AuditService : IAuditService
     {
-        public Task<Response> CreateAudit(string userId, AuditDto auditDto)
+        private readonly IAuditRepository _auditRepository;
+        private readonly IUserRepository _userRepository;
+
+        public AuditService(IAuditRepository auditRepository, IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _auditRepository = auditRepository;
+            _userRepository = userRepository;
         }
 
-        public Task<Response> DeleteAudit(Guid id)
+        public async Task<Response> CreateAudit(Guid userId, AuditDto auditDto)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            User? user = await _userRepository.GetByIdAsync(userId, true);
+
+            if (user == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.UserNotFound;
+                return response;
+            }
+
+            Audit audit = new Audit()
+            {
+                ModifiedAt = auditDto.ModifiedAt,
+                Message = auditDto.Message,
+                UserId = user.Id
+            };
+
+            if (!await _auditRepository.InsertAsync(audit))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
         }
 
-        public Task<Response> DeleteOldestAudits(DateTime before)
+        public async Task<Response> DeleteAudit(Guid id)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            Audit? audit = await _auditRepository.GetByIdAsync(id, true);
+
+            if (audit == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.AuditNotFound;
+                return response;
+            }
+
+            if (!await _auditRepository.DeleteAsync(audit))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            response.Success = true;
+
+            return response;
         }
 
-        public Task<DataResponse<AuditViewModel>> GetAudit(Guid id)
+        public async Task<Response> DeleteOldestAudits(DateTime before)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            var audits = await _auditRepository.GetAllByAsync(x => x.ModifiedAt < before);
+
+            foreach (var audit in audits)
+            {
+                if (!await _auditRepository.DeleteAsync(audit))
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ResponseConstants.Unexpected;
+                    return response;
+                }
+            }
+
+            response.Success = true;
+
+            return response;
         }
 
-        public Task<DataResponse<AuditPagedViewModel>> GetAuditsPaged(int page, int size)
+        public async Task<DataResponse<AuditViewModel>> GetAudit(Guid id)
         {
-            throw new NotImplementedException();
+            DataResponse<AuditViewModel> response = new DataResponse<AuditViewModel>();
+
+            Audit? audit = await _auditRepository.GetByIdAsync(id, false);
+
+            if (audit == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.AuditNotFound;
+                return response;
+            }
+
+            User? user = await _userRepository.GetByAsync(x => x.Id.ToString() == audit.UserId);
+
+            response.Data = new AuditViewModel()
+            {
+                Id = audit.Id,
+                ModifiedAt = audit.ModifiedAt,
+                Message = audit.Message,
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Username = user.UserName
+                }
+            };
+
+            return response;
+        }
+
+        public async Task<DataResponse<AuditPagedViewModel>> GetAuditsPaged(int page, int size)
+        {
+            DataResponse<AuditPagedViewModel> response = new DataResponse<AuditPagedViewModel>();
+            response.Data = new AuditPagedViewModel();
+
+            var audits = await _auditRepository.GetPagedAsync(false, page, size);
+
+            if (!audits.Any())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.AuditNotFound;
+                return response;
+            }
+
+            response.Data.AuditViewModels = audits
+                .Select(audit => new AuditViewModel()
+                {
+                    Id = audit.Id,
+                    ModifiedAt = audit.ModifiedAt,
+                    Message = audit.Message,
+                    User = new UserDto
+                    {
+                        Id = audit.User.Id,
+                        Username = audit.User.UserName,
+                    }
+                });
+
+            response.Data.TotalPages = await _auditRepository.GetPageCount(size);
+
+            return response;
         }
     }
 }
