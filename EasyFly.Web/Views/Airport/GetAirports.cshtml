@@ -1,0 +1,100 @@
+﻿@model EasyFly.Application.ViewModels.AirportPagedViewModel
+
+@{
+    ViewData["Title"] = "Airports";
+}
+
+<h1 class="text-center">Airports</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.Success))
+{
+    <div class="alert alert-success text-center" role="alert">
+        <h5>@ViewBag.Success</h5>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger text-center" role="alert">
+        <h5>@ViewBag.ErrorMessage</h5>
+    </div>
+}
+
+<br />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @foreach (var item in Model.Airports)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="card-title">@item.Name</h4>
+                        <p class="card-text">Latitude: @item.Latitude</p>
+                        <p class="card-text">Longitude: @item.Longtitude</p>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="d-flex mt-2">
+                                <form method="get" asp-controller="Airport" asp-action="Remove">
+                                    @Html.Hidden("airportId", item.Id)
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 d-flex justify-content-between">
+            @if (Model.PageNumber > 1)
+            {
+                <a href="@Url.Action("GetAirports", new { page = Model.PageNumber - 1 })" class="btn btn-primary">Previous</a>
+            }
+            else
+            {
+                <a></a>
+            }
+
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <a href="@Url.Action("GetAirports", new { page = Model.PageNumber + 1 })" class="btn btn-primary">Next</a>
+            }
+        </div>
+    </div>
+
+    <br />
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Create Airport</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Airport" asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="Name">Name:</label>
+                            <input type="text" class="form-control" id="Name" name="Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Latitude">Latitude:</label>
+                            <input type="text" class="form-control" id="Latitude" name="Latitude" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Longtitude">Longitude:</label>
+                            <input type="text" class="form-control" id="Longtitude" name="Longtitude" />
+                        </div>
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
