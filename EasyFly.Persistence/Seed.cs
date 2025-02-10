@@ -154,6 +154,22 @@ namespace EasyFly.Persistence
 
                 _Context.Tickets.AddRange(tickets);
                 await _Context.SaveChangesAsync();
+
+                List<Audit> audits = new List<Audit>
+                {
+                    new Audit
+                    {
+                        UserId = user.Id,
+                        Message = "Create something",
+                        ModifiedAt = DateTime.UtcNow
+                    },
+                    new Audit
+                    {
+                        UserId = admin.Id,
+                        Message = "Created other thing",
+                        ModifiedAt = DateTime.UtcNow.AddDays(-7)
+                    }
+                };
             }
         }
     }

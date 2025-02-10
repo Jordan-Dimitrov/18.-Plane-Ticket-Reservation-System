@@ -2,39 +2,233 @@
 using EasyFly.Application.Dtos;
 using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EasyFly.Domain.Abstractions;
+using EasyFly.Domain.Models;
 
 namespace EasyFly.Infrastructure.Services
 {
     internal class FlightService : IFlightService
     {
-        public Task<Response> CreateFlight(FlightDto flight)
+        private readonly IFlightRepository _flightRepository;
+        private readonly IAirportRepository _airportRepository;
+        private readonly IPlaneRepository _planeRepository;
+
+        public FlightService(IFlightRepository flightRepository, IAirportRepository airportRepository, IPlaneRepository planeRepository)
         {
-            throw new NotImplementedException();
+            _flightRepository = flightRepository;
+            _airportRepository = airportRepository;
+            _planeRepository = planeRepository;
         }
 
-        public Task<Response> DeleteFlight(Guid id)
+        public async Task<Response> CreateFlight(FlightDto flight)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            if (await _flightRepository.ExistsAsync(x => x.FlightNumber == flight.FlightNumber))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightExists;
+                return response;
+            }
+
+            Airport departureAirport = await _airportRepository
+                .GetByIdAsync(flight.DepartureAirportId, true);
+
+            Airport arrivalAirport = await _airportRepository
+                .GetByIdAsync(flight.ArrivalAirportId, true);
+
+            Plane plane = await _planeRepository
+                .GetByIdAsync(flight.PlaneId, true);
+
+            if (departureAirport == null || arrivalAirport == null || plane == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.InvalidData;
+                return response;
+            }
+
+            Flight newFlight = new Flight()
+            {
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                DepartureAirportId = flight.DepartureAirportId,
+                ArrivalAirportId = flight.ArrivalAirportId,
+                PlaneId = flight.PlaneId
+            };
+
+            if (!await _flightRepository.InsertAsync(newFlight))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
         }
 
-        public Task<DataResponse<FlightViewModel>> GetFlight(Guid id)
+        public async Task<Response> DeleteFlight(Guid id)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            Flight? flight = await _flightRepository.GetByIdAsync(id, true);
+
+            if (flight == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightNotFound;
+                return response;
+            }
+
+            if (!await _flightRepository.DeleteAsync(flight))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            response.Success = true;
+
+            return response;
         }
 
-        public Task<DataResponse<FlightPagedViewModel>> GetFlightsPaged(int page, int size)
+        public async Task<DataResponse<FlightViewModel>> GetFlight(Guid id)
         {
-            throw new NotImplementedException();
+            DataResponse<FlightViewModel> response = new DataResponse<FlightViewModel>();
+
+            Flight? flight = await _flightRepository.GetByIdAsync(id, false);
+
+            if (flight == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightNotFound;
+                return response;
+            }
+
+            response.Data = new FlightViewModel()
+            {
+                Id = flight.Id,
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                DepartureAirportId = flight.DepartureAirportId,
+                DepartureAirport = new AirportViewModel
+                {
+                    Id = flight.DepartureAirport.Id,
+                    Name = flight.DepartureAirport.Name,
+                    Latitude = flight.DepartureAirport.Latitude,
+                    Longtitude = flight.DepartureAirport.Longtitude
+                },
+                ArrivalAirportId = flight.ArrivalAirportId,
+                ArrivalAirport = new AirportViewModel
+                {
+                    Id = flight.ArrivalAirport.Id,
+                    Name = flight.ArrivalAirport.Name,
+                    Latitude = flight.ArrivalAirport.Latitude,
+                    Longtitude = flight.ArrivalAirport.Longtitude
+                },
+                PlaneId = flight.PlaneId,
+                Plane = new PlaneViewModel
+                {
+                    Id = flight.Plane.Id,
+                    Name = flight.Plane.Name,
+                }
+            };
+
+            return response;
         }
 
-        public Task<Response> UpdateFlight(FlightDto flight, Guid id)
+        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPaged(int page, int size)
         {
-            throw new NotImplementedException();
+            DataResponse<FlightPagedViewModel> response = new DataResponse<FlightPagedViewModel>();
+            response.Data = new FlightPagedViewModel();
+
+            var flights = await _flightRepository.GetPagedAsync(false, page, size);
+
+            if (!flights.Any())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightNotFound;
+                return response;
+            }
+
+            response.Data.Flights = flights
+                .Select(flight => new FlightViewModel()
+                {
+                    Id = flight.Id,
+                    FlightNumber = flight.FlightNumber,
+                    DepartureTime = flight.DepartureTime,
+                    ArrivalTime = flight.ArrivalTime,
+                    DepartureAirportId = flight.DepartureAirportId,
+                    DepartureAirport = new AirportViewModel
+                    {
+                        Id = flight.DepartureAirport.Id,
+                        Name = flight.DepartureAirport.Name,
+                        Latitude = flight.DepartureAirport.Latitude,
+                        Longtitude = flight.DepartureAirport.Longtitude
+                    },
+                    ArrivalAirportId = flight.ArrivalAirportId,
+                    ArrivalAirport = new AirportViewModel
+                    {
+                        Id = flight.ArrivalAirport.Id,
+                        Name = flight.ArrivalAirport.Name,
+                        Latitude = flight.ArrivalAirport.Latitude,
+                        Longtitude = flight.ArrivalAirport.Longtitude
+                    },
+                    PlaneId = flight.PlaneId,
+                    Plane = new PlaneViewModel
+                    {
+                        Id = flight.Plane.Id,
+                        Name = flight.Plane.Name,
+                    }
+                });
+
+            response.Data.TotalPages = await _flightRepository.GetPageCount(size);
+
+            return response;
+        }
+
+        public async Task<Response> UpdateFlight(FlightDto flight, Guid id)
+        {
+            Response response = new Response();
+
+            Flight? existingFlight = await _flightRepository.GetByIdAsync(id, true);
+
+            if (existingFlight == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightNotFound;
+                return response;
+            }
+
+            Airport departureAirport = await _airportRepository
+                .GetByIdAsync(flight.DepartureAirportId, true);
+
+            Airport arrivalAirport = await _airportRepository
+                .GetByIdAsync(flight.ArrivalAirportId, true);
+
+            Plane plane = await _planeRepository
+                .GetByIdAsync(flight.PlaneId, true);
+
+            if (departureAirport == null || arrivalAirport == null || plane == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.InvalidData;
+                return response;
+            }
+
+            existingFlight.FlightNumber = flight.FlightNumber;
+            existingFlight.DepartureTime = flight.DepartureTime;
+            existingFlight.ArrivalTime = flight.ArrivalTime;
+            existingFlight.DepartureAirportId = flight.DepartureAirportId;
+            existingFlight.ArrivalAirportId = flight.ArrivalAirportId;
+            existingFlight.PlaneId = flight.PlaneId;
+
+            if (!await _flightRepository.UpdateAsync(existingFlight))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
         }
     }
 }

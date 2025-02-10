@@ -27,7 +27,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Airport>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Airports;
+            var query = _Context.Airports.Include(x => x.Flights);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
@@ -49,7 +49,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Airport>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Airports.Skip((page - 1) * size).Take(size);
+            var query = _Context.Airports.Include(x => x.Flights).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 

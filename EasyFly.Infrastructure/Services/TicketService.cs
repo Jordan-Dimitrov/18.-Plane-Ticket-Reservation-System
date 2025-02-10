@@ -2,39 +2,258 @@
 using EasyFly.Application.Dtos;
 using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EasyFly.Domain.Abstractions;
+using EasyFly.Domain.Models;
 
 namespace EasyFly.Infrastructure.Services
 {
     internal class TicketService : ITicketService
     {
-        public Task<Response> CreateTicket(TicketDto plane)
+        private readonly ITicketRepository _ticketRepository;
+        private readonly ISeatRepository _seatRepository;
+        private readonly IUserRepository _userRepository;
+
+        public TicketService(ITicketRepository ticketRepository, ISeatRepository seatRepository, IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _ticketRepository = ticketRepository;
+            _seatRepository = seatRepository;
+            _userRepository = userRepository;
         }
 
-        public Task<Response> DeleteTicket(Guid id)
+        public async Task<Response> CreateTicket(TicketDto ticket)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            Seat seat = await _seatRepository.GetByIdAsync(ticket.SeatId, true);
+            User user = await _userRepository.GetByAsync(x => x.Id == ticket.UserId);
+
+            if (seat == null || user == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.InvalidData;
+                return response;
+            }
+
+            Ticket newTicket = new Ticket()
+            {
+                SeatId = ticket.SeatId,
+                PersonType = ticket.PersonType,
+                UserId = ticket.UserId,
+                PersonFirstName = ticket.PersonFirstName,
+                PersonLastName = ticket.PersonLastName,
+                Gender = ticket.Gender,
+                Price = ticket.Price
+            };
+
+            if (!await _ticketRepository.InsertAsync(newTicket))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
         }
 
-        public Task<DataResponse<TicketViewModel>> GetTicket(Guid id)
+        public async Task<Response> DeleteTicket(Guid id)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+
+            Ticket? ticket = await _ticketRepository.GetByIdAsync(id, true);
+
+            if (ticket == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.TicketNotFound;
+                return response;
+            }
+
+            if (!await _ticketRepository.DeleteAsync(ticket))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            response.Success = true;
+
+            return response;
         }
 
-        public Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size)
+        public async Task<DataResponse<TicketViewModel>> GetTicket(Guid id)
         {
-            throw new NotImplementedException();
+            DataResponse<TicketViewModel> response = new DataResponse<TicketViewModel>();
+
+            Ticket? ticket = await _ticketRepository.GetByIdAsync(id, false);
+
+            if (ticket == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.TicketNotFound;
+                return response;
+            }
+
+            response.Data = new TicketViewModel()
+            {
+                Id = ticket.Id,
+                Seat = new SeatViewModel
+                {
+                    Id = ticket.Seat.Id,
+                    Row = ticket.Seat.Row,
+                    SeatLetter = ticket.Seat.SeatLetter,
+                    FlightId = ticket.Seat.FlightId,
+                    Flight = new FlightViewModel
+                    {
+                        Id = ticket.Seat.Flight.Id,
+                        FlightNumber = ticket.Seat.Flight.FlightNumber,
+                        DepartureTime = ticket.Seat.Flight.DepartureTime,
+                        ArrivalTime = ticket.Seat.Flight.ArrivalTime,
+                        DepartureAirportId = ticket.Seat.Flight.DepartureAirportId,
+                        DepartureAirport = new AirportViewModel
+                        {
+                            Id = ticket.Seat.Flight.DepartureAirport.Id,
+                            Name = ticket.Seat.Flight.DepartureAirport.Name,
+                            Latitude = ticket.Seat.Flight.DepartureAirport.Latitude,
+                            Longtitude = ticket.Seat.Flight.DepartureAirport.Longtitude
+                        },
+                        ArrivalAirportId = ticket.Seat.Flight.ArrivalAirportId,
+                        ArrivalAirport = new AirportViewModel
+                        {
+                            Id = ticket.Seat.Flight.ArrivalAirport.Id,
+                            Name = ticket.Seat.Flight.ArrivalAirport.Name,
+                            Latitude = ticket.Seat.Flight.ArrivalAirport.Latitude,
+                            Longtitude = ticket.Seat.Flight.ArrivalAirport.Longtitude
+                        },
+                        PlaneId = ticket.Seat.Flight.PlaneId,
+                        Plane = new PlaneViewModel
+                        {
+                            Id = ticket.Seat.Flight.Plane.Id,
+                            Name = ticket.Seat.Flight.Plane.Name
+                        }
+                    }
+                },
+                PersonType = ticket.PersonType,
+                User = new UserDto
+                {
+                    Id = ticket.User.Id,
+                    Username = ticket.User.UserName,
+                },
+                PersonFirstName = ticket.PersonFirstName,
+                PersonLastName = ticket.PersonLastName,
+                Gender = ticket.Gender,
+                Price = ticket.Price
+            };
+
+            return response;
         }
 
-        public Task<Response> UpdateTicket(TicketDto plane, Guid id)
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size)
         {
-            throw new NotImplementedException();
+            DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
+            response.Data = new TicketPagedViewModel();
+
+            var tickets = await _ticketRepository.GetPagedAsync(false, page, size);
+
+            if (!tickets.Any())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.TicketNotFound;
+                return response;
+            }
+
+            response.Data.Tickets = tickets
+                .Select(ticket => new TicketViewModel()
+                {
+                    Id = ticket.Id,
+                    Seat = new SeatViewModel
+                    {
+                        Id = ticket.Seat.Id,
+                        Row = ticket.Seat.Row,
+                        SeatLetter = ticket.Seat.SeatLetter,
+                        FlightId = ticket.Seat.FlightId,
+                        Flight = new FlightViewModel
+                        {
+                            Id = ticket.Seat.Flight.Id,
+                            FlightNumber = ticket.Seat.Flight.FlightNumber,
+                            DepartureTime = ticket.Seat.Flight.DepartureTime,
+                            ArrivalTime = ticket.Seat.Flight.ArrivalTime,
+                            DepartureAirportId = ticket.Seat.Flight.DepartureAirportId,
+                            DepartureAirport = new AirportViewModel
+                            {
+                                Id = ticket.Seat.Flight.DepartureAirport.Id,
+                                Name = ticket.Seat.Flight.DepartureAirport.Name,
+                                Latitude = ticket.Seat.Flight.DepartureAirport.Latitude,
+                                Longtitude = ticket.Seat.Flight.DepartureAirport.Longtitude
+                            },
+                            ArrivalAirportId = ticket.Seat.Flight.ArrivalAirportId,
+                            ArrivalAirport = new AirportViewModel
+                            {
+                                Id = ticket.Seat.Flight.ArrivalAirport.Id,
+                                Name = ticket.Seat.Flight.ArrivalAirport.Name,
+                                Latitude = ticket.Seat.Flight.ArrivalAirport.Latitude,
+                                Longtitude = ticket.Seat.Flight.ArrivalAirport.Longtitude
+                            },
+                            PlaneId = ticket.Seat.Flight.PlaneId,
+                            Plane = new PlaneViewModel
+                            {
+                                Id = ticket.Seat.Flight.Plane.Id,
+                                Name = ticket.Seat.Flight.Plane.Name
+                            }
+                        }
+                    },
+                    PersonType = ticket.PersonType,
+                    User = new UserDto
+                    {
+                        Id = ticket.User.Id,
+                        Username = ticket.User.UserName,
+                    },
+                    PersonFirstName = ticket.PersonFirstName,
+                    PersonLastName = ticket.PersonLastName,
+                    Gender = ticket.Gender,
+                    Price = ticket.Price
+                });
+
+            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+
+            return response;
+        }
+
+        public async Task<Response> UpdateTicket(TicketDto ticket, Guid id)
+        {
+            Response response = new Response();
+
+            Ticket? existingTicket = await _ticketRepository.GetByIdAsync(id, true);
+
+            if (existingTicket == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.TicketNotFound;
+                return response;
+            }
+
+            Seat seat = await _seatRepository.GetByIdAsync(ticket.SeatId, true);
+            User user = await _userRepository.GetByAsync(x => x.Id == ticket.UserId);
+
+            if (seat == null || user == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.InvalidData;
+                return response;
+            }
+
+            existingTicket.SeatId = ticket.SeatId;
+            existingTicket.PersonType = ticket.PersonType;
+            existingTicket.UserId = ticket.UserId;
+            existingTicket.PersonFirstName = ticket.PersonFirstName;
+            existingTicket.PersonLastName = ticket.PersonLastName;
+            existingTicket.Gender = ticket.Gender;
+            existingTicket.Price = ticket.Price;
+
+            if (!await _ticketRepository.UpdateAsync(existingTicket))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
         }
     }
 }

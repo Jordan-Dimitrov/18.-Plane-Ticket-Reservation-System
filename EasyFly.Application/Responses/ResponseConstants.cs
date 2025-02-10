@@ -11,5 +11,12 @@
         public const string InvalidData = "Invalid data";
         public const string AuditNotFound = "Audit not found";
         public const string AuditExists = "Audit already exists";
+        public const string FlightExists = "Flight already exists";
+        public const string PlaneNotFound = "Plane not found";
+        public const string PlaneExists = "Plane already exists";
+        public const string SeatNotFound = "Seat not found";
+        public const string SeatExists = "Seat already exists";
+        public const string TicketNotFound = "Ticket not found";
+        public const string TicketExists = "Ticket already exists";
     }
 }

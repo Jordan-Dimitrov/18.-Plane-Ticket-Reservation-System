@@ -1,9 +1,12 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Configurations;
+using EasyFly.Infrastructure.BackgtoundJobs;
 using EasyFly.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
+using QuartzHostedService;
 using Stripe;
 using System.Reflection;
 
@@ -11,6 +14,7 @@ namespace EasyFly.Infrastructure
 {
     public static class DependencyInjection
     {
+        private const int _Interval = 12;
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfigurationManager configuration)
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
@@ -30,6 +34,20 @@ namespace EasyFly.Infrastructure
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IQrCodeService, QrCodeService>();
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddQuartz(configure =>
+            {
+                var removeOldOutboxMessagejobKey = new JobKey(nameof(RemoveOldAuditsBackgroundJob));
+
+                configure.AddJob<RemoveOldAuditsBackgroundJob>(removeOldOutboxMessagejobKey)
+                    .AddTrigger(trigger => trigger.ForJob(removeOldOutboxMessagejobKey)
+                    .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(_Interval)
+                    .RepeatForever()));
+
+                configure.UseMicrosoftDependencyInjectionJobFactory();
+            });
+
+            services.AddQuartzHostedService();
 
             return services;
         }
