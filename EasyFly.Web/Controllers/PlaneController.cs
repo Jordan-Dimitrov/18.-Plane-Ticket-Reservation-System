@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
-    public class AirportController : Controller
+    public class PlaneController : Controller
     {
         private const int _Size = 5;
-        private readonly IAirportService _AirportService;
+        private readonly IPlaneService _PlaneService;
 
-        public AirportController(IAirportService airportService)
+        public PlaneController(IPlaneService planeService)
         {
-            _AirportService = airportService;
+            _PlaneService = planeService;
         }
 
         [HttpGet]
@@ -25,58 +25,18 @@ namespace EasyFly.Web.Controllers
             return View();
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(Guid airportId)
-        {
-            var response = await _AirportService.GetAirport(airportId);
-
-            if (!response.Success)
-            {
-                ViewBag.ErrorMessage = response.ErrorMessage;
-                return View();
-            }
-
-            return View(response.Data);
-        }
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(AirportDto dto, Guid airportId)
+        public async Task<IActionResult> Create(PlaneDto dto)
         {
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction("Edit", new { airportId = airportId });
+                return RedirectToAction("GetPlanes", new { page = 1 });
             }
 
-            var response = await _AirportService.UpdateAirport(dto, airportId);
-
-            if (!response.Success)
-            {
-                TempData["ErrorMessage"] = response.ErrorMessage;
-            }
-            else
-            {
-                TempData["Success"] = "Successfully updated";
-            }
-
-            return RedirectToAction("GetAirports", new { page = 1 });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AirportDto dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction("GetAirports", new { page = 1 });
-            }
-
-            var response = await _AirportService.CreateAirport(dto);
+            var response = await _PlaneService.CreatePlane(dto);
 
             if (!response.Success)
             {
@@ -87,14 +47,14 @@ namespace EasyFly.Web.Controllers
                 TempData["Success"] = "Successfully created";
             }
 
-            return RedirectToAction("GetAirports", new { page = 1 });
+            return RedirectToAction("GetPlanes", new { page = 1 });
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Remove(Guid airportId)
+        public async Task<IActionResult> Remove(Guid planeId)
         {
-            var response = await _AirportService.GetAirport(airportId);
+            var response = await _PlaneService.GetPlane(planeId);
 
             if (!response.Success)
             {
@@ -108,9 +68,9 @@ namespace EasyFly.Web.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid airportId)
+        public async Task<IActionResult> Delete(Guid planeId)
         {
-            var response = await _AirportService.DeleteAirport(airportId);
+            var response = await _PlaneService.DeletePlane(planeId);
 
             if (!response.Success)
             {
@@ -121,7 +81,47 @@ namespace EasyFly.Web.Controllers
                 TempData["Success"] = "Successfully deleted";
             }
 
-            return RedirectToAction("GetAirports", new { page = 1 });
+            return RedirectToAction("GetPlanes", new { page = 1 });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(Guid planeId)
+        {
+            var response = await _PlaneService.GetPlane(planeId);
+
+            if (!response.Success)
+            {
+                ViewBag.ErrorMessage = response.ErrorMessage;
+                return View();
+            }
+
+            return View(response.Data);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(PlaneDto dto, Guid planeId)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data";
+                return RedirectToAction("Edit", new { planeId = planeId });
+            }
+
+            var response = await _PlaneService.UpdatePlane(dto, planeId);
+
+            if (!response.Success)
+            {
+                TempData["ErrorMessage"] = response.ErrorMessage;
+            }
+            else
+            {
+                TempData["Success"] = "Successfully updated";
+            }
+
+            return RedirectToAction("GetPlanes", new { page = 1 });
         }
 
         public IActionResult Error()
@@ -134,10 +134,10 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetAirports([FromQuery] int page = 1)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetPlanes([FromQuery] int page = 1)
         {
-            var response = await _AirportService.GetAirportsPaged(page, _Size);
+            var response = await _PlaneService.GetPlanesPaged(page, _Size);
 
             if (!response.Success)
             {

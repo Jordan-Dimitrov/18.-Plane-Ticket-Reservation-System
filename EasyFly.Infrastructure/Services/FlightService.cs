@@ -186,6 +186,56 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
+        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByAirport(Guid airportId, int page, int size)
+        {
+            DataResponse<FlightPagedViewModel> response = new DataResponse<FlightPagedViewModel>();
+            response.Data = new FlightPagedViewModel();
+
+            var flights = await _flightRepository.GetPagedAsync(false, page, size);
+
+            if (!flights.Any())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.FlightNotFound;
+                return response;
+            }
+
+            response.Data.Flights = flights
+                .Select(flight => new FlightViewModel()
+                {
+                    Id = flight.Id,
+                    FlightNumber = flight.FlightNumber,
+                    DepartureTime = flight.DepartureTime,
+                    ArrivalTime = flight.ArrivalTime,
+                    DepartureAirportId = flight.DepartureAirportId,
+                    DepartureAirport = new AirportViewModel
+                    {
+                        Id = flight.DepartureAirport.Id,
+                        Name = flight.DepartureAirport.Name,
+                        Latitude = flight.DepartureAirport.Latitude,
+                        Longtitude = flight.DepartureAirport.Longtitude
+                    },
+                    ArrivalAirportId = flight.ArrivalAirportId,
+                    ArrivalAirport = new AirportViewModel
+                    {
+                        Id = flight.ArrivalAirport.Id,
+                        Name = flight.ArrivalAirport.Name,
+                        Latitude = flight.ArrivalAirport.Latitude,
+                        Longtitude = flight.ArrivalAirport.Longtitude
+                    },
+                    PlaneId = flight.PlaneId,
+                    Plane = new PlaneViewModel
+                    {
+                        Id = flight.Plane.Id,
+                        Name = flight.Plane.Name,
+                    }
+                });
+
+            response.Data.TotalPages = await _flightRepository.GetPageCount(size);
+
+            return response;
+        }
+
         public async Task<Response> UpdateFlight(FlightDto flight, Guid id)
         {
             Response response = new Response();

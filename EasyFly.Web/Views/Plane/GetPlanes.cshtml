@@ -1,10 +1,10 @@
-﻿@model EasyFly.Application.ViewModels.AirportPagedViewModel
+﻿@model EasyFly.Application.ViewModels.PlanePagedViewModel
 
 @{
-    ViewData["Title"] = "Airports";
+    ViewData["Title"] = "Planes";
 }
 
-<h1 class="text-center">Airports</h1>
+<h1 class="text-center">Planes</h1>
 
 @if (!string.IsNullOrEmpty(ViewBag.Success))
 {
@@ -25,23 +25,21 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            @foreach (var item in Model.Airports)
+            @foreach (var item in Model.Planes)
             {
                 <div class="card mb-3">
                     <div class="card-body">
                         <h4 class="card-title">@item.Name</h4>
-                        <p class="card-text">Latitude: @item.Latitude</p>
-                        <p class="card-text">Longitude: @item.Longtitude</p>
                         @if (User.IsInRole("Admin"))
                         {
                             <div class="d-flex mt-2">
-                                <form method="get" asp-controller="Airport" asp-action="Remove" class="me-2">
-                                    @Html.Hidden("airportId", item.Id)
+                                <form method="get" asp-controller="Plane" asp-action="Remove" class="me-2">
+                                    @Html.Hidden("planeId", item.Id)
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                     @Html.AntiForgeryToken()
                                 </form>
-                                <form method="get" asp-controller="Airport" asp-action="Edit">
-                                    @Html.Hidden("airportId", item.Id)
+                                <form method="get" asp-controller="Plane" asp-action="Edit">
+                                    @Html.Hidden("planeId", item.Id)
                                     <button type="submit" class="btn btn-primary">Edit</button>
                                     @Html.AntiForgeryToken()
                                 </form>
@@ -57,7 +55,7 @@
         <div class="col-md-6 d-flex justify-content-between">
             @if (Model.PageNumber > 1)
             {
-                <a href="@Url.Action("GetAirports", new { page = Model.PageNumber - 1 })" class="btn btn-primary">Previous</a>
+                <a href="@Url.Action("GetPlanes", new { page = Model.PageNumber - 1 })" class="btn btn-primary">Previous</a>
             }
             else
             {
@@ -66,7 +64,7 @@
 
             @if (Model.PageNumber < Model.TotalPages)
             {
-                <a href="@Url.Action("GetAirports", new { page = Model.PageNumber + 1 })" class="btn btn-primary">Next</a>
+                <a href="@Url.Action("GetPlanes", new { page = Model.PageNumber + 1 })" class="btn btn-primary">Next</a>
             }
         </div>
     </div>
@@ -77,21 +75,13 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Create Airport</h4>
+                    <h4 class="mb-0">Create Plane</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="Airport" asp-action="Create" method="post">
+                    <form asp-controller="Plane" asp-action="Create" method="post">
                         <div class="form-group">
                             <label for="Name">Name:</label>
                             <input type="text" class="form-control" id="Name" name="Name" />
-                        </div>
-                        <div class="form-group">
-                            <label for="Latitude">Latitude:</label>
-                            <input type="text" class="form-control" id="Latitude" name="Latitude" />
-                        </div>
-                        <div class="form-group">
-                            <label for="Longtitude">Longitude:</label>
-                            <input type="text" class="form-control" id="Longtitude" name="Longtitude" />
                         </div>
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-primary btn-block">Submit</button>

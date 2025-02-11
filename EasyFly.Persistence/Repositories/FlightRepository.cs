@@ -45,7 +45,9 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> GetPageCount(int size)
         {
-            return Math.Max(await _Context.Flights.CountAsync() / size, 1);
+            var count = (double)await _Context.Flights.CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
         }
 
         public async Task<IEnumerable<Flight>> GetPagedAsync(bool trackChanges, int page, int size)
@@ -53,6 +55,19 @@ namespace EasyFly.Persistence.Repositories
             var query = _Context.Flights.Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
+
+        public async Task<IEnumerable<Flight>> GetPagedByArrivalAirportIdAsync(Guid airpordId, bool trackChanges, int page, int size)
+        {
+            var query = _Context.Flights.Where(x => x.ArrivalAirportId == airpordId).Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
+        public async Task<IEnumerable<Flight>> GetPagedByDepartingAirportIdAsync(Guid airpordId, bool trackChanges, int page, int size)
+        {
+            var query = _Context.Flights.Where(x => x.DepartureAirportId == airpordId).Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
 
         public async Task<bool> InsertAsync(Flight value)
         {

@@ -16,5 +16,6 @@ namespace EasyFly.Application.Abstractions
         Task<Response> UpdateFlight(FlightDto flight, Guid id);
         Task<DataResponse<FlightViewModel>> GetFlight(Guid id);
         Task<DataResponse<FlightPagedViewModel>> GetFlightsPaged(int page, int size);
+        Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByAirport(Guid airportId, int page, int size);
     }
 }

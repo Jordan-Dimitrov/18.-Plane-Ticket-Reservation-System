@@ -50,7 +50,9 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> GetPageCount(int size)
         {
-            return Math.Max(await _Context.Audits.CountAsync() / size, 1);
+            var count = (double)await _Context.Audits.CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
         }
 
         public async Task<IEnumerable<Audit>> GetPagedAsync(bool trackChanges, int page, int size)
