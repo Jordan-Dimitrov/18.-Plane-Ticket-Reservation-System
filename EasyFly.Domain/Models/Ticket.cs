@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyFly.Domain.Models
 {
-    public class Ticket
+    public class Ticket : SoftDeletableEntity
     {
         public Ticket()
         {

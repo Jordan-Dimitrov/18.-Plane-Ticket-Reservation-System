@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyFly.Domain.Models
 {
-    public class Flight
+    public class Flight : SoftDeletableEntity
     {
         public Flight()
         {

@@ -16,7 +16,13 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<bool> DeleteAsync(Airport value)
         {
-            _Context.Remove(value);
+            value.DeletedAt = DateTime.UtcNow;
+
+            foreach (var item in value.Flights)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 

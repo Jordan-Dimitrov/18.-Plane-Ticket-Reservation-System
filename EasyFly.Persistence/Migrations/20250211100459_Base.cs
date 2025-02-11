@@ -16,9 +16,11 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Latitude = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Longtitude = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Longtitude = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,8 +46,7 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<long>(type: "bigint", nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -71,7 +72,9 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -185,16 +188,39 @@ namespace EasyFly.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Audits",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Audits", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Audits_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Flights",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FlightNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FlightNumber = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DepartureAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ArrivalAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -224,10 +250,12 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Row = table.Column<int>(type: "int", nullable: false),
+                    Row = table.Column<int>(type: "int", maxLength: 32, nullable: false),
                     SeatLetter = table.Column<int>(type: "int", nullable: false),
                     FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -253,8 +281,12 @@ namespace EasyFly.Persistence.Migrations
                     SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PersonType = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PersonFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersonLastName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PersonFirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    PersonLastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Gender = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -313,6 +345,11 @@ namespace EasyFly.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Audits_UserId",
+                table: "Audits",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Flights_ArrivalAirportId",
                 table: "Flights",
                 column: "ArrivalAirportId");
@@ -365,6 +402,9 @@ namespace EasyFly.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Audits");
 
             migrationBuilder.DropTable(
                 name: "Tickets");

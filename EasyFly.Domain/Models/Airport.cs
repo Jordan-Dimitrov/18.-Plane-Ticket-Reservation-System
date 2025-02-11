@@ -2,7 +2,7 @@
 
 namespace EasyFly.Domain.Models
 {
-    public class Airport
+    public class Airport : SoftDeletableEntity
     {
         public Airport()
         {
