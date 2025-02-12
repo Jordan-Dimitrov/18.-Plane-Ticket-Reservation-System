@@ -119,7 +119,9 @@ namespace EasyFly.Infrastructure.Services
                 User = new UserDto
                 {
                     Id = user.Id,
-                    Username = user.UserName
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber ?? "No phone provided"
                 }
             };
 
@@ -150,6 +152,8 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = audit.User.Id,
                         Username = audit.User.UserName,
+                        Email = audit.User.Email,
+                        PhoneNumber = audit.User.PhoneNumber ?? "No phone provided"
                     }
                 });
 

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Application.ViewModels
 {
-    public class FlightPagedViewModel
+    public class FlightEditViewModel
     {
-        public IEnumerable<FlightViewModel> Flights { get; set; }
+        public FlightViewModel FlightViewModel { get; set; }
         public IEnumerable<AirportViewModel> Airports { get; set; }
-        public int PageNumber { get; set; }
-        public int TotalPages { get; set; }
+
     }
 }

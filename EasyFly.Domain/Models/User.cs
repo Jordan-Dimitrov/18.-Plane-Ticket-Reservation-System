@@ -10,6 +10,7 @@ namespace EasyFly.Domain.Models
             Audits = new List<Audit>();
         }
 
+        public DateTime? DeletedAt { get; set; }
         public ICollection<Audit> Audits { get; set; }
         public ICollection<Ticket> Ticket { get; set; }
 

@@ -28,18 +28,30 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Ticket>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Tickets;
+            var query = _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+                .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.Plane)
+                .Include(x => x.User);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<Ticket?> GetByAsync(Expression<Func<Ticket, bool>> condition)
         {
-            return await _Context.Tickets.FirstOrDefaultAsync(condition);
+            return await _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+                .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.Plane)
+                .Include(x => x.User).FirstOrDefaultAsync(condition);
         }
 
         public async Task<Ticket?> GetByIdAsync(Guid id, bool trackChanges)
         {
-            var query = _Context.Tickets.Where(x => x.Id == id);
+            var query = _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+                .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.Plane)
+                .Include(x => x.User).Where(x => x.Id == id);
             return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
@@ -52,7 +64,11 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Ticket>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Tickets.Skip((page - 1) * size).Take(size);
+            var query = _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+                .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.Plane)
+                .Include(x => x.User).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 

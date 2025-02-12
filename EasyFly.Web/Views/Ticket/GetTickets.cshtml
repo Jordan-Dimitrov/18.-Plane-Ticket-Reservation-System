@@ -1,0 +1,122 @@
+﻿@model EasyFly.Application.ViewModels.TicketPagedViewModel
+
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<h1 class="text-center">Tickets</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.Success))
+{
+    <div class="alert alert-success text-center" role="alert">
+        <h5>@ViewBag.Success</h5>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger text-center" role="alert">
+        <h5>@ViewBag.ErrorMessage</h5>
+    </div>
+}
+
+<br />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @if(Model.Tickets is not null)
+            {
+                @foreach (var item in Model.Tickets)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">@item.Seat.Plane.Name - @item.Seat.Row @item.Seat.SeatLetter</h4>
+                            <p class="card-text">Passenger: @item.PersonFirstName @item.PersonLastName</p>
+                            <p class="card-text">Price: @item.Price</p>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="d-flex mt-2">
+                                    <form method="post" asp-controller="Ticket" asp-action="Delete" class="me-2">
+                                        @Html.Hidden("ticketId", item.Id)
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                    <form method="get" asp-controller="Ticket" asp-action="Edit">
+                                        @Html.Hidden("ticketId", item.Id)
+                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 d-flex justify-content-between">
+            @if (Model.PageNumber > 1)
+            {
+                <a href="@Url.Action("GetTickets", new { page = Model.PageNumber - 1 })" class="btn btn-primary">Previous</a>
+            }
+            else
+            {
+                <a></a>
+            }
+
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <a href="@Url.Action("GetTickets", new { page = Model.PageNumber + 1 })" class="btn btn-primary">Next</a>
+            }
+        </div>
+    </div>
+
+    <br />
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Create Ticket</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Ticket" asp-action="Create" method="post">
+                        <div class="form-group">
+                            <label for="SeatId">Seat ID:</label>
+                            <input type="text" class="form-control" id="SeatId" name="SeatId" />
+                        </div>
+                        <div class="form-group">
+                            <label for="PersonType">Person Type:</label>
+                            <input type="text" class="form-control" id="PersonType" name="PersonType" />
+                        </div>
+                        <div class="form-group">
+                            <label for="UserId">User ID:</label>
+                            <input type="text" class="form-control" id="UserId" name="UserId" />
+                        </div>
+                        <div class="form-group">
+                            <label for="PersonFirstName">First Name:</label>
+                            <input type="text" class="form-control" id="PersonFirstName" name="PersonFirstName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="PersonLastName">Last Name:</label>
+                            <input type="text" class="form-control" id="PersonLastName" name="PersonLastName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Gender">Gender:</label>
+                            <input type="text" class="form-control" id="Gender" name="Gender" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Price">Price:</label>
+                            <input type="text" class="form-control" id="Price" name="Price" />
+                        </div>
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

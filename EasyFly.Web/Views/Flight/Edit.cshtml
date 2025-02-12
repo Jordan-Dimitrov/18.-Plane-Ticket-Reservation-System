@@ -1,0 +1,53 @@
+﻿@model EasyFly.Application.ViewModels.FlightEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Flight";
+}
+
+<h1>Edit Flight</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (Model is not null)
+{
+    <form asp-controller="Flight" asp-action="Edit" method="post">
+        <div class="form-group">
+            <label for="FlightNumber">Flight Number:</label>
+            <input type="text" class="form-control" id="FlightNumber" name="FlightNumber" value="@Model.FlightViewModel.FlightNumber" />
+        </div>
+        <div class="form-group">
+            <label for="DepartureTime">Departure Time:</label>
+            <input type="datetime-local" class="form-control" id="DepartureTime" name="DepartureTime" value="@Model.FlightViewModel.DepartureTime.ToString("yyyy-MM-ddTHH:mm:ss")" />
+        </div>
+        <div class="form-group">
+            <label for="ArrivalTime">Arrival Time:</label>
+            <input type="datetime-local" class="form-control" id="ArrivalTime" name="ArrivalTime" value="@Model.FlightViewModel.ArrivalTime.ToString("yyyy-MM-ddTHH:mm:ss")" />
+        </div>
+        <div class="form-group">
+            <label for="DepartureAirportId">Departure Airport:</label>
+            <select class="form-control" id="DepartureAirportId" name="DepartureAirportId">
+                @foreach (var item in Model.Airports)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ArrivalAirportId">Arrival Airport:</label>
+            <select class="form-control" id="ArrivalAirportId" name="ArrivalAirportId">
+                @foreach (var item in Model.Airports)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        @Html.AntiForgeryToken()
+        @Html.Hidden("flightId", Model.FlightViewModel.Id)
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+}

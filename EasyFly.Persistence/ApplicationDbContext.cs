@@ -29,6 +29,7 @@ namespace EasyFly.Persistence
             modelBuilder.Entity<Seat>().HasQueryFilter(x => EF.Property<DateTime>(x, "DeletedAt") == null);
             modelBuilder.Entity<Ticket>().HasQueryFilter(x => EF.Property<DateTime>(x, "DeletedAt") == null);
             modelBuilder.Entity<Audit>().HasQueryFilter(x => EF.Property<DateTime>(x, "DeletedAt") == null);
+            modelBuilder.Entity<User>().HasQueryFilter(x => EF.Property<DateTime>(x, "DeletedAt") == null);
         }
     }
 }

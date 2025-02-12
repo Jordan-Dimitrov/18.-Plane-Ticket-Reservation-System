@@ -115,8 +115,6 @@ namespace EasyFly.Infrastructure.Services
 
             if (!seats.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.SeatNotFound;
                 return response;
             }
 

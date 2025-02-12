@@ -145,8 +145,6 @@ namespace EasyFly.Infrastructure.Services
 
             if (!flights.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.FlightNotFound;
                 return response;
             }
 
@@ -186,17 +184,15 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
-        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByAirport(Guid airportId, int page, int size)
+        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByPlane(Guid planeId, int page, int size)
         {
             DataResponse<FlightPagedViewModel> response = new DataResponse<FlightPagedViewModel>();
             response.Data = new FlightPagedViewModel();
 
-            var flights = await _flightRepository.GetPagedAsync(false, page, size);
+            var flights = await _flightRepository.GetPagedByPlaneIdAsync(planeId, false, page, size);
 
             if (!flights.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.FlightNotFound;
                 return response;
             }
 
@@ -256,7 +252,7 @@ namespace EasyFly.Infrastructure.Services
                 .GetByIdAsync(flight.ArrivalAirportId, true);
 
             Plane plane = await _planeRepository
-                .GetByIdAsync(flight.PlaneId, true);
+                .GetByIdAsync(existingFlight.PlaneId, true);
 
             if (departureAirport == null || arrivalAirport == null || plane == null)
             {
@@ -270,7 +266,7 @@ namespace EasyFly.Infrastructure.Services
             existingFlight.ArrivalTime = flight.ArrivalTime;
             existingFlight.DepartureAirportId = flight.DepartureAirportId;
             existingFlight.ArrivalAirportId = flight.ArrivalAirportId;
-            existingFlight.PlaneId = flight.PlaneId;
+            existingFlight.PlaneId = existingFlight.PlaneId;
 
             if (!await _flightRepository.UpdateAsync(existingFlight))
             {

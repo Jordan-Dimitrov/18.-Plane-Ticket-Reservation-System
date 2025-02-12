@@ -102,8 +102,6 @@ namespace EasyFly.Infrastructure.Services
 
             if (!airports.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.AirportNotFound;
                 return response;
             }
 

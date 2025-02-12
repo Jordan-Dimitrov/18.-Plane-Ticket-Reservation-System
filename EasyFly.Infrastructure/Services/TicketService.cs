@@ -110,6 +110,8 @@ namespace EasyFly.Infrastructure.Services
                 {
                     Id = ticket.User.Id,
                     Username = ticket.User.UserName,
+                    Email = ticket.User.Email,
+                    PhoneNumber = ticket.User.PhoneNumber ?? "No phone provided"
                 },
                 PersonFirstName = ticket.PersonFirstName,
                 PersonLastName = ticket.PersonLastName,
@@ -129,8 +131,6 @@ namespace EasyFly.Infrastructure.Services
 
             if (!tickets.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.TicketNotFound;
                 return response;
             }
 
@@ -154,6 +154,8 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = ticket.User.Id,
                         Username = ticket.User.UserName,
+                        PhoneNumber = ticket.User.PhoneNumber ?? "No phone provided",
+                        Email = ticket.User.Email
                     },
                     PersonFirstName = ticket.PersonFirstName,
                     PersonLastName = ticket.PersonLastName,

@@ -104,8 +104,6 @@ namespace EasyFly.Infrastructure.Services
 
             if (!planes.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = ResponseConstants.PlaneNotFound;
                 return response;
             }
 

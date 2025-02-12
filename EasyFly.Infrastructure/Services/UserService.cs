@@ -1,11 +1,13 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.Responses;
+using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,23 +64,53 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
-        public async Task<DataResponse<IEnumerable<UserDto>>> GetUsersPaged(int page, int size)
+        public async Task<DataResponse<UserPagedViewModel>> GetUsersPaged(int page, int size)
         {
-            DataResponse<IEnumerable<UserDto>> response = new DataResponse<IEnumerable<UserDto>>();
+            DataResponse<UserPagedViewModel> response = new DataResponse<UserPagedViewModel>();
+            response.Data = new UserPagedViewModel();
 
             var users = await _UserRepository.GetPagedAsync(false, page, size);
 
             if (!users.Any())
             {
-                response.Success = false;
-                response.ErrorMessage = "No such users";
                 return response;
             }
 
-            response.Data = users.Select(x => new UserDto()
+            response.Data.Users = users.Select(x => new UserDto()
             {
+                Id = x.Id,
                 Username = x.UserName,
+                PhoneNumber = x.PhoneNumber ?? "No phone provided",
+                Email = x.Email,
             });
+
+            response.Data.TotalPages = await _UserRepository.GetPageCount(page);
+
+            return response;
+        }
+
+        public async Task<Response> UpdateUser(UserDto user, Guid id)
+        {
+            Response response = new Response();
+
+            User? existingUser = await _UserRepository.GetByIdAsync(id, true);
+
+            if (existingUser == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.UserNotFound;
+                return response;
+            }
+
+            existingUser.UserName = user.Username;
+            existingUser.Email = user.Email;
+            existingUser.Email = user.PhoneNumber;
+
+            if (!await _UserRepository.UpdateAsync(existingUser))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
 
             return response;
         }
