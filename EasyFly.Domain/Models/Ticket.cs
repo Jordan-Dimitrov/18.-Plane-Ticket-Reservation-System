@@ -16,6 +16,10 @@ namespace EasyFly.Domain.Models
         [Required]
         [ForeignKey(nameof(Seat))]
         public Guid SeatId { get; set; }
+        public Flight Flight { get; set; }
+        [Required]
+        [ForeignKey(nameof(Flight))]
+        public Guid FlightId { get; set; }
         public PersonType PersonType { get; set; }
         public User User { get; set; }
         [Required]
@@ -29,6 +33,8 @@ namespace EasyFly.Domain.Models
         public string PersonLastName { get; set; }
         [Required]
         public Gender Gender { get; set; }
+        [Required]
+        public LuggageSize LuggageSize { get; set; }
         [Required]
         public decimal Price { get; set; }
     }

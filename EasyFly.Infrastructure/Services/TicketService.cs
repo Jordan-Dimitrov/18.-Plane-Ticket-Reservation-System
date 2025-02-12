@@ -99,35 +99,10 @@ namespace EasyFly.Infrastructure.Services
                     Id = ticket.Seat.Id,
                     Row = ticket.Seat.Row,
                     SeatLetter = ticket.Seat.SeatLetter,
-                    FlightId = ticket.Seat.FlightId,
-                    Flight = new FlightViewModel
+                    Plane = new PlaneViewModel
                     {
-                        Id = ticket.Seat.Flight.Id,
-                        FlightNumber = ticket.Seat.Flight.FlightNumber,
-                        DepartureTime = ticket.Seat.Flight.DepartureTime,
-                        ArrivalTime = ticket.Seat.Flight.ArrivalTime,
-                        DepartureAirportId = ticket.Seat.Flight.DepartureAirportId,
-                        DepartureAirport = new AirportViewModel
-                        {
-                            Id = ticket.Seat.Flight.DepartureAirport.Id,
-                            Name = ticket.Seat.Flight.DepartureAirport.Name,
-                            Latitude = ticket.Seat.Flight.DepartureAirport.Latitude,
-                            Longtitude = ticket.Seat.Flight.DepartureAirport.Longtitude
-                        },
-                        ArrivalAirportId = ticket.Seat.Flight.ArrivalAirportId,
-                        ArrivalAirport = new AirportViewModel
-                        {
-                            Id = ticket.Seat.Flight.ArrivalAirport.Id,
-                            Name = ticket.Seat.Flight.ArrivalAirport.Name,
-                            Latitude = ticket.Seat.Flight.ArrivalAirport.Latitude,
-                            Longtitude = ticket.Seat.Flight.ArrivalAirport.Longtitude
-                        },
-                        PlaneId = ticket.Seat.Flight.PlaneId,
-                        Plane = new PlaneViewModel
-                        {
-                            Id = ticket.Seat.Flight.Plane.Id,
-                            Name = ticket.Seat.Flight.Plane.Name
-                        }
+                        Id = ticket.Seat.PlaneId,
+                        Name = ticket.Seat.Plane.Name,
                     }
                 },
                 PersonType = ticket.PersonType,
@@ -168,35 +143,10 @@ namespace EasyFly.Infrastructure.Services
                         Id = ticket.Seat.Id,
                         Row = ticket.Seat.Row,
                         SeatLetter = ticket.Seat.SeatLetter,
-                        FlightId = ticket.Seat.FlightId,
-                        Flight = new FlightViewModel
+                        Plane = new PlaneViewModel
                         {
-                            Id = ticket.Seat.Flight.Id,
-                            FlightNumber = ticket.Seat.Flight.FlightNumber,
-                            DepartureTime = ticket.Seat.Flight.DepartureTime,
-                            ArrivalTime = ticket.Seat.Flight.ArrivalTime,
-                            DepartureAirportId = ticket.Seat.Flight.DepartureAirportId,
-                            DepartureAirport = new AirportViewModel
-                            {
-                                Id = ticket.Seat.Flight.DepartureAirport.Id,
-                                Name = ticket.Seat.Flight.DepartureAirport.Name,
-                                Latitude = ticket.Seat.Flight.DepartureAirport.Latitude,
-                                Longtitude = ticket.Seat.Flight.DepartureAirport.Longtitude
-                            },
-                            ArrivalAirportId = ticket.Seat.Flight.ArrivalAirportId,
-                            ArrivalAirport = new AirportViewModel
-                            {
-                                Id = ticket.Seat.Flight.ArrivalAirport.Id,
-                                Name = ticket.Seat.Flight.ArrivalAirport.Name,
-                                Latitude = ticket.Seat.Flight.ArrivalAirport.Latitude,
-                                Longtitude = ticket.Seat.Flight.ArrivalAirport.Longtitude
-                            },
-                            PlaneId = ticket.Seat.Flight.PlaneId,
-                            Plane = new PlaneViewModel
-                            {
-                                Id = ticket.Seat.Flight.Plane.Id,
-                                Name = ticket.Seat.Flight.Plane.Name
-                            }
+                            Id = ticket.Seat.PlaneId,
+                            Name = ticket.Seat.Plane.Name,
                         }
                     },
                     PersonType = ticket.PersonType,
@@ -208,7 +158,7 @@ namespace EasyFly.Infrastructure.Services
                     PersonFirstName = ticket.PersonFirstName,
                     PersonLastName = ticket.PersonLastName,
                     Gender = ticket.Gender,
-                    Price = ticket.Price
+                    Price = ticket.Price,
                 });
 
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);

@@ -1,6 +1,6 @@
 ﻿namespace EasyFly.Domain.Enums
 {
-    enum LuggageSize
+    public enum LuggageSize
     {
         Small,
         Medium,

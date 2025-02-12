@@ -9,11 +9,14 @@ namespace EasyFly.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Seat> builder)
         {
             builder
-                .Property<byte[]>("Version");
-
-            builder.
-                Property("Version")
+                .Property<byte[]>("Version")
                 .IsRowVersion();
+
+            builder
+                .HasMany(s => s.Tickets)
+                .WithOne(t => t.Seat)
+                .HasForeignKey(t => t.SeatId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

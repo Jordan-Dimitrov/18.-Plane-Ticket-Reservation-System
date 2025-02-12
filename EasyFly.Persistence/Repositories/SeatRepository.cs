@@ -1,6 +1,8 @@
 ﻿using EasyFly.Domain.Abstractions;
+using EasyFly.Domain.Enums;
 using EasyFly.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
@@ -59,6 +61,26 @@ namespace EasyFly.Persistence.Repositories
         public async Task<bool> InsertAsync(Seat value)
         {
             await _Context.AddAsync(value);
+            return await _Context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> GenerateSeatsForPlane(int availableSeats, Guid planeId)
+        {
+            for (int i = 0; i < availableSeats; i++)
+            {
+                for (int j = 0; j < (int)SeatLetter.F; j++)
+                {
+                    Seat seat = new Seat()
+                    {
+                        Row = i,
+                        SeatLetter = (SeatLetter)j,
+                        PlaneId = planeId
+                    };
+
+                    await _Context.AddAsync(seat);
+                }
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 

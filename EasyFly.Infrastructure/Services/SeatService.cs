@@ -9,29 +9,29 @@ namespace EasyFly.Infrastructure.Services
 {
     internal class SeatService : ISeatService
     {
-        private readonly ISeatRepository _seatRepository;
-        private readonly IFlightRepository _flightRepository;
+        private readonly ISeatRepository _SeatRepository;
+        private readonly IPlaneRepository _PlaneRepository;
 
-        public SeatService(ISeatRepository seatRepository, IFlightRepository flightRepository)
+        public SeatService(ISeatRepository seatRepository, IPlaneRepository planeRepository)
         {
-            _seatRepository = seatRepository;
-            _flightRepository = flightRepository;
+            _SeatRepository = seatRepository;
+            _PlaneRepository = planeRepository;
         }
 
         public async Task<Response> CreateSeat(SeatDto seat)
         {
             Response response = new Response();
 
-            if (await _seatRepository.ExistsAsync(x => x.Row == seat.Row && x.SeatLetter == seat.SeatLetter && x.FlightId == seat.FlightId))
+            if (await _SeatRepository.ExistsAsync(x => x.Row == seat.Row && x.SeatLetter == seat.SeatLetter && x.PlaneId == seat.PlaneId))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.SeatExists;
                 return response;
             }
 
-            Flight flight = await _flightRepository.GetByIdAsync(seat.FlightId, false);
+            Plane plane = await _PlaneRepository.GetByIdAsync(seat.PlaneId, false);
 
-            if (flight == null)
+            if (plane == null)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;
@@ -42,10 +42,10 @@ namespace EasyFly.Infrastructure.Services
             {
                 Row = seat.Row,
                 SeatLetter = seat.SeatLetter,
-                FlightId = seat.FlightId
+                PlaneId = seat.PlaneId
             };
 
-            if (!await _seatRepository.InsertAsync(newSeat))
+            if (!await _SeatRepository.InsertAsync(newSeat))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
@@ -58,7 +58,7 @@ namespace EasyFly.Infrastructure.Services
         {
             Response response = new Response();
 
-            Seat? seat = await _seatRepository.GetByIdAsync(id, true);
+            Seat? seat = await _SeatRepository.GetByIdAsync(id, true);
 
             if (seat == null)
             {
@@ -67,7 +67,7 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            if (!await _seatRepository.DeleteAsync(seat))
+            if (!await _SeatRepository.DeleteAsync(seat))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
@@ -82,7 +82,7 @@ namespace EasyFly.Infrastructure.Services
         {
             DataResponse<SeatViewModel> response = new DataResponse<SeatViewModel>();
 
-            Seat? seat = await _seatRepository.GetByIdAsync(id, false);
+            Seat? seat = await _SeatRepository.GetByIdAsync(id, false);
 
             if (seat == null)
             {
@@ -96,35 +96,10 @@ namespace EasyFly.Infrastructure.Services
                 Id = seat.Id,
                 Row = seat.Row,
                 SeatLetter = seat.SeatLetter,
-                FlightId = seat.FlightId,
-                Flight = new FlightViewModel
+                Plane = new PlaneViewModel
                 {
-                    Id = seat.Flight.Id,
-                    FlightNumber = seat.Flight.FlightNumber,
-                    DepartureTime = seat.Flight.DepartureTime,
-                    ArrivalTime = seat.Flight.ArrivalTime,
-                    DepartureAirportId = seat.Flight.DepartureAirportId,
-                    DepartureAirport = new AirportViewModel
-                    {
-                        Id = seat.Flight.DepartureAirport.Id,
-                        Name = seat.Flight.DepartureAirport.Name,
-                        Latitude = seat.Flight.DepartureAirport.Latitude,
-                        Longtitude = seat.Flight.DepartureAirport.Longtitude
-                    },
-                    ArrivalAirportId = seat.Flight.ArrivalAirportId,
-                    ArrivalAirport = new AirportViewModel
-                    {
-                        Id = seat.Flight.ArrivalAirport.Id,
-                        Name = seat.Flight.ArrivalAirport.Name,
-                        Latitude = seat.Flight.ArrivalAirport.Latitude,
-                        Longtitude = seat.Flight.ArrivalAirport.Longtitude
-                    },
-                    PlaneId = seat.Flight.PlaneId,
-                    Plane = new PlaneViewModel
-                    {
-                        Id = seat.Flight.Plane.Id,
-                        Name = seat.Flight.Plane.Name
-                    }
+                    Id = seat.PlaneId,
+                    Name = seat.Plane.Name,
                 }
             };
 
@@ -136,7 +111,7 @@ namespace EasyFly.Infrastructure.Services
             DataResponse<SeatPagedViewModel> response = new DataResponse<SeatPagedViewModel>();
             response.Data = new SeatPagedViewModel();
 
-            var seats = await _seatRepository.GetPagedAsync(false, page, size);
+            var seats = await _SeatRepository.GetPagedAsync(false, page, size);
 
             if (!seats.Any())
             {
@@ -151,39 +126,14 @@ namespace EasyFly.Infrastructure.Services
                     Id = seat.Id,
                     Row = seat.Row,
                     SeatLetter = seat.SeatLetter,
-                    FlightId = seat.FlightId,
-                    Flight = new FlightViewModel
+                    Plane = new PlaneViewModel
                     {
-                        Id = seat.Flight.Id,
-                        FlightNumber = seat.Flight.FlightNumber,
-                        DepartureTime = seat.Flight.DepartureTime,
-                        ArrivalTime = seat.Flight.ArrivalTime,
-                        DepartureAirportId = seat.Flight.DepartureAirportId,
-                        DepartureAirport = new AirportViewModel
-                        {
-                            Id = seat.Flight.DepartureAirport.Id,
-                            Name = seat.Flight.DepartureAirport.Name,
-                            Latitude = seat.Flight.DepartureAirport.Latitude,
-                            Longtitude = seat.Flight.DepartureAirport.Longtitude
-                        },
-                        ArrivalAirportId = seat.Flight.ArrivalAirportId,
-                        ArrivalAirport = new AirportViewModel
-                        {
-                            Id = seat.Flight.ArrivalAirport.Id,
-                            Name = seat.Flight.ArrivalAirport.Name,
-                            Latitude = seat.Flight.ArrivalAirport.Latitude,
-                            Longtitude = seat.Flight.ArrivalAirport.Longtitude
-                        },
-                        PlaneId = seat.Flight.PlaneId,
-                        Plane = new PlaneViewModel
-                        {
-                            Id = seat.Flight.Plane.Id,
-                            Name = seat.Flight.Plane.Name
-                        }
+                        Id = seat.PlaneId,
+                        Name = seat.Plane.Name,
                     }
                 });
 
-            response.Data.TotalPages = await _seatRepository.GetPageCount(size);
+            response.Data.TotalPages = await _SeatRepository.GetPageCount(size);
 
             return response;
         }
@@ -192,7 +142,7 @@ namespace EasyFly.Infrastructure.Services
         {
             Response response = new Response();
 
-            Seat? existingSeat = await _seatRepository.GetByIdAsync(id, true);
+            Seat? existingSeat = await _SeatRepository.GetByIdAsync(id, true);
 
             if (existingSeat == null)
             {
@@ -201,9 +151,9 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            Flight flight = await _flightRepository.GetByIdAsync(seat.FlightId, true);
+            Plane plane = await _PlaneRepository.GetByIdAsync(seat.PlaneId, true);
 
-            if (flight == null)
+            if (plane == null)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;
@@ -212,9 +162,9 @@ namespace EasyFly.Infrastructure.Services
 
             existingSeat.Row = seat.Row;
             existingSeat.SeatLetter = seat.SeatLetter;
-            existingSeat.FlightId = seat.FlightId;
+            existingSeat.PlaneId = seat.PlaneId;
 
-            if (!await _seatRepository.UpdateAsync(existingSeat))
+            if (!await _SeatRepository.UpdateAsync(existingSeat))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;

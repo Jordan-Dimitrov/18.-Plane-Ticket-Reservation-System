@@ -13,5 +13,6 @@ namespace EasyFly.Application.Dtos
         [Required]
         [MaxLength(Constants.NameLength)]
         public string Name { get; set; }
+        public int AvailableSeats { get; set; }
     }
 }

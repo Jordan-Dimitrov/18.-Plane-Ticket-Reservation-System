@@ -119,13 +119,13 @@ namespace EasyFly.Persistence
                     {
                         Row = 1,
                         SeatLetter = SeatLetter.A,
-                        FlightId = flights[0].Id
+                        PlaneId = planes[0].Id
                     },
                     new Seat
                     {
                         Row = 2,
                         SeatLetter = SeatLetter.B,
-                        FlightId = flights[1].Id
+                        PlaneId = planes[1].Id
                     }
                 };
 
@@ -137,6 +137,7 @@ namespace EasyFly.Persistence
                     new Ticket
                     {
                         SeatId = seats[0].Id,
+                        FlightId = flights[0].Id,
                         PersonType = PersonType.Adult,
                         UserId = user.Id,
                         PersonFirstName = "John",
@@ -145,6 +146,7 @@ namespace EasyFly.Persistence
                     new Ticket
                     {
                         SeatId = seats[1].Id,
+                         FlightId = flights[1].Id,
                         PersonType = PersonType.Kid,
                         UserId = admin.Id,
                         PersonFirstName = "Jane",
@@ -170,6 +172,9 @@ namespace EasyFly.Persistence
                         ModifiedAt = DateTime.UtcNow.AddDays(-7)
                     }
                 };
+
+                _Context.Audits.AddRange(audits);
+                await _Context.SaveChangesAsync();
             }
         }
     }

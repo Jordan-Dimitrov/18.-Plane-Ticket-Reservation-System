@@ -252,8 +252,7 @@ namespace EasyFly.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Row = table.Column<int>(type: "int", maxLength: 32, nullable: false),
                     SeatLetter = table.Column<int>(type: "int", nullable: false),
-                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -261,16 +260,11 @@ namespace EasyFly.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Seats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Seats_Flights_FlightId",
-                        column: x => x.FlightId,
-                        principalTable: "Flights",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Seats_Planes_PlaneId",
                         column: x => x.PlaneId,
                         principalTable: "Planes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,12 +273,16 @@ namespace EasyFly.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PersonType = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PersonFirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     PersonLastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
+                    LuggageSize = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FlightId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -295,14 +293,27 @@ namespace EasyFly.Persistence.Migrations
                         name: "FK_Tickets_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tickets_Flights_FlightId",
+                        column: x => x.FlightId,
+                        principalTable: "Flights",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tickets_Flights_FlightId1",
+                        column: x => x.FlightId1,
+                        principalTable: "Flights",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tickets_Seats_SeatId",
                         column: x => x.SeatId,
                         principalTable: "Seats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -365,14 +376,19 @@ namespace EasyFly.Persistence.Migrations
                 column: "PlaneId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Seats_FlightId",
-                table: "Seats",
-                column: "FlightId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Seats_PlaneId",
                 table: "Seats",
                 column: "PlaneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_FlightId",
+                table: "Tickets",
+                column: "FlightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_FlightId1",
+                table: "Tickets",
+                column: "FlightId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_SeatId",
@@ -383,6 +399,11 @@ namespace EasyFly.Persistence.Migrations
                 name: "IX_Tickets_UserId",
                 table: "Tickets",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_UserId1",
+                table: "Tickets",
+                column: "UserId1");
         }
 
         /// <inheritdoc />
@@ -416,10 +437,10 @@ namespace EasyFly.Persistence.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Seats");
+                name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "Flights");
+                name: "Seats");
 
             migrationBuilder.DropTable(
                 name: "Airports");

@@ -16,7 +16,6 @@ namespace EasyFly.Application.ViewModels
         public Guid Id { get; set; }
         public int Row { get; set; }
         public SeatLetter SeatLetter { get; set; }
-        public Guid FlightId { get; set; }
-        public FlightViewModel Flight { get; set; }
+        public PlaneViewModel Plane { get; set; }
     }
 }

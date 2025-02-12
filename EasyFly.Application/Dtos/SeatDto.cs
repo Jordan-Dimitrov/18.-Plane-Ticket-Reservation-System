@@ -20,6 +20,6 @@ namespace EasyFly.Application.Dtos
         public int Row { get; set; }
         public SeatLetter SeatLetter { get; set; }
         [Required]
-        public Guid FlightId { get; set; }
+        public Guid PlaneId { get; set; }
     }
 }

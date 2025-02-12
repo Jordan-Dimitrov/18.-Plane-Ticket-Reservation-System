@@ -9,18 +9,20 @@ namespace EasyFly.Infrastructure.Services
 {
     internal class PlaneService : IPlaneService
     {
-        private readonly IPlaneRepository _planeRepository;
+        private readonly IPlaneRepository _PlaneRepository;
+        private readonly ISeatRepository _SeatRepository;
 
-        public PlaneService(IPlaneRepository planeRepository)
+        public PlaneService(IPlaneRepository planeRepository, ISeatRepository seatRepository)
         {
-            _planeRepository = planeRepository;
+            _PlaneRepository = planeRepository;
+            _SeatRepository = seatRepository;
         }
 
         public async Task<Response> CreatePlane(PlaneDto plane)
         {
             Response response = new Response();
 
-            if (await _planeRepository.ExistsAsync(x => x.Name == plane.Name))
+            if (await _PlaneRepository.ExistsAsync(x => x.Name == plane.Name))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.PlaneExists;
@@ -32,7 +34,13 @@ namespace EasyFly.Infrastructure.Services
                 Name = plane.Name
             };
 
-            if (!await _planeRepository.InsertAsync(newPlane))
+            if (!await _PlaneRepository.InsertAsync(newPlane))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+            
+            if (!await _SeatRepository.GenerateSeatsForPlane(plane.AvailableSeats, newPlane.Id))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
@@ -45,7 +53,7 @@ namespace EasyFly.Infrastructure.Services
         {
             Response response = new Response();
 
-            Plane? plane = await _planeRepository.GetByIdAsync(id, true);
+            Plane? plane = await _PlaneRepository.GetByIdAsync(id, true);
 
             if (plane == null)
             {
@@ -54,7 +62,7 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            if (!await _planeRepository.DeleteAsync(plane))
+            if (!await _PlaneRepository.DeleteAsync(plane))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
@@ -69,7 +77,7 @@ namespace EasyFly.Infrastructure.Services
         {
             DataResponse<PlaneViewModel> response = new DataResponse<PlaneViewModel>();
 
-            Plane? plane = await _planeRepository.GetByIdAsync(id, false);
+            Plane? plane = await _PlaneRepository.GetByIdAsync(id, false);
 
             if (plane == null)
             {
@@ -92,7 +100,7 @@ namespace EasyFly.Infrastructure.Services
             DataResponse<PlanePagedViewModel> response = new DataResponse<PlanePagedViewModel>();
             response.Data = new PlanePagedViewModel();
 
-            var planes = await _planeRepository.GetPagedAsync(false, page, size);
+            var planes = await _PlaneRepository.GetPagedAsync(false, page, size);
 
             if (!planes.Any())
             {
@@ -108,7 +116,7 @@ namespace EasyFly.Infrastructure.Services
                     Name = plane.Name
                 });
 
-            response.Data.TotalPages = await _planeRepository.GetPageCount(size);
+            response.Data.TotalPages = await _PlaneRepository.GetPageCount(size);
 
             return response;
         }
@@ -117,7 +125,7 @@ namespace EasyFly.Infrastructure.Services
         {
             Response response = new Response();
 
-            Plane? existingPlane = await _planeRepository.GetByIdAsync(id, true);
+            Plane? existingPlane = await _PlaneRepository.GetByIdAsync(id, true);
 
             if (existingPlane == null)
             {
@@ -128,7 +136,7 @@ namespace EasyFly.Infrastructure.Services
 
             existingPlane.Name = plane.Name;
 
-            if (!await _planeRepository.UpdateAsync(existingPlane))
+            if (!await _PlaneRepository.UpdateAsync(existingPlane))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;

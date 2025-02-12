@@ -8,6 +8,7 @@ namespace EasyFly.Domain.Models
         public Flight()
         {
             Id = Guid.NewGuid();
+            Tickets = new List<Ticket>();
         }
         [Key]
         public Guid Id { get; set; }
@@ -30,5 +31,6 @@ namespace EasyFly.Domain.Models
         [ForeignKey(nameof(Plane))]
         public Guid PlaneId { get; set; }
         public Plane Plane { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
     }
 }
