@@ -12,12 +12,14 @@ namespace EasyFly.Infrastructure.Services
         private readonly ITicketRepository _ticketRepository;
         private readonly ISeatRepository _seatRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IFlightRepository _flightRepository;
 
-        public TicketService(ITicketRepository ticketRepository, ISeatRepository seatRepository, IUserRepository userRepository)
+        public TicketService(ITicketRepository ticketRepository, ISeatRepository seatRepository, IUserRepository userRepository, IFlightRepository flightRepository)
         {
             _ticketRepository = ticketRepository;
             _seatRepository = seatRepository;
             _userRepository = userRepository;
+            _flightRepository = flightRepository;
         }
 
         public async Task<Response> CreateTicket(TicketDto ticket)
@@ -26,8 +28,9 @@ namespace EasyFly.Infrastructure.Services
 
             Seat seat = await _seatRepository.GetByIdAsync(ticket.SeatId, true);
             User user = await _userRepository.GetByAsync(x => x.Id == ticket.UserId);
+            Flight flight = await _flightRepository.GetByAsync(x => x.Id == ticket.FlightId);
 
-            if (seat == null || user == null)
+            if (seat == null || user == null || flight == null)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;
@@ -42,7 +45,9 @@ namespace EasyFly.Infrastructure.Services
                 PersonFirstName = ticket.PersonFirstName,
                 PersonLastName = ticket.PersonLastName,
                 Gender = ticket.Gender,
-                Price = ticket.Price
+                Price = ticket.Price,
+                LuggageSize = ticket.LuggageSize,
+                Flight = flight,
             };
 
             if (!await _ticketRepository.InsertAsync(newTicket))
@@ -116,7 +121,9 @@ namespace EasyFly.Infrastructure.Services
                 PersonFirstName = ticket.PersonFirstName,
                 PersonLastName = ticket.PersonLastName,
                 Gender = ticket.Gender,
-                Price = ticket.Price
+                Price = ticket.Price,
+                LuggageSize = ticket.LuggageSize,
+                FlightId = ticket.FlightId,
             };
 
             return response;
@@ -161,6 +168,104 @@ namespace EasyFly.Infrastructure.Services
                     PersonLastName = ticket.PersonLastName,
                     Gender = ticket.Gender,
                     Price = ticket.Price,
+                    LuggageSize = ticket.LuggageSize,
+                    FlightId = ticket.FlightId,
+                });
+
+            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+
+            return response;
+        }
+
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByFlightId(Guid flightId, int page, int size)
+        {
+            DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
+            response.Data = new TicketPagedViewModel();
+
+            var tickets = await _ticketRepository.GetPagedByFlightIdAsync(flightId, false, page, size);
+
+            if (!tickets.Any())
+            {
+                return response;
+            }
+
+            response.Data.Tickets = tickets
+                .Select(ticket => new TicketViewModel()
+                {
+                    Id = ticket.Id,
+                    Seat = new SeatViewModel
+                    {
+                        Id = ticket.Seat.Id,
+                        Row = ticket.Seat.Row,
+                        SeatLetter = ticket.Seat.SeatLetter,
+                        Plane = new PlaneViewModel
+                        {
+                            Id = ticket.Seat.PlaneId,
+                            Name = ticket.Seat.Plane.Name,
+                        }
+                    },
+                    PersonType = ticket.PersonType,
+                    User = new UserDto
+                    {
+                        Id = ticket.User.Id,
+                        Username = ticket.User.UserName,
+                        PhoneNumber = ticket.User.PhoneNumber ?? "No phone provided",
+                        Email = ticket.User.Email
+                    },
+                    PersonFirstName = ticket.PersonFirstName,
+                    PersonLastName = ticket.PersonLastName,
+                    Gender = ticket.Gender,
+                    Price = ticket.Price,
+                    LuggageSize = ticket.LuggageSize,
+                    FlightId = ticket.FlightId,
+                });
+
+            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+
+            return response;
+        }
+
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByUserId(string userId, int page, int size)
+        {
+            DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
+            response.Data = new TicketPagedViewModel();
+
+            var tickets = await _ticketRepository.GetPagedByUserIdAsync(userId, false, page, size);
+
+            if (!tickets.Any())
+            {
+                return response;
+            }
+
+            response.Data.Tickets = tickets
+                .Select(ticket => new TicketViewModel()
+                {
+                    Id = ticket.Id,
+                    Seat = new SeatViewModel
+                    {
+                        Id = ticket.Seat.Id,
+                        Row = ticket.Seat.Row,
+                        SeatLetter = ticket.Seat.SeatLetter,
+                        Plane = new PlaneViewModel
+                        {
+                            Id = ticket.Seat.PlaneId,
+                            Name = ticket.Seat.Plane.Name,
+                        }
+                    },
+                    PersonType = ticket.PersonType,
+                    User = new UserDto
+                    {
+                        Id = ticket.User.Id,
+                        Username = ticket.User.UserName,
+                        PhoneNumber = ticket.User.PhoneNumber ?? "No phone provided",
+                        Email = ticket.User.Email
+                    },
+                    PersonFirstName = ticket.PersonFirstName,
+                    PersonLastName = ticket.PersonLastName,
+                    Gender = ticket.Gender,
+                    Price = ticket.Price,
+                    LuggageSize = ticket.LuggageSize,
+                    FlightId = ticket.FlightId
                 });
 
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
@@ -183,8 +288,9 @@ namespace EasyFly.Infrastructure.Services
 
             Seat seat = await _seatRepository.GetByIdAsync(ticket.SeatId, true);
             User user = await _userRepository.GetByAsync(x => x.Id == ticket.UserId);
+            Flight flight = await _flightRepository.GetByAsync(x => x.Id == ticket.FlightId);
 
-            if (seat == null || user == null)
+            if (seat == null || user == null || flight == null)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;
@@ -198,6 +304,8 @@ namespace EasyFly.Infrastructure.Services
             existingTicket.PersonLastName = ticket.PersonLastName;
             existingTicket.Gender = ticket.Gender;
             existingTicket.Price = ticket.Price;
+            existingTicket.LuggageSize = ticket.LuggageSize;
+            existingTicket.Flight = flight;
 
             if (!await _ticketRepository.UpdateAsync(existingTicket))
             {

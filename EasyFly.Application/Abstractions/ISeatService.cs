@@ -16,5 +16,6 @@ namespace EasyFly.Application.Abstractions
         Task<Response> UpdateSeat(SeatDto plane, Guid id);
         Task<DataResponse<SeatViewModel>> GetSeat(Guid id);
         Task<DataResponse<SeatPagedViewModel>> GetSeatsPaged(int page, int size);
+        Task<DataResponse<SeatPagedViewModel>> GetSeatsPagedForFlight(Guid flightId, int page, int size);
     }
 }

@@ -37,6 +37,9 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <div class="d-flex mt-2">
+                                    <a href="@Url.Action("GetTickets", "Ticket", new { userId = item.Id })" class="btn btn-info me-2">
+                                        View Tickets
+                                    </a>
                                     <form method="post" asp-controller="User" asp-action="Delete" class="me-2">
                                         @Html.Hidden("userId", item.Id)
                                         <button type="submit" class="btn btn-danger">Delete</button>

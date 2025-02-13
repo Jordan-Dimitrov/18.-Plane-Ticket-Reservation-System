@@ -72,6 +72,30 @@ namespace EasyFly.Persistence.Repositories
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
+        public async Task<IEnumerable<Ticket>> GetPagedByFlightIdAsync(Guid flightId, bool trackChanges, int page, int size)
+        {
+            var query = _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+                .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+                .Include(x => x.Flight).ThenInclude(f => f.Plane)
+                .Include(x => x.User)
+                .Where(x => x.FlightId == flightId)
+                .Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
+        public async Task<IEnumerable<Ticket>> GetPagedByUserIdAsync(string userId, bool trackChanges, int page, int size)
+        {
+            var query = _Context.Tickets.Include(x => x.Seat).ThenInclude(s => s.Plane)
+               .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
+               .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
+               .Include(x => x.Flight).ThenInclude(f => f.Plane)
+               .Include(x => x.User)
+               .Where(x => x.UserId == userId)
+               .Skip((page - 1) * size).Take(size);
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
         public async Task<bool> InsertAsync(Ticket value)
         {
             await _Context.AddAsync(value);

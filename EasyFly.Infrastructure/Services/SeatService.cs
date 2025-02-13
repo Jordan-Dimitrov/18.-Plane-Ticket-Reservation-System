@@ -136,6 +136,36 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
+        public async Task<DataResponse<SeatPagedViewModel>> GetSeatsPagedForFlight(Guid flightId, int page, int size)
+        {
+            DataResponse<SeatPagedViewModel> response = new DataResponse<SeatPagedViewModel>();
+            response.Data = new SeatPagedViewModel();
+
+            var seats = await _SeatRepository.GetPagedForFlightAsync(flightId, false, page, size);
+
+            if (!seats.Any())
+            {
+                return response;
+            }
+
+            response.Data.Seats = seats
+                .Select(seat => new SeatViewModel()
+                {
+                    Id = seat.Id,
+                    Row = seat.Row,
+                    SeatLetter = seat.SeatLetter,
+                    Plane = new PlaneViewModel
+                    {
+                        Id = seat.PlaneId,
+                        Name = seat.Plane.Name,
+                    }
+                });
+
+            response.Data.TotalPages = await _SeatRepository.GetPageCount(size);
+
+            return response;
+        }
+
         public async Task<Response> UpdateSeat(SeatDto seat, Guid id)
         {
             Response response = new Response();

@@ -30,5 +30,9 @@ namespace EasyFly.Application.Dtos
         [Required]
         [Range(0,99999)]
         public decimal Price { get; set; }
+        [Required]
+        public LuggageSize LuggageSize { get; set;}
+        [Required]
+        public Guid FlightId { get; set; }
     }
 }

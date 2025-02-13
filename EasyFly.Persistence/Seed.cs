@@ -146,7 +146,7 @@ namespace EasyFly.Persistence
                     new Ticket
                     {
                         SeatId = seats[1].Id,
-                         FlightId = flights[1].Id,
+                        FlightId = flights[1].Id,
                         PersonType = PersonType.Kid,
                         UserId = admin.Id,
                         PersonFirstName = "Jane",

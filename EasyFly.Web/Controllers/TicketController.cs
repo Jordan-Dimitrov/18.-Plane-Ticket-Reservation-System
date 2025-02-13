@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
+using EasyFly.Application.Responses;
+using EasyFly.Domain.Models;
 
 namespace EasyFly.Web.Controllers
 {
@@ -12,10 +14,16 @@ namespace EasyFly.Web.Controllers
     {
         private const int _Size = 5;
         private readonly ITicketService _ticketService;
+        private readonly IUserService _userService;
+        private readonly ISeatService _seatService;
+        private readonly IFlightService _flightService;
 
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, IUserService userService, ISeatService seatService, IFlightService flightService)
         {
             _ticketService = ticketService;
+            _userService = userService;
+            _seatService = seatService;
+            _flightService = flightService;
         }
 
         [HttpGet]
@@ -29,15 +37,27 @@ namespace EasyFly.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid ticketId)
         {
-            var response = await _ticketService.GetTicket(ticketId);
+            var ticket = await _ticketService.GetTicket(ticketId);
+            var users = await _userService.GetUsersPaged(1, int.MaxValue);
+            var flights = await _flightService.GetFlightsPaged(1, int.MaxValue);
 
-            if (!response.Success)
+            var seatsForFlight = await _seatService.GetSeatsPagedForFlight(ticket.Data.FlightId, 1, int.MaxValue);
+
+            if (!ticket.Success || !users.Success || !seatsForFlight.Success)
             {
-                ViewBag.ErrorMessage = response.ErrorMessage;
+                ViewBag.ErrorMessage = "Invalid data";
                 return View();
             }
 
-            return View(response.Data);
+            var response = new TicketEditViewModel()
+            {
+                TicketViewModel = ticket.Data,
+                Users = users.Data.Users,
+                Seats = seatsForFlight.Data.Seats,
+                Flights = flights.Data.Flights
+            };
+
+            return View(response);
         }
 
         [HttpPost]
@@ -135,9 +155,23 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetTickets([FromQuery] int page = 1)
+        public async Task<IActionResult> GetTickets([FromQuery] int page = 1, 
+            [FromQuery] string? userId = null, [FromQuery] Guid? flightId = null)
         {
-            var response = await _ticketService.GetTicketsPaged(page, _Size);
+            DataResponse<TicketPagedViewModel> response;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size);
+            }
+            else if (flightId.HasValue)
+            {
+                response = await _ticketService.GetTicketsPagedByFlightId(flightId.Value, page, _Size);
+            }
+            else
+            {
+                response = await _ticketService.GetTicketsPaged(page, _Size);
+            }
 
             if (!response.Success)
             {
@@ -145,13 +179,8 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            string success = (string)TempData["Success"];
-
-            ViewBag.Success = success;
-
-            string error = (string)TempData["ErrorMessage"];
-
-            ViewBag.ErrorMessage = error;
+            ViewBag.Success = TempData["Success"] as string;
+            ViewBag.ErrorMessage = TempData["ErrorMessage"] as string;
 
             response.Data.PageNumber = page;
 

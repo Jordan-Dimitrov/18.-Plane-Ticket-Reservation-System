@@ -33,6 +33,9 @@
                         <div class="card-body">
                             <h4 class="card-title">@item.Seat.Plane.Name - @item.Seat.Row @item.Seat.SeatLetter</h4>
                             <p class="card-text">Passenger: @item.PersonFirstName @item.PersonLastName</p>
+                            <p class="card-text">Gender: @item.Gender</p>
+                            <p class="card-text">Type: @item.PersonType</p>
+                            <p class="card-text">LuggageSize: @item.LuggageSize</p>
                             <p class="card-text">Price: @item.Price</p>
                             @if (User.IsInRole("Admin"))
                             {
@@ -76,7 +79,7 @@
 
     <br />
 
-    <div class="row justify-content-center mt-5">
+    @* <div class="row justify-content-center mt-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
@@ -118,5 +121,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>

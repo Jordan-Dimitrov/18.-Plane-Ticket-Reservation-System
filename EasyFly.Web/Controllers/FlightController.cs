@@ -84,7 +84,7 @@ namespace EasyFly.Web.Controllers
                 TempData["Success"] = "Successfully deleted";
             }
 
-            return RedirectToAction("GetFlights", new { page = 1 });
+            return RedirectToAction("GetPlanes", "Plane", new { page = 1 });
         }
 
         [HttpGet]
