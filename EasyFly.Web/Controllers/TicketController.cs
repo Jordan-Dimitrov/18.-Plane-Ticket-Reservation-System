@@ -21,13 +21,15 @@ namespace EasyFly.Web.Controllers
         private readonly IUserService _userService;
         private readonly ISeatService _seatService;
         private readonly IFlightService _flightService;
-
-        public TicketController(ITicketService ticketService, IUserService userService, ISeatService seatService, IFlightService flightService)
+        private readonly IPaymentService _PaymentService;
+        public TicketController(ITicketService ticketService, IUserService userService,
+            ISeatService seatService, IFlightService flightService, IPaymentService paymentService)
         {
             _ticketService = ticketService;
             _userService = userService;
             _seatService = seatService;
             _flightService = flightService;
+            _PaymentService = paymentService;
         }
 
         [HttpGet]
@@ -269,14 +271,33 @@ namespace EasyFly.Web.Controllers
 
             var response = await _ticketService.CreateTickets(model.Tickets);
 
+            //var session = _PaymentService.Checkout(response.Data, Request.Host, Request.Scheme);
+
             if (!response.Success)
             {
                 TempData["ErrorMessage"] = response.ErrorMessage;
                 return RedirectToAction("Error");
             }
 
-            TempData["Success"] = "Tickets successfully created";
-            return RedirectToAction("GetTicketsForCurrentUser");
+            return RedirectToAction("Checkout", "Index", new {});
+        }
+
+        [HttpPost("create-checkout-session")]
+        public IActionResult CreateCheckoutSession([FromBody] CheckoutDto model)
+        {
+            var session = _PaymentService.Checkout(model, Request.Host, Request.Scheme);
+
+            return Ok(new { sessionId = session.Id });
+        }
+        [HttpGet("success")]
+        public IActionResult Success()
+        {
+            return View();
+        }
+        [HttpGet("cancel")]
+        public IActionResult Cancel()
+        {
+            return View();
         }
     }
 }

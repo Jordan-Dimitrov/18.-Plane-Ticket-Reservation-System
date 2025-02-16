@@ -12,7 +12,7 @@ namespace EasyFly.Application.Abstractions
     public interface ITicketService
     {
         Task<Response> CreateTicket(TicketDto plane);
-        Task<Response> CreateTickets(List<ReserveTicketDto> ticketDtos);
+        Task<DataResponse<CheckoutDto>> CreateTickets(List<ReserveTicketDto> ticketDtos);
         Task<Response> DeleteTicket(Guid id);
         Task<Response> UpdateTicket(TicketDto plane, Guid id);
         Task<DataResponse<TicketViewModel>> GetTicket(Guid id);

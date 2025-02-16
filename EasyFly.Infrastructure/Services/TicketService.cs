@@ -60,9 +60,9 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
-        public async Task<Response> CreateTickets(List<ReserveTicketDto> ticketDtos)
+        public async Task<DataResponse<CheckoutDto>> CreateTickets(List<ReserveTicketDto> ticketDtos)
         {
-            Response response = new Response();
+            DataResponse<CheckoutDto> response = new DataResponse<CheckoutDto>();
 
             List<Ticket> tickets = new List<Ticket>();
             Flight flight = await _flightRepository.GetByAsync(x => x.Id == ticketDtos[0].FlightId);
@@ -100,6 +100,14 @@ namespace EasyFly.Infrastructure.Services
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
             }
+
+            response.Data = new CheckoutDto()
+            {
+                ProductName = $"Ticket for {tickets[0].Flight.ArrivalAirport.Name}",
+                ProductDescription = $"Nice",
+                Amount = (long)tickets.Sum(x => x.Price),
+                Currency = "bgn"
+            };
 
             return response;
         }
