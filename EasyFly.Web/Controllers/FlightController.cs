@@ -177,5 +177,34 @@ namespace EasyFly.Web.Controllers
 
             return View(response.Data);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> SelectFlight(Guid departureAirportId, Guid arrivalAirportId)
+        {
+            var flightsResponse = await _FlightService.GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, 1, 1, _Size);
+
+            if (!flightsResponse.Success || flightsResponse.Data.Flights.Count() == 0)
+            {
+                TempData["ErrorMessage"] = "No flights available for the selected route.";
+                return RedirectToAction("Error");
+            }
+
+            return View(flightsResponse.Data);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReserveTicket(ReservationDto model, Guid flightId)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data";
+                return RedirectToAction("ReserveTicket");
+            }
+
+            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId, requiredSeats = 1 });
+        }
     }
 }

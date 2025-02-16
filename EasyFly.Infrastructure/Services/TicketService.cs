@@ -4,6 +4,7 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using System.Net.Sockets;
 
 namespace EasyFly.Infrastructure.Services
 {
@@ -51,6 +52,50 @@ namespace EasyFly.Infrastructure.Services
             };
 
             if (!await _ticketRepository.InsertAsync(newTicket))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
+        }
+
+        public async Task<Response> CreateTickets(List<ReserveTicketDto> ticketDtos)
+        {
+            Response response = new Response();
+
+            List<Ticket> tickets = new List<Ticket>();
+            Flight flight = await _flightRepository.GetByAsync(x => x.Id == ticketDtos[0].FlightId);
+            User user = await _userRepository.GetByAsync(x => x.Id == ticketDtos[0].UserId);
+
+            var availableSeats = (await _seatRepository.GetFreeSeatsForFlightAsync(flight.Id, true, ticketDtos.Count())).ToList();
+
+            if (user == null || flight == null || availableSeats == null || availableSeats.Count() < ticketDtos.Count())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.InvalidData;
+                return response;
+            }
+            for (int i = 0; i < ticketDtos.Count(); i++)
+            {
+
+                Ticket newTicket = new Ticket()
+                {
+                    PersonType = ticketDtos[i].PersonType,
+                    UserId = ticketDtos[i].UserId,
+                    PersonFirstName = ticketDtos[i].PersonFirstName,
+                    PersonLastName = ticketDtos[i].PersonLastName,
+                    Gender = ticketDtos[i].Gender,
+                    Seat = availableSeats[i],
+                    Price = 200m,
+                    LuggageSize = ticketDtos[i].LuggageSize,
+                    Flight = flight,
+                };
+
+                tickets.Add(newTicket);
+            }
+
+            if (!await _ticketRepository.InsertBulkAsync(tickets))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;

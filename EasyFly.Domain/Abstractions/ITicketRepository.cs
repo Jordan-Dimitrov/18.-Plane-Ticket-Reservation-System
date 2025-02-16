@@ -6,6 +6,7 @@ namespace EasyFly.Domain.Abstractions
     {
         Task<IEnumerable<Ticket>> GetPagedByFlightIdAsync(Guid flightId, bool trackChanges, int page, int size);
         Task<IEnumerable<Ticket>> GetPagedByUserIdAsync(string userId, bool trackChanges, int page, int size);
+        Task<bool> InsertBulkAsync(List<Ticket> value);
 
     }
 }

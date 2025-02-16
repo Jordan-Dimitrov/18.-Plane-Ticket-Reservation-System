@@ -1,0 +1,67 @@
+﻿@model EasyFly.Application.ViewModels.TicketPagedViewModel
+
+@{
+    ViewData["Title"] = "My Tickets";
+}
+
+<h1 class="text-center">My Tickets</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.Success))
+{
+    <div class="alert alert-success text-center" role="alert">
+        <h5>@ViewBag.Success</h5>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger text-center" role="alert">
+        <h5>@ViewBag.ErrorMessage</h5>
+    </div>
+}
+
+<br />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @if (Model.Tickets is not null && Model.Tickets.Any())
+            {
+                @foreach (var item in Model.Tickets)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">@item.Seat.Plane.Name - @item.Seat.Row @item.Seat.SeatLetter</h4>
+                            <p class="card-text">Passenger: @item.PersonFirstName @item.PersonLastName</p>
+                            <p class="card-text">Gender: @item.Gender</p>
+                            <p class="card-text">Type: @item.PersonType</p>
+                            <p class="card-text">Luggage Size: @item.LuggageSize</p>
+                            <p class="card-text">Price: @item.Price</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center">No tickets found.</p>
+            }
+        </div>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6 d-flex justify-content-between">
+                @if (Model.PageNumber > 1)
+                {
+                    <a href="@Url.Action("GetTicketsForCurrentUser", new { page = Model.PageNumber - 1 })" class="btn btn-primary">Previous</a>
+                }
+
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <a href="@Url.Action("GetTicketsForCurrentUser", new { page = Model.PageNumber + 1 })" class="btn btn-primary">Next</a>
+                }
+            </div>
+        </div>
+    }
+</div>

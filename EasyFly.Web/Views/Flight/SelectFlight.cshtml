@@ -1,0 +1,56 @@
+﻿@model EasyFly.Application.ViewModels.FlightPagedViewModel
+
+@{
+    ViewData["Title"] = "Select Flight";
+}
+
+<h2>Select Flight</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Success
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Flight Number</th>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Departure Airport</th>
+            <th>Arrival Airport</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flight in Model.Flights)
+        {
+            <tr>
+                <td>@flight.FlightNumber</td>
+                <td>@flight.DepartureTime</td>
+                <td>@flight.ArrivalTime</td>
+                <td>@flight.DepartureAirport.Name</td>
+                <td>@flight.ArrivalAirport.Name</td>
+                <td>
+                    <form asp-action="ReserveTicket" method="post">
+                        <input type="hidden" name="flightId" value="@flight.Id" />
+                        <button type="submit" class="btn btn-primary">Reserve</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="GetAirports" asp-controller="Airport" class="btn btn-secondary">Back to Airports</a>
+</div>

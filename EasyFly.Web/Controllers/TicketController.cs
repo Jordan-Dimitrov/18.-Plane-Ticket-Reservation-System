@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,8 @@ using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
 using EasyFly.Application.Responses;
 using EasyFly.Domain.Models;
+using System.Security.Claims;
+using System.Net.Sockets;
 
 namespace EasyFly.Web.Controllers
 {
@@ -155,7 +159,37 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetTickets([FromQuery] int page = 1, 
+        public async Task<IActionResult> GetTicketsForCurrentUser([FromQuery] int page = 1)
+        {
+            DataResponse<TicketPagedViewModel> response;
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error");
+            }
+
+            response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size);
+
+            if (!response.Success)
+            {
+                TempData["ErrorMessage"] = response.ErrorMessage;
+                return RedirectToAction("Error");
+            }
+
+            ViewBag.Success = TempData["Success"] as string;
+            ViewBag.ErrorMessage = TempData["ErrorMessage"] as string;
+
+            response.Data.PageNumber = page;
+
+            return View(response.Data);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetTickets([FromQuery] int page = 1,
             [FromQuery] string? userId = null, [FromQuery] Guid? flightId = null)
         {
             DataResponse<TicketPagedViewModel> response;
@@ -185,6 +219,64 @@ namespace EasyFly.Web.Controllers
             response.Data.PageNumber = page;
 
             return View(response.Data);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EnterTicketDetails(Guid flightId, int requiredSeats)
+        {
+            var flightResponse = await _flightService.GetFlight(flightId);
+
+            if (!flightResponse.Success)
+            {
+                TempData["ErrorMessage"] = flightResponse.ErrorMessage;
+                return RedirectToAction("Error");
+            }
+
+            var model = new TicketDetailsViewModel
+            {
+                FlightId = flightId,
+                RequiredSeats = requiredSeats,
+                Tickets = new List<ReserveTicketDto>(new ReserveTicketDto[requiredSeats])
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnterTicketDetails(TicketDetailsViewModel model)
+        {
+            if (!ModelState.IsValid && ModelState.ErrorCount > 1)
+            {
+                TempData["ErrorMessage"] = "Invalid data";
+                return RedirectToAction("EnterTicketDetails", new { flightId = model.FlightId, requiredSeats = model.RequiredSeats });
+            }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error");
+            }
+
+            foreach (var ticket in model.Tickets)
+            {
+                ticket.FlightId = model.FlightId;
+                ticket.UserId = userId;
+            }
+
+            var response = await _ticketService.CreateTickets(model.Tickets);
+
+            if (!response.Success)
+            {
+                TempData["ErrorMessage"] = response.ErrorMessage;
+                return RedirectToAction("Error");
+            }
+
+            TempData["Success"] = "Tickets successfully created";
+            return RedirectToAction("GetTicketsForCurrentUser");
         }
     }
 }

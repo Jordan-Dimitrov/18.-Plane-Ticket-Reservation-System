@@ -102,6 +102,12 @@ namespace EasyFly.Persistence.Repositories
             return await _Context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> InsertBulkAsync(List<Ticket> value)
+        {
+            await _Context.AddRangeAsync(value);
+            return await _Context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> UpdateAsync(Ticket value)
         {
             _Context.Update(value);

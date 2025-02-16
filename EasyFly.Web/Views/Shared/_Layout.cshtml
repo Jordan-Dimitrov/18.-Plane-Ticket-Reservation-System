@@ -43,6 +43,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="GetTickets">Tickets</a>
                             </li>
                         }
+                        @if (User.IsInRole("User"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="GetTicketsForCurrentUser">My Tickets</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

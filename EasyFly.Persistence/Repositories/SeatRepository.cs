@@ -99,5 +99,17 @@ namespace EasyFly.Persistence.Repositories
                 .Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
+
+        public async Task<IEnumerable<Seat>> GetFreeSeatsForFlightAsync(Guid flightId, bool trackChanges, int size)
+        {
+            var query = _Context.Seats
+                .Include(s => s.Tickets)
+                .Include(s => s.Plane)
+                .Where(s => !s.Tickets.Any(t => t.FlightId == flightId))
+                .Take(size);
+
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
     }
 }

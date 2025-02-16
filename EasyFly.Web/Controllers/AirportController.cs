@@ -4,6 +4,7 @@ using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
@@ -156,6 +157,39 @@ namespace EasyFly.Web.Controllers
             response.Data.PageNumber = page;
 
             return View(response.Data);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Reservation()
+        {
+            var airportsResponse = await _AirportService.GetAirportsPaged(1, int.MaxValue);
+            if (!airportsResponse.Success)
+            {
+                TempData["ErrorMessage"] = airportsResponse.ErrorMessage;
+                return RedirectToAction("Error");
+            }
+
+            var model = new ReservationViewModel
+            {
+                Airports = airportsResponse.Data.Airports.ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reservation(ReservationDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data";
+                return RedirectToAction("Reservation");
+            }
+
+            return RedirectToAction("SelectFlight", "Flight", new { departureAirportId = model.DepartureAirportId, arrivalAirportId = model.ArrivalAirportId });
         }
     }
 }

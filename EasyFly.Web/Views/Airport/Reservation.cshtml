@@ -1,0 +1,31 @@
+﻿@model EasyFly.Application.ViewModels.ReservationViewModel
+
+@{
+    ViewBag.Title = "Plane Ticket Reservation";
+}
+
+<h2>Plane Ticket Reservation</h2>
+
+<form asp-action="Reservation" method="post">
+    <div class="form-group">
+        <label for="departure">Departure Airport</label>
+        <select name="DepartureAirportId" class="form-control" id="departure">
+            <option value="">Select Departure Airport</option>
+            @foreach (var airport in Model.Airports)
+            {
+                <option value="@airport.Id">@airport.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="arrival">Arrival Airport</label>
+        <select name="ArrivalAirportId" class="form-control" id="arrival">
+            <option value="">Select Arrival Airport</option>
+            @foreach (var airport in Model.Airports)
+            {
+                <option value="@airport.Id">@airport.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Next</button>
+</form>

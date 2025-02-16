@@ -81,6 +81,52 @@ namespace EasyFly.Persistence.Repositories
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
+        public async Task<IEnumerable<Flight>> GetPagedByArrivalAndDepartureAirportsAsync(
+            Guid departureId,
+            Guid arrivalId,
+            bool trackChanges,
+            int requiredSeats,
+            int page,
+            int size)
+        {
+            var query = _Context.Flights
+                .Include(x => x.ArrivalAirport)
+                .Include(x => x.DepartureAirport)
+                .Include(x => x.Plane)
+                .Include(x => x.Tickets)
+                .Where(x => x.DepartureAirportId == departureId && x.ArrivalAirportId == arrivalId)
+                .Where(x => x.Plane.Seats.Count() - x.Tickets.Count() >= requiredSeats)
+                .Skip((page - 1) * size)
+                .Take(size);
+
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
+        public async Task<IEnumerable<Flight>> GetPagedByArrivalAndDepartureAsync(
+            Guid departureId,
+            Guid arrivalId,
+            DateTime departure,
+            bool trackChanges,
+            int requiredSeats,
+            int page,
+            int size)
+        {
+            var query = _Context.Flights
+                .Include(x => x.ArrivalAirport)
+                .Include(x => x.DepartureAirport)
+                .Include(x => x.Plane)
+                .Include(x => x.Tickets)
+                .Where(x => x.DepartureTime == departure
+                    && x.DepartureAirportId == departureId && x.ArrivalAirportId == arrivalId)
+                .Where(x => x.Plane.Seats.Count() - x.Tickets.Count() >= requiredSeats)
+                .Skip((page - 1) * size)
+                .Take(size);
+
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+        }
+
+
+
         public async Task<IEnumerable<Flight>> GetPagedByDepartingAirportIdAsync(Guid airpordId, bool trackChanges, int page, int size)
         {
             var query = _Context.Flights

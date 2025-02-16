@@ -1,0 +1,61 @@
+﻿@model EasyFly.Application.ViewModels.TicketDetailsViewModel
+
+@{
+    ViewData["Title"] = "Enter Ticket Details";
+}
+
+<h2>Enter Ticket Details</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form asp-action="EnterTicketDetails" method="post">
+    <input type="hidden" asp-for="FlightId" />
+    <input type="hidden" asp-for="RequiredSeats" />
+
+    @for (int i = 0; i < Model.RequiredSeats; i++)
+    {
+        <h4>Ticket @i</h4>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonFirstName"></label>
+            <input asp-for="Tickets[i].PersonFirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonLastName"></label>
+            <input asp-for="Tickets[i].PersonLastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].Gender"></label>
+            <select asp-for="Tickets[i].Gender" class="form-control">
+                @foreach (var gender in Enum.GetValues(typeof(EasyFly.Domain.Enums.Gender)))
+                {
+                    <option value="@gender">@gender</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonType"></label>
+            <select asp-for="Tickets[i].PersonType" class="form-control">
+                @foreach (var personType in Enum.GetValues(typeof(EasyFly.Domain.Enums.PersonType)))
+                {
+                    <option value="@personType">@personType</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].LuggageSize"></label>
+            <select asp-for="Tickets[i].LuggageSize" class="form-control">
+                @foreach (var size in Enum.GetValues(typeof(EasyFly.Domain.Enums.LuggageSize)))
+                {
+                    <option value="@size">@size</option>
+                }
+            </select>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

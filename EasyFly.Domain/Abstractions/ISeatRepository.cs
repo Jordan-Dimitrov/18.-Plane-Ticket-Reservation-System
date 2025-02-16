@@ -6,5 +6,6 @@ namespace EasyFly.Domain.Abstractions
     {
         Task<bool> GenerateSeatsForPlane(int availableSeats, Guid planeId);
         Task<IEnumerable<Seat>> GetPagedForFlightAsync(Guid flightId, bool trackChanges, int page, int size);
+        Task<IEnumerable<Seat>> GetFreeSeatsForFlightAsync(Guid flightId, bool trackChanges, int size);
     }
 }
