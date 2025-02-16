@@ -184,6 +184,12 @@ namespace EasyFly.Web.Controllers
         {
             var flightsResponse = await _FlightService.GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, requiredSeats, 1, _Size);
 
+            if(flightsResponse.Data.Flights == null)
+            {
+                TempData["ErrorMessage"] = "No flights available for the selected route.";
+                return RedirectToAction("Error");
+            }
+
             if (!flightsResponse.Success || flightsResponse.Data.Flights.Count() == 0)
             {
                 TempData["ErrorMessage"] = "No flights available for the selected route.";

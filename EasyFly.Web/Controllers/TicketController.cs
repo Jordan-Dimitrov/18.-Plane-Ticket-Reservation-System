@@ -279,7 +279,7 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            return Ok(new { sessionId = session.Id });
+            return Redirect(session.Url);
         }
 
         [HttpGet("success")]

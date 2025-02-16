@@ -22,6 +22,7 @@ namespace EasyFly.Infrastructure
 
             services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
             StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+            services.AddScoped<StripeClient>();
 
             services.AddScoped<IPlaneService, PlaneService>();
             services.AddScoped<IAirportService, AirportService>();
