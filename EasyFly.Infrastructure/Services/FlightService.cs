@@ -56,7 +56,8 @@ namespace EasyFly.Infrastructure.Services
                 ArrivalTime = flight.ArrivalTime,
                 DepartureAirportId = flight.DepartureAirportId,
                 ArrivalAirportId = flight.ArrivalAirportId,
-                PlaneId = flight.PlaneId
+                PlaneId = flight.PlaneId,
+                TicketPrice = flight.TicketPrice,
             };
 
             if (!await _flightRepository.InsertAsync(newFlight))

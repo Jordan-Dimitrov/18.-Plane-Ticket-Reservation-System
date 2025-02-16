@@ -87,9 +87,10 @@ namespace EasyFly.Infrastructure.Services
                     PersonLastName = ticketDtos[i].PersonLastName,
                     Gender = ticketDtos[i].Gender,
                     Seat = availableSeats[i],
-                    Price = 200m,
+                    Price = flight.TicketPrice,
                     LuggageSize = ticketDtos[i].LuggageSize,
                     Flight = flight,
+                    Reserved = false
                 };
 
                 tickets.Add(newTicket);

@@ -41,7 +41,8 @@ namespace EasyFly.Persistence.Repositories
         {
             return await _Context.Flights
                 .Include(x => x.ArrivalAirport).Include(x => x.DepartureAirport)
-                .Include(x => x.Plane).FirstOrDefaultAsync(condition);
+                .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats).FirstOrDefaultAsync(condition);
         }
 
         public async Task<Flight?> GetByIdAsync(Guid id, bool trackChanges)
@@ -50,6 +51,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Where(x => x.Id == id);
             return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
@@ -67,6 +69,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
@@ -77,6 +80,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Where(x => x.ArrivalAirportId == airpordId).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
@@ -93,6 +97,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Include(x => x.Tickets)
                 .Where(x => x.DepartureAirportId == departureId && x.ArrivalAirportId == arrivalId)
                 .Where(x => x.Plane.Seats.Count() - x.Tickets.Count() >= requiredSeats)
@@ -115,6 +120,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Include(x => x.Tickets)
                 .Where(x => x.DepartureTime == departure
                     && x.DepartureAirportId == departureId && x.ArrivalAirportId == arrivalId)
@@ -133,6 +139,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.ArrivalAirport)
                 .Include(x => x.DepartureAirport)
                 .Include(x => x.Plane)
+                .ThenInclude(x => x.Seats)
                 .Where(x => x.DepartureAirportId == airpordId).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
@@ -143,6 +150,7 @@ namespace EasyFly.Persistence.Repositories
                .Include(x => x.ArrivalAirport)
                .Include(x => x.DepartureAirport)
                .Include(x => x.Plane)
+               .ThenInclude(x => x.Seats)
                .Where(x => x.PlaneId == planeId).Skip((page - 1) * size).Take(size);
             return await(trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }

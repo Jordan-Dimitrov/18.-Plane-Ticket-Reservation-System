@@ -37,5 +37,7 @@ namespace EasyFly.Domain.Models
         public LuggageSize LuggageSize { get; set; }
         [Required]
         public decimal Price { get; set; }
+        [Required]
+        public bool Reserved { get; set; }
     }
 }

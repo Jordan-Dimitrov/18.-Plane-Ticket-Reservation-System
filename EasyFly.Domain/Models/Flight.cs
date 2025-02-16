@@ -31,6 +31,8 @@ namespace EasyFly.Domain.Models
         [ForeignKey(nameof(Plane))]
         public Guid PlaneId { get; set; }
         public Plane Plane { get; set; }
+        [Required]
+        public decimal TicketPrice { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
     }
 }

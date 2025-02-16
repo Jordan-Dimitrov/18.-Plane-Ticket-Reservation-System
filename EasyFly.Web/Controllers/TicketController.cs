@@ -250,7 +250,7 @@ namespace EasyFly.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnterTicketDetails(TicketDetailsViewModel model)
         {
-            if (!ModelState.IsValid && ModelState.ErrorCount > 1)
+            if (!ModelState.IsValid && ModelState.ErrorCount > model.Tickets.Count())
             {
                 TempData["ErrorMessage"] = "Invalid data";
                 return RedirectToAction("EnterTicketDetails", new { flightId = model.FlightId, requiredSeats = model.RequiredSeats });
@@ -271,7 +271,7 @@ namespace EasyFly.Web.Controllers
 
             var response = await _ticketService.CreateTickets(model.Tickets);
 
-            //var session = _PaymentService.Checkout(response.Data, Request.Host, Request.Scheme);
+            var session = _PaymentService.Checkout(response.Data, Request.Host, Request.Scheme);
 
             if (!response.Success)
             {
@@ -279,16 +279,9 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            return RedirectToAction("Checkout", "Index", new {});
-        }
-
-        [HttpPost("create-checkout-session")]
-        public IActionResult CreateCheckoutSession([FromBody] CheckoutDto model)
-        {
-            var session = _PaymentService.Checkout(model, Request.Host, Request.Scheme);
-
             return Ok(new { sessionId = session.Id });
         }
+
         [HttpGet("success")]
         public IActionResult Success()
         {

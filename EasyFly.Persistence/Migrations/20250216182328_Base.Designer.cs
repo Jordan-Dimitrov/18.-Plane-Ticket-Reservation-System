@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyFly.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250212080224_Base")]
+    [Migration("20250216182328_Base")]
     partial class Base
     {
         /// <inheritdoc />
@@ -117,6 +117,9 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<Guid>("PlaneId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("TicketPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArrivalAirportId");
@@ -220,6 +223,9 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("Reserved")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uniqueidentifier");
 
@@ -261,6 +267,9 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)

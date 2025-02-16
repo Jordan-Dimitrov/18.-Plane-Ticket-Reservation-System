@@ -180,9 +180,9 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> SelectFlight(Guid departureAirportId, Guid arrivalAirportId)
+        public async Task<IActionResult> SelectFlight(Guid departureAirportId, Guid arrivalAirportId, int requiredSeats)
         {
-            var flightsResponse = await _FlightService.GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, 1, 1, _Size);
+            var flightsResponse = await _FlightService.GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, requiredSeats, 1, _Size);
 
             if (!flightsResponse.Success || flightsResponse.Data.Flights.Count() == 0)
             {
@@ -190,13 +190,15 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
+            ViewBag.RequiredSeats = requiredSeats;
+
             return View(flightsResponse.Data);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReserveTicket(ReservationDto model, Guid flightId)
+        public async Task<IActionResult> ReserveTicket(ReservationDto model, Guid flightId, int requiredSeats)
         {
             if (!ModelState.IsValid)
             {
@@ -204,7 +206,7 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("ReserveTicket");
             }
 
-            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId, requiredSeats = 1 });
+            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId, requiredSeats = requiredSeats });
         }
     }
 }

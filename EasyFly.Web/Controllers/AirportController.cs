@@ -189,7 +189,7 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Reservation");
             }
 
-            return RedirectToAction("SelectFlight", "Flight", new { departureAirportId = model.DepartureAirportId, arrivalAirportId = model.ArrivalAirportId });
+            return RedirectToAction("SelectFlight", "Flight", new { departureAirportId = model.DepartureAirportId, arrivalAirportId = model.ArrivalAirportId, requiredSeats = model.NumberOfTickets });
         }
     }
 }

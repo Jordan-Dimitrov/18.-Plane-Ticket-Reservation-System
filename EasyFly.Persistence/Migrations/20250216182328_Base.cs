@@ -46,6 +46,7 @@ namespace EasyFly.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -220,6 +221,7 @@ namespace EasyFly.Persistence.Migrations
                     DepartureAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ArrivalAirportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PlaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -281,6 +283,7 @@ namespace EasyFly.Persistence.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     LuggageSize = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Reserved = table.Column<bool>(type: "bit", nullable: false),
                     FlightId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),

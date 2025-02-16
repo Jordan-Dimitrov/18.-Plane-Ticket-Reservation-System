@@ -25,5 +25,7 @@ namespace EasyFly.Application.Dtos
         public Guid ArrivalAirportId { get; set; }
         [Required]
         public Guid PlaneId { get; set; }
+        [Required]
+        public decimal TicketPrice { get; set; }
     }
 }

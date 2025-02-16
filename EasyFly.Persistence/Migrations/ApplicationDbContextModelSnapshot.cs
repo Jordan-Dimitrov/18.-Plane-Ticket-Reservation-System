@@ -114,6 +114,9 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<Guid>("PlaneId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("TicketPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArrivalAirportId");
@@ -216,6 +219,9 @@ namespace EasyFly.Persistence.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Reserved")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uniqueidentifier");
