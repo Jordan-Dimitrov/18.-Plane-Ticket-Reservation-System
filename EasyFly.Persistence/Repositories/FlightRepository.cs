@@ -152,7 +152,7 @@ namespace EasyFly.Persistence.Repositories
                .Include(x => x.Plane)
                .ThenInclude(x => x.Seats)
                .Where(x => x.PlaneId == planeId).Skip((page - 1) * size).Take(size);
-            return await(trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<bool> InsertAsync(Flight value)
