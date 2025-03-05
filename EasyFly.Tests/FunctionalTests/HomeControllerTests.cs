@@ -2,103 +2,72 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using NUnit.Framework;
+using EasyFly.Tests.Pages;
 
 namespace EasyFly.Tests.FunctionalTests
 {
     internal class HomeControllerTests
     {
-        private IWebDriver _Driver;
+        private IWebDriver _driver;
+        private HomePage _homePage;
+        private LoginPage _loginPage;
+        private RegisterPage _registerPage;
 
         [SetUp]
         public void Setup()
         {
-            _Driver = new ChromeDriver();
-            _Driver.Manage().Window.Maximize();
-            _Driver.Url = Helper.RetrieveUrl();
+            _driver = new ChromeDriver();
+            _driver.Manage().Window.Maximize();
+            _driver.Url = Helper.RetrieveUrl();
+
+            _homePage = new HomePage(_driver);
+            _loginPage = new LoginPage(_driver);
+            _registerPage = new RegisterPage(_driver);
         }
 
         [Test]
         public void TestIndex()
         {
-            var item = _Driver.FindElement(By.ClassName("display-4"));
-            Assert.AreEqual("Welcome", item.Text);
+            Assert.AreEqual("Welcome", _homePage.GetWelcomeText());
         }
 
         [Test]
         public void TestLoginPasses()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
-
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            loginButton.Click();
-
-            Assert.IsTrue(_Driver.PageSource.Contains("Welcome"));
+            _homePage.GoToLogin();
+            _loginPage.Login("admin@easyfly.com", "Admin@123");
+            Assert.IsTrue(_homePage.IsWelcomeMessagePresent());
         }
 
         [Test]
         public void TestLoginFails()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
-
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@1233");
-            loginButton.Click();
-
-            Assert.IsFalse(_Driver.PageSource.Contains("Welcome"));
+            _homePage.GoToLogin();
+            _loginPage.Login("admin@easyfly.com", "Admin@1233");
+            Assert.IsFalse(_homePage.IsWelcomeMessagePresent());
         }
 
         [Test]
         public void TestRegisterPasses()
         {
-            _Driver.FindElement(By.LinkText("Register")).Click();
-            Random rng = new Random();
-
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var confirmPasswordField = _Driver.FindElement(By.Id("Input_ConfirmPassword"));
-            var registerButton = _Driver.FindElement(By.Id("registerSubmit"));
-
-            emailField.SendKeys($"newuser@examp{rng.Next(1,1230)}le.com");
-            passwordField.SendKeys("Admin@123");
-            confirmPasswordField.SendKeys("Admin@123");
-            registerButton.Click();
-
-            Assert.IsTrue(_Driver.PageSource.Contains("Register confirmation"));
+            _homePage.GoToRegister();
+            string email = _registerPage.RegisterWithRandomEmail("Admin@123");
+            Assert.IsTrue(_registerPage.IsRegistrationSuccessful());
         }
 
         [Test]
         public void TestRegisterFails()
         {
-            _Driver.FindElement(By.LinkText("Register")).Click();
-            Random rng = new Random();
-
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var confirmPasswordField = _Driver.FindElement(By.Id("Input_ConfirmPassword"));
-            var registerButton = _Driver.FindElement(By.Id("registerSubmit"));
-
-            emailField.SendKeys($"admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            confirmPasswordField.SendKeys("Admin@123");
-            registerButton.Click();
-
-            Assert.IsFalse(_Driver.PageSource.Contains("Register confirmation"));
+            _homePage.GoToRegister();
+            _registerPage.Register("admin@easyfly.com", "Admin@123");
+            Assert.IsFalse(_registerPage.IsRegistrationSuccessful());
         }
 
         [TearDown]
         public void TearDown()
         {
-            _Driver.Quit();
-            _Driver.Dispose();
+            _driver.Quit();
+            _driver.Dispose();
         }
     }
 }

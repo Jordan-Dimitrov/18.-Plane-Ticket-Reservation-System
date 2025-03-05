@@ -1,5 +1,6 @@
 ﻿using EasyFly.Infrastructure.Services;
 using EasyFly.Tests.Factories;
+using EasyFly.Tests.Pages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using PlaneTicketReservationSystem.Pages;
@@ -10,6 +11,8 @@ namespace EasyFly.Tests.FunctionalTests
     {
         private IWebDriver _Driver;
         private PlanePage _PlanePage;
+        private LoginPage _LoginPage;
+        private HomePage _HomePage;
 
         [SetUp]
         public void Setup()
@@ -18,47 +21,29 @@ namespace EasyFly.Tests.FunctionalTests
             _Driver.Manage().Window.Maximize();
             _Driver.Url = Helper.RetrieveUrl();
             _PlanePage = new PlanePage(_Driver);
-
+            _LoginPage = new LoginPage(_Driver);
+            _HomePage = new HomePage(_Driver);
         }
 
         [Test]
-        public void TestGetPlanesReturnsTrue()
+        public void TestGetPlanesPasses()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
+            _HomePage.GoToLogin();
+            _LoginPage.LoginAsAdmin();
+            _PlanePage.NavigateToPlanes();
 
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            loginButton.Click();
-
-            _Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
-
-            var planes = _Driver.FindElements(By.CssSelector(".card .card-title"));
             Assert.IsTrue(_PlanePage.ArePlanesDisplayed(), "No planes are displayed on the page.");
         }
 
         [Test]
-        public void TestCreatePlaneReturnsTrue()
+        public void TestCreatePlanePasses()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
+            _HomePage.GoToLogin();
+            _LoginPage.LoginAsAdmin();
+            _PlanePage.NavigateToPlanes();
 
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            loginButton.Click();
-
-            _Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
             var plane = PlaneFactory.Create();
-
-            _PlanePage.EnterName(plane.Name);
-            _PlanePage.EnterSeats(plane.AvailableSeats);
-            _PlanePage.SubmitForm();
+            _PlanePage.CreatePlane(plane);
 
             Assert.IsTrue(_PlanePage.IsPlaneCreated(plane.Name), "Plane creation failed.");
         }
@@ -66,58 +51,37 @@ namespace EasyFly.Tests.FunctionalTests
         [Test]
         public void TestCreateInvalidNameFails()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
+            _HomePage.GoToLogin();
+            _LoginPage.LoginAsAdmin();
+            _PlanePage.NavigateToPlanes();
 
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            loginButton.Click();
-
-            _Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
             var plane = PlaneFactory.Create();
             plane.Name = "";
+            _PlanePage.CreatePlane(plane);
 
-            _PlanePage.EnterName(plane.Name);
-            _PlanePage.EnterSeats(plane.AvailableSeats);
-            _PlanePage.SubmitForm();
-
-            Assert.IsFalse(_PlanePage.IsPlaneCreated(plane.Name), "Plane creation with invalid data.");
+            Assert.IsFalse(_PlanePage.IsPlaneCreated(plane.Name), "Plane creation with an invalid name succeeded.");
         }
 
         [Test]
         public void TestCreateInvalidSeatCountFails()
         {
-            _Driver.FindElement(By.LinkText("Login")).Click();
+            _HomePage.GoToLogin();
+            _LoginPage.LoginAsAdmin();
+            _PlanePage.NavigateToPlanes();
 
-            var emailField = _Driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _Driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _Driver.FindElement(By.Id("login-submit"));
-
-            emailField.SendKeys("admin@easyfly.com");
-            passwordField.SendKeys("Admin@123");
-            loginButton.Click();
-
-            _Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
             var plane = PlaneFactory.Create();
             plane.AvailableSeats = -1;
+            _PlanePage.CreatePlane(plane);
 
-            _PlanePage.EnterName(plane.Name);
-            _PlanePage.EnterSeats(plane.AvailableSeats);
-            _PlanePage.SubmitForm();
-
-            Assert.IsFalse(_PlanePage.IsPlaneCreated(plane.Name), "Plane creation with invalid data.");
+            Assert.IsFalse(_PlanePage.IsPlaneCreated(plane.Name), "Plane creation with an invalid seat count succeeded.");
         }
 
         [Test]
         public void TestGetPlanesUnauthorizedFails()
         {
-            _Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
+            _PlanePage.NavigateToPlanes();
 
-            var planes = _Driver.FindElements(By.CssSelector(".card .card-title"));
-            Assert.IsFalse(_PlanePage.ArePlanesDisplayed(), "Planes endpoint does not have authorization");
+            Assert.IsFalse(_PlanePage.ArePlanesDisplayed(), "Planes endpoint does not require authentication.");
         }
 
         [TearDown]

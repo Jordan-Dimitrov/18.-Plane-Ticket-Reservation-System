@@ -1,4 +1,8 @@
-﻿using OpenQA.Selenium;
+﻿using EasyFly.Application.Dtos;
+using EasyFly.Domain.Models;
+using EasyFly.Infrastructure.Services;
+using EasyFly.Tests.Factories;
+using OpenQA.Selenium;
 
 namespace PlaneTicketReservationSystem.Pages
 {
@@ -12,20 +16,22 @@ namespace PlaneTicketReservationSystem.Pages
         }
 
         private IWebElement NameInput => _driver.FindElement(By.Id("Name"));
-        private IWebElement AvailableSeats => _driver.FindElement(By.Id("AvailableSeats"));
+        private IWebElement AvailableSeatsInput => _driver.FindElement(By.Id("AvailableSeats"));
         private IWebElement SubmitButton => _driver.FindElement(By.CssSelector("button[type='submit']"));
 
-        public void EnterName(string name)
+        public void NavigateToPlanes()
         {
-            NameInput.SendKeys(name);
-        }
-        public void EnterSeats(int seats)
-        {
-            AvailableSeats.SendKeys(seats.ToString());
+            _driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
         }
 
-        public void SubmitForm()
+        public void CreatePlane(PlaneDto plane)
         {
+            NameInput.Clear();
+            NameInput.SendKeys(plane.Name);
+
+            AvailableSeatsInput.Clear();
+            AvailableSeatsInput.SendKeys(plane.AvailableSeats.ToString());
+
             SubmitButton.Click();
         }
 
@@ -37,8 +43,7 @@ namespace PlaneTicketReservationSystem.Pages
 
         public bool ArePlanesDisplayed()
         {
-            var planes = _driver.FindElements(By.CssSelector(".card .card-title"));
-            return planes.Any();
+            return _driver.FindElements(By.CssSelector(".card .card-title")).Any();
         }
     }
 }
