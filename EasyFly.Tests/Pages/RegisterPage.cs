@@ -1,19 +1,31 @@
 ﻿using OpenQA.Selenium;
-using System;
+using SeleniumExtras.WaitHelpers;
 
 namespace EasyFly.Tests.Pages
 {
-    public class RegisterPage
+    public class RegisterPage : BasePage
     {
-        private readonly IWebDriver _driver;
-        public RegisterPage(IWebDriver driver) => _driver = driver;
+        public RegisterPage(IWebDriver driver) : base(driver)
+        {
+
+        }
 
         public void Register(string email, string password)
         {
-            _driver.FindElement(By.Id("Input_Email")).SendKeys(email);
-            _driver.FindElement(By.Id("Input_Password")).SendKeys(password);
-            _driver.FindElement(By.Id("Input_ConfirmPassword")).SendKeys(password);
-            _driver.FindElement(By.Id("registerSubmit")).Click();
+            var emailField = Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("Input_Email")));
+            emailField.Clear();
+            emailField.SendKeys(email);
+
+            var passwordField = Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("Input_Password")));
+            passwordField.Clear();
+            passwordField.SendKeys(password);
+
+            var confirmPasswordField = Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("Input_ConfirmPassword")));
+            confirmPasswordField.Clear();
+            confirmPasswordField.SendKeys(password);
+
+            var submitButton = Wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("registerSubmit")));
+            submitButton.Click();
         }
 
         public string RegisterWithRandomEmail(string password)
@@ -23,6 +35,9 @@ namespace EasyFly.Tests.Pages
             return email;
         }
 
-        public bool IsRegistrationSuccessful() => _driver.PageSource.Contains("Register confirmation");
+        public bool IsRegistrationSuccessful()
+        {
+            return Wait.Until(driver => driver.PageSource.Contains("Register confirmation"));
+        }
     }
 }
