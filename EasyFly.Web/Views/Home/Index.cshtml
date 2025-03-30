@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using EasyFly.Application.ViewModels
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Welcome to Ticket Reservation";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="jumbotron text-center bg-primary text-white p-5 rounded">
+        <h1 class="display-4">Welcome to Ticket Reservation</h1>
+        <p class="lead">Find the best deals on flights and book your tickets easily.</p>
+    </div>
 </div>
+
+<div class="container mt-4">
+    <div class="row text-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h3>Registered Users</h3>
+                <p class="display-5">@Model.RegisteredUsersCount</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h3>Tickets Sold</h3>
+                <p class="display-5">@Model.TicketCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="container text-center mt-4">
+        <div class="alert alert-info">
+            <h4 class="mb-3">Want to book a ticket?</h4>
+            <p>Register now to get the best deals on flights and manage your reservations easily.</p>
+            <a href="/Identity/Account/Register" class="btn btn-success btn-lg">Register Now</a>
+        </div>
+    </div>
+}

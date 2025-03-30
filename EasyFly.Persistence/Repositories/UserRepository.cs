@@ -14,6 +14,11 @@ namespace EasyFly.Persistence.Repositories
             _Context = context;
         }
 
+        public async Task<int> Count()
+        {
+            return await _Context.Users.CountAsync();
+        }
+
         public async Task<bool> DeleteAsync(User value)
         {
             value.DeletedAt = DateTime.UtcNow;

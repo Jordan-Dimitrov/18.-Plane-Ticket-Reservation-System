@@ -64,6 +64,13 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
+        public async Task<DataResponse<int>> GetUserCount()
+        {
+            var response = new DataResponse<int>();
+            response.Data = await _UserRepository.Count();
+            return response;
+        }
+
         public async Task<DataResponse<UserPagedViewModel>> GetUsersPaged(int page, int size)
         {
             DataResponse<UserPagedViewModel> response = new DataResponse<UserPagedViewModel>();

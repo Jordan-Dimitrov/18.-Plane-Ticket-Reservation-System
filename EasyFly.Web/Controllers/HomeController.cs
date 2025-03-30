@@ -1,4 +1,6 @@
 using EasyFly.Application.Abstractions;
+using EasyFly.Application.ViewModels;
+using EasyFly.Domain.Enums;
 using EasyFly.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -10,16 +12,37 @@ namespace EasyFly.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IQrCodeService _QrCodeService;
-
-        public HomeController(ILogger<HomeController> logger, IQrCodeService qrCodeService)
+        private readonly ITicketService _TickerService;
+        private readonly IUserService _UserService;
+        public HomeController(ILogger<HomeController> logger, IQrCodeService qrCodeService,
+            IUserService userService, ITicketService ticketService)
         {
             _logger = logger;
             _QrCodeService = qrCodeService;
+            _TickerService = ticketService;
+            _UserService = userService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var homeViewModel = new HomeViewModel();
+
+            var userResponse = await _UserService.GetUserCount();
+            var ticketResponse = await _TickerService.GetTicketCount();
+
+            homeViewModel.RegisteredUsersCount = userResponse.Data;
+            homeViewModel.TicketCount = ticketResponse.Data;
+
+            if (User.IsInRole(Role.Admin.ToString()))
+            {
+                return RedirectToAction("GetTickets", "Ticket", new { page = 1 });
+            }
+            else if (User.IsInRole(Role.User.ToString()))
+            {
+                return RedirectToAction("Reservation", "Airport");
+            }
+
+            return View(homeViewModel);
         }
 
         public IActionResult Test()

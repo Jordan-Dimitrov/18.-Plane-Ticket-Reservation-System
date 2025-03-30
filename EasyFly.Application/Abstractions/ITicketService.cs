@@ -19,5 +19,6 @@ namespace EasyFly.Application.Abstractions
         Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size);
         Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByUserId(string userId, int page, int size);
         Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByFlightId(Guid flightId, int page, int size);
+        Task<DataResponse<int>> GetTicketCount();
     }
 }

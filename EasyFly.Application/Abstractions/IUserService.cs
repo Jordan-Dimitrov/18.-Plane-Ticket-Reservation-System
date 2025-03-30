@@ -15,5 +15,6 @@ namespace EasyFly.Application.Abstractions
         Task<Response> UpdateUser(UserDto user, Guid id);
         Task<DataResponse<UserDto>> GetUser(Guid id);
         Task<DataResponse<UserPagedViewModel>> GetUsersPaged(int page, int size);
+        Task<DataResponse<int>> GetUserCount();
     }
 }

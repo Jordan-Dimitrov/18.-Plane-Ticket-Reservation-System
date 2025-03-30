@@ -183,6 +183,13 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
+        public async Task<DataResponse<int>> GetTicketCount()
+        {
+            var response = new DataResponse<int>();
+            response.Data = await _ticketRepository.Count();
+            return response;
+        }
+
         public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size)
         {
             DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
