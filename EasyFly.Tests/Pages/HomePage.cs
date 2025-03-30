@@ -1,18 +1,35 @@
 ﻿using OpenQA.Selenium;
+using SeleniumExtras.WaitHelpers;
 
 namespace EasyFly.Tests.Pages
 {
-    public class HomePage
+    public class HomePage : BasePage
     {
-        private readonly IWebDriver _driver;
-        public HomePage(IWebDriver driver) => _driver = driver;
+        public HomePage(IWebDriver driver) : base(driver)
+        {
+        }
 
-        public string GetWelcomeText() => _driver.FindElement(By.ClassName("display-4")).Text;
+        public string GetWelcomeText()
+        {
+            var welcomeElement = Wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("display-4")));
+            return welcomeElement.Text;
+        }
 
-        public void GoToLogin() => _driver.FindElement(By.LinkText("Login")).Click();
+        public void GoToLogin()
+        {
+            var loginButton = Wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Login")));
+            loginButton.Click();
+        }
 
-        public void GoToRegister() => _driver.FindElement(By.LinkText("Register")).Click();
+        public void GoToRegister()
+        {
+            var registerButton = Wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Register")));
+            registerButton.Click();
+        }
 
-        public bool IsWelcomeMessagePresent() => _driver.PageSource.Contains("Welcome");
+        public bool IsWelcomeMessagePresent()
+        {
+            return Wait.Until(driver => driver.PageSource.Contains("Welcome"));
+        }
     }
 }

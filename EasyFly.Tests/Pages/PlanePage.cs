@@ -1,27 +1,27 @@
 ﻿using EasyFly.Application.Dtos;
-using EasyFly.Domain.Models;
 using EasyFly.Infrastructure.Services;
-using EasyFly.Tests.Factories;
+using EasyFly.Tests.Pages;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 
 namespace PlaneTicketReservationSystem.Pages
 {
-    public class PlanePage
+    public class PlanePage : BasePage
     {
-        private readonly IWebDriver _driver;
+        private WebDriverWait Wait => new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
 
-        public PlanePage(IWebDriver driver)
+        public PlanePage(IWebDriver driver) : base(driver)
         {
-            _driver = driver;
         }
 
-        private IWebElement NameInput => _driver.FindElement(By.Id("Name"));
-        private IWebElement AvailableSeatsInput => _driver.FindElement(By.Id("AvailableSeats"));
-        private IWebElement SubmitButton => _driver.FindElement(By.CssSelector("button[type='submit']"));
+        private IWebElement NameInput => Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("Name")));
+        private IWebElement AvailableSeatsInput => Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("AvailableSeats")));
+        private IWebElement SubmitButton => Wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button[type='submit']")));
 
         public void NavigateToPlanes()
         {
-            _driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
+            Driver.Navigate().GoToUrl(Helper.RetrieveUrl() + "Plane/GetPlanes");
         }
 
         public void CreatePlane(PlaneDto plane)
@@ -37,13 +37,14 @@ namespace PlaneTicketReservationSystem.Pages
 
         public bool IsPlaneCreated(string planeName)
         {
-            var planeElements = _driver.FindElements(By.CssSelector(".card-title"));
+            var planeElements = Wait.Until(d => d.FindElements(By.CssSelector(".card-title")));
             return planeElements.Any(e => e.Text.Contains(planeName));
         }
 
         public bool ArePlanesDisplayed()
         {
-            return _driver.FindElements(By.CssSelector(".card .card-title")).Any();
+            var planes = Wait.Until(d => d.FindElements(By.CssSelector(".card .card-title")));
+            return planes.Any();
         }
     }
 }
