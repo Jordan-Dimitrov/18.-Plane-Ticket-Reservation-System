@@ -246,6 +246,20 @@ namespace EasyFly.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetTicket(Guid ticketId)
+        {
+            var response = await _ticketService.GetTicket(ticketId);
+            if (!response.Success)
+            {
+                TempData["ErrorMessage"] = response.ErrorMessage;
+                return RedirectToAction("Error");
+            }
+            return View(response.Data);
+        }
+
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]

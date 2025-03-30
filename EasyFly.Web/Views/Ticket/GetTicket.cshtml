@@ -1,0 +1,33 @@
+﻿@model EasyFly.Application.ViewModels.TicketViewModel
+
+<h2>Ticket Details</h2>
+<div>
+    <strong>Ticket ID:</strong> @Model.Id
+</div>
+<div>
+    <strong>Seat:</strong> @Model.Seat.Row @Model.Seat.SeatLetter
+</div>
+<div>
+    <strong>Plane:</strong> @Model.Seat.Plane.Name
+</div>
+<div>
+    <strong>User:</strong> @Model.User.Username
+</div>
+<div>
+    <strong>First Name:</strong> @Model.PersonFirstName
+</div>
+<div>
+    <strong>Last Name:</strong> @Model.PersonLastName
+</div>
+<div>
+    <strong>Gender:</strong> @Model.Gender
+</div>
+<div>
+    <strong>Price:</strong> @Model.Price
+</div>
+<div>
+    <strong>Luggage Size:</strong> @Model.LuggageSize
+</div>
+<div>
+    <strong>Flight ID:</strong> @Model.FlightId
+</div>
