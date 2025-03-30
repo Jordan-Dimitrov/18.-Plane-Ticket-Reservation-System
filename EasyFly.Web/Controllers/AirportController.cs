@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
-    public class AirportController : Controller
+    public class AirportController : BaseController
     {
-        private const int _Size = 5;
+        private const int _Size = 10;
         private readonly IAirportService _AirportService;
 
-        public AirportController(IAirportService airportService)
+        public AirportController(IAirportService airportService, IAuditService auditService) : base(auditService)
         {
             _AirportService = airportService;
         }

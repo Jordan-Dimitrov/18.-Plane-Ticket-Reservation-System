@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
-    public class PlaneController : Controller
+    public class PlaneController : BaseController
     {
-        private const int _Size = 5;
+        private const int _Size = 10;
         private readonly IPlaneService _PlaneService;
 
-        public PlaneController(IPlaneService planeService)
+        public PlaneController(IPlaneService planeService, IAuditService auditService)
+            : base(auditService)
         {
             _PlaneService = planeService;
         }

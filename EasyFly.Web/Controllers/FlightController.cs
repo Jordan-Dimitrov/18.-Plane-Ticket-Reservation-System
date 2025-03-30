@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
-    public class FlightController : Controller
+    public class FlightController : BaseController
     {
-        private const int _Size = 5;
+        private const int _Size = 10;
         private readonly IFlightService _FlightService;
         private readonly IAirportService _AirportService;
 
-        public FlightController(IFlightService flightService, IAirportService airportService)
+        public FlightController(IFlightService flightService, IAirportService airportService, IAuditService auditService)
+            : base(auditService)
         {
             _FlightService = flightService;
             _AirportService = airportService;
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(Guid? planeId)
         {
             ViewBag.PlaneId = planeId;
@@ -29,7 +30,7 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Guid planeId, FlightDto dto)
         {

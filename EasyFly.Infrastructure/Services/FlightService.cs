@@ -42,7 +42,8 @@ namespace EasyFly.Infrastructure.Services
             Plane plane = await _planeRepository
                 .GetByIdAsync(flight.PlaneId, true);
 
-            if (departureAirport == null || arrivalAirport == null || plane == null)
+            if (departureAirport == null || arrivalAirport == null || plane == null 
+                || flight.ArrivalTime <= flight.DepartureTime || flight.DepartureAirportId == flight.ArrivalAirportId)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;

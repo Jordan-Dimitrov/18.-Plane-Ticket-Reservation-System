@@ -6,10 +6,11 @@ namespace EasyFly.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CheckoutController : Controller
+    public class CheckoutController : BaseController
     {
         private readonly IPaymentService _PaymentService;
-        public CheckoutController(IPaymentService paymentService)
+        public CheckoutController(IPaymentService paymentService, IAuditService auditService)
+            : base(auditService)
         {
             _PaymentService = paymentService;
         }

@@ -28,23 +28,23 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Audit>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Audits;
+            var query = _Context.Audits.Include(x => x.User);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<ICollection<Audit>?> GetAllByAsync(Expression<Func<Audit, bool>> condition)
         {
-            return await _Context.Audits.Where(condition).ToListAsync();
+            return await _Context.Audits.Include(x => x.User).Where(condition).ToListAsync();
         }
 
         public async Task<Audit?> GetByAsync(Expression<Func<Audit, bool>> condition)
         {
-            return await _Context.Audits.FirstOrDefaultAsync(condition);
+            return await _Context.Audits.Include(x => x.User).FirstOrDefaultAsync(condition);
         }
 
         public async Task<Audit?> GetByIdAsync(Guid id, bool trackChanges)
         {
-            var query = _Context.Audits.Where(x => x.Id == id);
+            var query = _Context.Audits.Include(x => x.User).Where(x => x.Id == id);
             return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
@@ -57,7 +57,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Audit>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Audits.Skip((page - 1) * size).Take(size);
+            var query = _Context.Audits.Include(x => x.User).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 

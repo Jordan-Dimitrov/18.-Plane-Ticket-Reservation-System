@@ -4,6 +4,8 @@ using EasyFly.Persistence;
 using EasyFly.Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Quartz.Impl.Matchers;
+using Quartz;
 namespace EasyFly.Web
 {
     public class Program

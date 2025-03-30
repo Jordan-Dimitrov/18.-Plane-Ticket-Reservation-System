@@ -111,7 +111,7 @@ namespace EasyFly.Infrastructure.Services
 
             existingUser.UserName = user.Username;
             existingUser.Email = user.Email;
-            existingUser.Email = user.PhoneNumber;
+            existingUser.PhoneNumber = user.PhoneNumber;
 
             if (!await _UserRepository.UpdateAsync(existingUser))
             {

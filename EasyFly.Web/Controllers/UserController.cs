@@ -5,15 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
+using Humanizer;
 
 namespace EasyFly.Web.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
-        private const int _Size = 5;
+        private const int _Size = 10;
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAuditService auditService)
+            : base(auditService)
         {
             _userService = userService;
         }
@@ -30,6 +32,15 @@ namespace EasyFly.Web.Controllers
                 return View();
             }
 
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+            {
+                ModifiedAt = DateTime.UtcNow,
+                Message = $"Started modifying {response.Data.Id} - {response.Data.Username}," +
+                    $" {response.Data.PhoneNumber ?? ""}," +
+                    $" {response.Data.Email}"
+            });
+
             return View(response.Data);
         }
 
@@ -38,7 +49,7 @@ namespace EasyFly.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserDto dto, Guid userId)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid && ModelState.ErrorCount > 1)
             {
                 TempData["ErrorMessage"] = "Invalid data";
                 return RedirectToAction("Edit", new { userId = userId });
@@ -53,6 +64,14 @@ namespace EasyFly.Web.Controllers
             else
             {
                 TempData["Success"] = "Successfully updated";
+                var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+                {
+                    ModifiedAt = DateTime.UtcNow,
+                    Message = $"Modified {dto.Id} - {dto.Username}," +
+                    $" {dto.PhoneNumber ?? ""}," +
+                    $" {dto.Email}"
+                });
             }
 
             return RedirectToAction("GetUsers", new { page = 1 });
@@ -88,6 +107,12 @@ namespace EasyFly.Web.Controllers
             else
             {
                 TempData["Success"] = "Successfully deleted";
+                var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+                {
+                    ModifiedAt = DateTime.UtcNow,
+                    Message = $"Removed {userId}"
+                });
             }
 
             return RedirectToAction("GetUsers", new { page = 1 });
@@ -103,7 +128,7 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers([FromQuery] int page = 1)
         {
             var response = await _userService.GetUsersPaged(page, _Size);

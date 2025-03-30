@@ -14,16 +14,17 @@ using System.Net.Sockets;
 
 namespace EasyFly.Web.Controllers
 {
-    public class TicketController : Controller
+    public class TicketController : BaseController
     {
-        private const int _Size = 5;
+        private const int _Size = 10;
         private readonly ITicketService _ticketService;
         private readonly IUserService _userService;
         private readonly ISeatService _seatService;
         private readonly IFlightService _flightService;
         private readonly IPaymentService _PaymentService;
         public TicketController(ITicketService ticketService, IUserService userService,
-            ISeatService seatService, IFlightService flightService, IPaymentService paymentService)
+            ISeatService seatService, IFlightService flightService, IPaymentService paymentService,
+            IAuditService auditService) : base(auditService)
         {
             _ticketService = ticketService;
             _userService = userService;
