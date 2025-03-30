@@ -40,8 +40,12 @@ namespace EasyFly.Infrastructure.Services
                 },
             },
                 Mode = "payment",
-                SuccessUrl = $"{scheme}://{host}/checkout/success",
+                SuccessUrl = $"{scheme}://{host}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}",
                 CancelUrl = $"{scheme}://{host}/checkout/cancel",
+                Metadata = new Dictionary<string, string>
+                {
+                    {"ticketIds", string.Join(",", model.Tickets) }
+                }
             };
             var service = new SessionService();
             var session = service.Create(options);

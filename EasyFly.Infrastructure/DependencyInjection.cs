@@ -1,6 +1,7 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Configurations;
 using EasyFly.Infrastructure.BackgroundJobs;
+using EasyFly.Infrastructure.BackgtoundJobs;
 using EasyFly.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +37,7 @@ namespace EasyFly.Infrastructure
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddHostedService<RemoveOldAuditsBackgroundService>();
+            services.AddHostedService<RemoveUnreservedTicketsBackgroundService>();
 
             return services;
         }

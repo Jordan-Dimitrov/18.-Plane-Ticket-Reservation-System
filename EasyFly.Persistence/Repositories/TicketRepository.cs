@@ -16,7 +16,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> Count()
         {
-            return await _Context.Tickets.CountAsync();
+            return await _Context.Tickets.Where(x => x.Reserved == true).CountAsync();
         }
 
         public async Task<bool> DeleteAsync(Ticket value)
@@ -47,7 +47,8 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
                 .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
                 .Include(x => x.Flight).ThenInclude(f => f.Plane)
-                .Include(x => x.User).FirstOrDefaultAsync(condition);
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(condition);
         }
 
         public async Task<Ticket?> GetByIdAsync(Guid id, bool trackChanges)
@@ -56,7 +57,8 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.Flight).ThenInclude(f => f.DepartureAirport)
                 .Include(x => x.Flight).ThenInclude(f => f.ArrivalAirport)
                 .Include(x => x.Flight).ThenInclude(f => f.Plane)
-                .Include(x => x.User).Where(x => x.Id == id);
+                .Include(x => x.User)
+                .Where(x => x.Id == id);
             return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
@@ -113,9 +115,36 @@ namespace EasyFly.Persistence.Repositories
             return await _Context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> RemoveUnreservedTickets()
+        {
+            var entities = await _Context.Tickets
+                .Where(x => x.Reserved == false && x.CreatedAt > DateTime.UtcNow.AddDays(-1))
+                .ToListAsync();
+
+            _Context.RemoveRange(entities);
+
+            return await _Context.SaveChangesAsync() > 0;
+
+        }
+
         public async Task<bool> UpdateAsync(Ticket value)
         {
             _Context.Update(value);
+            return await _Context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateTicketStatus(List<Guid> value)
+        {
+            var tickets = await _Context.Tickets
+                .Where(x => value.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in tickets)
+            {
+                item.Reserved = true;
+            }
+
+            _Context.UpdateRange(tickets);
             return await _Context.SaveChangesAsync() > 0;
         }
     }

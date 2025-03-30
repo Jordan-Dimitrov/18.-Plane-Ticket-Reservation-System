@@ -39,5 +39,7 @@ namespace EasyFly.Domain.Models
         public decimal Price { get; set; }
         [Required]
         public bool Reserved { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; }
     }
 }

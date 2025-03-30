@@ -38,6 +38,15 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
+            if(ticket.LuggageSize == Domain.Enums.LuggageSize.Medium)
+            {
+                ticket.Price = ticket.Price * 0.8m;
+            }
+            else if(ticket.LuggageSize == Domain.Enums.LuggageSize.Small)
+            {
+                ticket.Price = ticket.Price * 0.6m;
+            }
+
             Ticket newTicket = new Ticket()
             {
                 SeatId = ticket.SeatId,
@@ -49,6 +58,7 @@ namespace EasyFly.Infrastructure.Services
                 Price = ticket.Price,
                 LuggageSize = ticket.LuggageSize,
                 Flight = flight,
+                CreatedAt = DateTime.UtcNow
             };
 
             if (!await _ticketRepository.InsertAsync(newTicket))
@@ -78,6 +88,16 @@ namespace EasyFly.Infrastructure.Services
             }
             for (int i = 0; i < ticketDtos.Count(); i++)
             {
+                var price = flight.TicketPrice;
+
+                if (ticketDtos[i].LuggageSize == Domain.Enums.LuggageSize.Medium)
+                {
+                    price = price * 0.8m;
+                }
+                else if (ticketDtos[i].LuggageSize == Domain.Enums.LuggageSize.Small)
+                {
+                    price = price * 0.6m;
+                }
 
                 Ticket newTicket = new Ticket()
                 {
@@ -87,9 +107,10 @@ namespace EasyFly.Infrastructure.Services
                     PersonLastName = ticketDtos[i].PersonLastName,
                     Gender = ticketDtos[i].Gender,
                     Seat = availableSeats[i],
-                    Price = flight.TicketPrice,
+                    Price = price,
                     LuggageSize = ticketDtos[i].LuggageSize,
                     Flight = flight,
+                    CreatedAt = DateTime.UtcNow,
                     Reserved = false
                 };
 
@@ -107,7 +128,8 @@ namespace EasyFly.Infrastructure.Services
                 ProductName = $"Ticket for {tickets[0].Flight.ArrivalAirport.Name}",
                 ProductDescription = $"Nice",
                 Amount = (long)tickets.Sum(x => x.Price),
-                Currency = "bgn"
+                Currency = "bgn",
+                Tickets = tickets.Select(x => x.Id).ToList()
             };
 
             return response;
@@ -334,6 +356,19 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
+        public async Task<Response> RemoveUnreservedTickets()
+        {
+            Response response = new Response();
+
+            if(!await _ticketRepository.RemoveUnreservedTickets())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
+        }
+
         public async Task<Response> UpdateTicket(TicketDto ticket, Guid id)
         {
             Response response = new Response();
@@ -369,6 +404,19 @@ namespace EasyFly.Infrastructure.Services
             existingTicket.Flight = flight;
 
             if (!await _ticketRepository.UpdateAsync(existingTicket))
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.Unexpected;
+            }
+
+            return response;
+        }
+
+        public async Task<Response> UpdateTicketStatus(List<Guid> tickets)
+        {
+            Response response = new Response();
+
+            if (!await _ticketRepository.UpdateTicketStatus(tickets))
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
