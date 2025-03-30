@@ -12,7 +12,7 @@ namespace EasyFly.Infrastructure.BackgroundJobs
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<RemoveOldAuditsBackgroundService> _logger;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+        private readonly TimeSpan _interval = TimeSpan.FromHours(1);
 
         public RemoveOldAuditsBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger<RemoveOldAuditsBackgroundService> logger)
         {

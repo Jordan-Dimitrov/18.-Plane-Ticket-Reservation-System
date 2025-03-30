@@ -14,7 +14,7 @@ namespace EasyFly.Infrastructure.BackgtoundJobs
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<RemoveUnreservedTicketsBackgroundService> _logger;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+        private readonly TimeSpan _interval = TimeSpan.FromHours(1);
 
         public RemoveUnreservedTicketsBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger<RemoveUnreservedTicketsBackgroundService> logger)
         {

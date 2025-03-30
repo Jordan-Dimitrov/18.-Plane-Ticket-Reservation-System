@@ -8,6 +8,6 @@ namespace EasyFly.Application.Abstractions
 {
     public interface IEmailService
     {
-        public string BuildEmail(string baseUrl, string username, Guid ticketId);
+        public string BuildEmails(string baseUrl, string username, List<Guid> ticketIds);
     }
 }
