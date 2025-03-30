@@ -35,6 +35,7 @@ namespace EasyFly.Infrastructure
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IQrCodeService, QrCodeService>();
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddHostedService<RemoveOldAuditsBackgroundService>();
             services.AddHostedService<RemoveUnreservedTicketsBackgroundService>();
