@@ -205,7 +205,7 @@ namespace EasyFly.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReserveTicket(ReservationDto model, Guid flightId, int requiredSeats)
+        public async Task<IActionResult> ReserveTicket(Guid flightId, int requiredSeats)
         {
             if (!ModelState.IsValid)
             {
