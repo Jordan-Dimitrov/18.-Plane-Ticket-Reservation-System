@@ -4,6 +4,7 @@ using EasyFly.Domain.Enums;
 using EasyFly.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Diagnostics;
 using System.Net.Mime;
 
@@ -49,6 +50,7 @@ namespace EasyFly.Web.Controllers
         [AllowAnonymous]
         public IActionResult Test()
         {
+            //throw new DBConcurrencyException();
             var temp = _QrCodeService.GenerateQRCode("https://www.youtube.com/live/fXyMdXhsSb4?si=EuU4Zckgv63EZkFQ", 500);
             return File(temp, "image/jpeg");
         }

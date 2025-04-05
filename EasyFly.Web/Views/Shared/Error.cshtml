@@ -1,1 +1,14 @@
-﻿
+﻿@model ErrorViewModel
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Error";
+}
+
+<div style="text-align: center;">
+    <h1>Error</h1>
+    <p>@Model.Title</p>
+    <p>@Model.Message</p>
+    <p>
+        <a href="@Url.Action("Index", "Home")">Return to Home</a>
+    </p>
+</div>
