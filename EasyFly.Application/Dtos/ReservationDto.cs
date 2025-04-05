@@ -15,5 +15,7 @@ namespace EasyFly.Application.Dtos
         public Guid ArrivalAirportId { get; set; }
         [Range(1, int.MaxValue)]
         public int NumberOfTickets { get; set; }
+        [Required]
+        public DateOnly Departure { get; set; }
     }
 }

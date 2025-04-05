@@ -122,7 +122,7 @@ namespace EasyFly.Persistence.Repositories
                 .Include(x => x.Plane)
                 .ThenInclude(x => x.Seats)
                 .Include(x => x.Tickets)
-                .Where(x => x.DepartureTime == departure
+                .Where(x => x.DepartureTime.Date == departure.Date
                     && x.DepartureAirportId == departureId && x.ArrivalAirportId == arrivalId)
                 .Where(x => x.Plane.Seats.Count() - x.Tickets.Count() >= requiredSeats)
                 .Skip((page - 1) * size)

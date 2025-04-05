@@ -181,11 +181,19 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> SelectFlight(Guid departureAirportId, Guid arrivalAirportId, int requiredSeats)
+        public async Task<IActionResult> SelectFlight(Guid departureAirportId, Guid arrivalAirportId, int requiredSeats, DateOnly departure)
         {
-            var flightsResponse = await _FlightService.GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, requiredSeats, 1, _Size);
+            var flightsResponse = await _FlightService
+                .GetFlightsPagedByArrivalAndDepartureAsync(departureAirportId, arrivalAirportId, departure.ToDateTime(TimeOnly.MinValue), requiredSeats, 1, _Size);
 
             if(flightsResponse.Data.Flights == null)
+            {
+                ViewBag.FoundDate = false;
+                flightsResponse = await _FlightService
+                    .GeFlightstPagedByArrivalAndDepartureAirportsAsync(departureAirportId, arrivalAirportId, requiredSeats, 1, _Size);
+            }
+
+            if (flightsResponse.Data.Flights == null)
             {
                 TempData["ErrorMessage"] = "No flights available for the selected route.";
                 return RedirectToAction("Error");

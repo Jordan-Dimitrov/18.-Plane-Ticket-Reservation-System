@@ -135,7 +135,7 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAirports([FromQuery] int page = 1)
         {
             var response = await _AirportService.GetAirportsPaged(page, _Size);
@@ -189,7 +189,12 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Reservation");
             }
 
-            return RedirectToAction("SelectFlight", "Flight", new { departureAirportId = model.DepartureAirportId, arrivalAirportId = model.ArrivalAirportId, requiredSeats = model.NumberOfTickets });
+            return RedirectToAction("SelectFlight", "Flight", 
+                new { departureAirportId = model.DepartureAirportId,
+                    arrivalAirportId = model.ArrivalAirportId, 
+                    requiredSeats = model.NumberOfTickets,
+                    departure = model.Departure
+                });
         }
     }
 }

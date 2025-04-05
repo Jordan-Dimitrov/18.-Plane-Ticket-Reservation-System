@@ -20,6 +20,11 @@
     </div>
 }
 
+@if (ViewBag.FoundDate == false)
+{
+    <h5>No tickets found for your date. Here are some other options:</h5>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -56,5 +61,5 @@
 </table>
 
 <div>
-    <a asp-action="GetAirports" asp-controller="Airport" class="btn btn-secondary">Back to Airports</a>
+    <a asp-action="Reservation" asp-controller="Airport" class="btn btn-secondary">Back to Reservation</a>
 </div>

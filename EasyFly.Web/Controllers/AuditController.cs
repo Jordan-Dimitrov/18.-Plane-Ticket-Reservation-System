@@ -1,4 +1,5 @@
 ﻿using EasyFly.Application.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyFly.Web.Controllers
@@ -10,6 +11,7 @@ namespace EasyFly.Web.Controllers
         {
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index([FromQuery] int page = 1)
         {
             var response = await AuditService.GetAuditsPaged(page, _Size);
