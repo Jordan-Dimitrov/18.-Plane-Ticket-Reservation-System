@@ -34,7 +34,7 @@ namespace EasyFly.Infrastructure.Services
                             Name = model.ProductName,
                             Description = model.ProductDescription,
                         },
-                        UnitAmount = model.Amount,
+                        UnitAmount = model.Amount * 100,
                     },
                     Quantity = 1,
                 },
