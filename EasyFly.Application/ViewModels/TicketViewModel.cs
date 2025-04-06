@@ -23,5 +23,6 @@ namespace EasyFly.Application.ViewModels
         public Gender Gender { get; set; }
         public decimal Price { get; set; }
         public LuggageSize LuggageSize { get; set;}
+        public DateTime CreatedAt { get; set; }
     }
 }

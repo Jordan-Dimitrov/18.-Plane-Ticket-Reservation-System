@@ -33,6 +33,11 @@
             <th>Arrival Time</th>
             <th>Departure Airport</th>
             <th>Arrival Airport</th>
+            <th>Price</th>
+            @if(Model.Flights.Any(x => x.ReturningFlights.Any()))
+            {
+                <th>Returning Flight</th>
+            }
             <th>Actions</th>
         </tr>
     </thead>
@@ -45,6 +50,19 @@
                 <td>@flight.ArrivalTime</td>
                 <td>@flight.DepartureAirport.Name</td>
                 <td>@flight.ArrivalAirport.Name</td>
+                <td>@flight.TicketPrice BGN</td>
+                @if (flight.ReturningFlights != null && flight.ReturningFlights.Any())
+                {
+                    <td>
+                        <select name="returningFlightId" id="returningFlightId_@flight.Id" class="form-control" form="reserveForm_@flight.Id">
+                            <option value="">None</option>
+                            @foreach (var ret in flight.ReturningFlights)
+                            {
+                                <option value="@ret.Id">@ret.FlightNumber - @ret.DepartureTime - @ret.TicketPrice BGN</option>
+                            }
+                        </select>
+                    </td>
+                }
                 <td>
                     <form id="reserveForm_@flight.Id" asp-action="ReserveTicket" method="post">
                         <input type="hidden" name="flightId" value="@flight.Id" />
@@ -53,21 +71,6 @@
                     </form>
                 </td>
             </tr>
-            if (flight.ReturningFlights != null && flight.ReturningFlights.Any())
-            {
-                <tr>
-                    <td colspan="6">
-                        <label for="returningFlightId_@flight.Id">Select Returning Flight (optional):</label>
-                        <select name="returningFlightId" id="returningFlightId_@flight.Id" class="form-control" form="reserveForm_@flight.Id">
-                            <option value="">None</option>
-                            @foreach (var ret in flight.ReturningFlights)
-                            {
-                                <option value="@ret.Id">@ret.FlightNumber - @ret.DepartureTime</option>
-                            }
-                        </select>
-                    </td>
-                </tr>
-            }
         }
     </tbody>
 </table>

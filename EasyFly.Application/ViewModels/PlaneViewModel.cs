@@ -12,5 +12,6 @@ namespace EasyFly.Application.ViewModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int Seats { get; set; }
     }
 }

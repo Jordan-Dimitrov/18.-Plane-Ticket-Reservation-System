@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Enter Ticket Details";
+    var basePrice = Model.TicketPrice;
 }
 
 <h2>Enter Ticket Details</h2>
@@ -12,6 +13,8 @@
         @ViewBag.ErrorMessage
     </div>
 }
+
+<input type="hidden" id="baseTicketPrice" value="@basePrice" />
 
 <form asp-action="EnterTicketDetails" method="post">
     <input type="hidden" asp-for="FlightId" />
@@ -49,14 +52,44 @@
         </div>
         <div class="form-group">
             <label asp-for="Tickets[i].LuggageSize"></label>
-            <select asp-for="Tickets[i].LuggageSize" class="form-control">
+            <select asp-for="Tickets[i].LuggageSize" class="form-control luggage-size" data-index="@i">
                 @foreach (var size in Enum.GetValues(typeof(EasyFly.Domain.Enums.LuggageSize)))
                 {
                     <option value="@size">@size</option>
                 }
             </select>
         </div>
+        <div class="form-group">
+            <label>Ticket Price (BGN)</label>
+            <span class="ticket-price" id="ticketPrice_@i">@basePrice</span>
+        </div>
     }
 
     <button type="submit" class="btn btn-primary mt-2">Checkout</button>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var basePrice = parseFloat(document.getElementById('baseTicketPrice').value);
+
+        function updateTicketPrice(selectElement, index) {
+            var multiplier = 1;
+            var selectedValue = selectElement.value;
+            if (selectedValue === 'Medium') {
+                multiplier = 0.8;
+            } else if (selectedValue === 'Small') {
+                multiplier = 0.6;
+            }
+            var newPrice = basePrice * multiplier;
+            document.getElementById('ticketPrice_' + index).innerText = newPrice.toFixed(2);
+        }
+
+        var selects = document.querySelectorAll('.luggage-size');
+        selects.forEach(function (select, index) {
+            updateTicketPrice(select, index);
+            select.addEventListener('change', function () {
+                updateTicketPrice(select, index);
+            });
+        });
+    });
+</script>

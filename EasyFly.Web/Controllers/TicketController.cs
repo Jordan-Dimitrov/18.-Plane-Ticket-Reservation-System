@@ -11,6 +11,8 @@ using EasyFly.Application.Responses;
 using EasyFly.Domain.Models;
 using System.Security.Claims;
 using System.Net.Sockets;
+using NuGet.Protocol;
+using Newtonsoft.Json;
 
 namespace EasyFly.Web.Controllers
 {
@@ -64,6 +66,14 @@ namespace EasyFly.Web.Controllers
                 Flights = flights.Data.Flights
             };
 
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+            {
+                ModifiedAt = DateTime.UtcNow,
+                Message = $"Started modifying {JsonConvert.SerializeObject(response.TicketViewModel)}"
+            });
+
             return View(response);
         }
 
@@ -88,6 +98,14 @@ namespace EasyFly.Web.Controllers
             {
                 TempData["Success"] = "Successfully updated";
             }
+
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+            {
+                ModifiedAt = DateTime.UtcNow,
+                Message = $"Modified {ticketId}"
+            });
 
             return RedirectToAction("GetTickets", new { page = 1 });
         }
@@ -128,6 +146,14 @@ namespace EasyFly.Web.Controllers
                 ViewBag.ErrorMessage = response.ErrorMessage;
                 return View();
             }
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+            {
+                ModifiedAt = DateTime.UtcNow,
+                Message = $"Started deleting {JsonConvert.SerializeObject(response.Data)}"
+            });
+
 
             return View(response.Data);
         }
@@ -147,6 +173,14 @@ namespace EasyFly.Web.Controllers
             {
                 TempData["Success"] = "Successfully deleted";
             }
+
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            await AuditService.CreateAudit(Guid.Parse(currentUserId), new AuditDto()
+            {
+                ModifiedAt = DateTime.UtcNow,
+                Message = $"Deleted{ticketId}"
+            });
 
             return RedirectToAction("GetTickets", new { page = 1 });
         }
@@ -199,11 +233,11 @@ namespace EasyFly.Web.Controllers
 
             if (!string.IsNullOrEmpty(userId))
             {
-                response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size);
+                response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size * 3);
             }
             else if (flightId.HasValue)
             {
-                response = await _ticketService.GetTicketsPagedByFlightId(flightId.Value, page, _Size);
+                response = await _ticketService.GetTicketsPagedByFlightId(flightId.Value, page, _Size * 3);
             }
             else
             {
@@ -252,7 +286,8 @@ namespace EasyFly.Web.Controllers
                 FlightId = flightId,
                 ReturningFlightId = returningFlightId,
                 RequiredSeats = requiredSeats,
-                Tickets = new List<ReserveTicketDto>(new ReserveTicketDto[requiredSeats])
+                Tickets = new List<ReserveTicketDto>(new ReserveTicketDto[requiredSeats]),
+                TicketPrice = flightResponse.Data.TicketPrice
             };
 
             return View(model);

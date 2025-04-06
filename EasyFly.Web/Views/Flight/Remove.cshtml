@@ -6,10 +6,10 @@
 
 <h1>Delete Flight</h1>
 
-@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+@if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        @ViewBag.ErrorMessage
+        @TempData["ErrorMessage"]
     </div>
 }
 

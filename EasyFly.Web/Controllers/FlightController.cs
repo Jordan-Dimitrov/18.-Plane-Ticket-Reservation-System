@@ -10,7 +10,7 @@ namespace EasyFly.Web.Controllers
 {
     public class FlightController : BaseController
     {
-        private const int _Size = 10;
+        private const int _Size = 30;
         private readonly IFlightService _FlightService;
         private readonly IAirportService _AirportService;
 

@@ -4,11 +4,28 @@
     ViewBag.Title = "Plane Ticket Reservation";
 }
 
-<h2>Plane Ticket Reservation</h2>
+<h2>Reserve your plane tickets </h2>
 
-<form asp-action="Reservation" method="post">
+<style>
+    .reservation-form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .reservation-form .form-group {
+            margin-bottom: 0;
+        }
+
+    #reservationCarousel .carousel-item img {
+        height: 500px;
+        object-fit: cover;
+    }
+</style>
+
+<form asp-action="Reservation" method="post" class="reservation-form">
     <div class="form-group">
-        <label for="departure">Departure Airport</label>
         <select name="DepartureAirportId" class="form-control" id="departure">
             <option value="">Select Departure Airport</option>
             @foreach (var airport in Model.Airports)
@@ -18,7 +35,6 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="arrival">Arrival Airport</label>
         <select name="ArrivalAirportId" class="form-control" id="arrival">
             <option value="">Select Arrival Airport</option>
             @foreach (var airport in Model.Airports)
@@ -28,12 +44,38 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="NumberOfTickets">Number Of Tickets:</label>
-        <input type="number" class="form-control" id="NumberOfTickets" name="NumberOfTickets" />
+        <input type="number" class="form-control" id="NumberOfTickets" name="NumberOfTickets" placeholder="Tickets" value="1" />
     </div>
     <div class="form-group">
-        <label for="departureDate">Departure Date</label>
-        <input type="date" class="form-control" id="departureDate" name="Departure" />
+        <input type="date" class="form-control" id="departureDate" name="Departure"
+               value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="Departure Date" />
     </div>
     <button type="submit" class="btn btn-primary">Next</button>
 </form>
+
+<div id="reservationCarousel" class="carousel slide carousel-dark mt-3 mb-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#reservationCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#reservationCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#reservationCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="3000">
+            <img src="https://images.pexels.com/photos/46148/aircraft-jet-landing-cloud-46148.jpeg" class="d-block w-100" alt="Aircraft Landing">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="https://images.pexels.com/photos/2033343/pexels-photo-2033343.jpeg?cs=srgb&dl=pexels-jason-toevs-1047869-2033343.jpg&fm=jpg" class="d-block w-100" alt="Airplane in Flight">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="https://images.pexels.com/photos/912050/pexels-photo-912050.jpeg?cs=srgb&dl=pexels-ahmedmuntasir-912050.jpg&fm=jpg" class="d-block w-100" alt="Airplane on Runway">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#reservationCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#reservationCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

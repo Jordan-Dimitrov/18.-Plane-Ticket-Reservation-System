@@ -6,13 +6,12 @@
 
 <h1>Edit User</h1>
 
-@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+@if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        @ViewBag.ErrorMessage
+        @TempData["ErrorMessage"]
     </div>
 }
-
 @if (Model is not null)
 {
     <form asp-controller="User" asp-action="Edit" method="post">

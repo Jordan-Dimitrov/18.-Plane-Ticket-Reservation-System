@@ -100,6 +100,7 @@ namespace EasyFly.Infrastructure.Services
                 {
                     Id = seat.PlaneId,
                     Name = seat.Plane.Name,
+                    Seats = seat.Plane.Seats.Count
                 }
             };
 
@@ -128,6 +129,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = seat.PlaneId,
                         Name = seat.Plane.Name,
+                        Seats = seat.Plane.Seats.Count
                     }
                 });
 
@@ -158,6 +160,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = seat.PlaneId,
                         Name = seat.Plane.Name,
+                        Seats = seat.Plane.Seats.Count
                     }
                 });
 

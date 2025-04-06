@@ -184,6 +184,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = ticket.Seat.PlaneId,
                         Name = ticket.Seat.Plane.Name,
+                        Seats = ticket.Seat.Plane.Seats.Count
                     }
                 },
                 PersonType = ticket.PersonType,
@@ -237,6 +238,7 @@ namespace EasyFly.Infrastructure.Services
                         {
                             Id = ticket.Seat.PlaneId,
                             Name = ticket.Seat.Plane.Name,
+                            Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
                     PersonType = ticket.PersonType,
@@ -253,6 +255,7 @@ namespace EasyFly.Infrastructure.Services
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
                     FlightId = ticket.FlightId,
+                    CreatedAt = ticket.CreatedAt
                 });
 
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
@@ -285,6 +288,7 @@ namespace EasyFly.Infrastructure.Services
                         {
                             Id = ticket.Seat.PlaneId,
                             Name = ticket.Seat.Plane.Name,
+                            Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
                     PersonType = ticket.PersonType,
@@ -301,6 +305,7 @@ namespace EasyFly.Infrastructure.Services
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
                     FlightId = ticket.FlightId,
+                    CreatedAt = ticket.CreatedAt
                 });
 
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
@@ -333,6 +338,7 @@ namespace EasyFly.Infrastructure.Services
                         {
                             Id = ticket.Seat.PlaneId,
                             Name = ticket.Seat.Plane.Name,
+                            Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
                     PersonType = ticket.PersonType,
@@ -348,7 +354,8 @@ namespace EasyFly.Infrastructure.Services
                     Gender = ticket.Gender,
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
-                    FlightId = ticket.FlightId
+                    FlightId = ticket.FlightId,
+                    CreatedAt = ticket.CreatedAt
                 });
 
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);

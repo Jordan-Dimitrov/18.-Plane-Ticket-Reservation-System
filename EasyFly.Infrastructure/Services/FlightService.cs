@@ -119,6 +119,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = rf.DepartureTime,
                     ArrivalTime = rf.ArrivalTime,
                     DepartureAirportId = rf.DepartureAirportId,
+                    TicketPrice = rf.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = rf.DepartureAirport.Id,
@@ -139,6 +140,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = rf.Plane.Id,
                         Name = rf.Plane.Name,
+                        Seats = rf.Plane.Seats.Count
                     },
                     ReturningFlights = null
                 });
@@ -150,6 +152,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = flight.DepartureTime,
                     ArrivalTime = flight.ArrivalTime,
                     DepartureAirportId = flight.DepartureAirportId,
+                    TicketPrice = flight.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = flight.DepartureAirport.Id,
@@ -170,6 +173,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
+                        Seats = flight.Plane.Seats.Count
                     },
                     ReturningFlights = returningFlightViewModels.Where(x => x.DepartureTime > flight.ArrivalTime)
                 };
@@ -201,6 +205,7 @@ namespace EasyFly.Infrastructure.Services
                 DepartureTime = flight.DepartureTime,
                 ArrivalTime = flight.ArrivalTime,
                 DepartureAirportId = flight.DepartureAirportId,
+                TicketPrice = flight.TicketPrice,
                 DepartureAirport = new AirportViewModel
                 {
                     Id = flight.DepartureAirport.Id,
@@ -221,6 +226,7 @@ namespace EasyFly.Infrastructure.Services
                 {
                     Id = flight.Plane.Id,
                     Name = flight.Plane.Name,
+                    Seats = flight.Plane.Seats.Count
                 }
             };
 
@@ -267,6 +273,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
+                        Seats = flight.Plane.Seats.Count
                     }
                 });
 
@@ -303,6 +310,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = rf.DepartureTime,
                     ArrivalTime = rf.ArrivalTime,
                     DepartureAirportId = rf.DepartureAirportId,
+                    TicketPrice = rf.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = rf.DepartureAirport.Id,
@@ -323,6 +331,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = rf.Plane.Id,
                         Name = rf.Plane.Name,
+                        Seats = flight.Plane.Seats.Count
                     },
                     ReturningFlights = null
                 });
@@ -334,6 +343,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = flight.DepartureTime,
                     ArrivalTime = flight.ArrivalTime,
                     DepartureAirportId = flight.DepartureAirportId,
+                    TicketPrice = flight.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = flight.DepartureAirport.Id,
@@ -354,6 +364,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
+                        Seats = flight.Plane.Seats.Count
                     },
                     ReturningFlights = returningFlightViewModels.Where(x => x.DepartureTime > flight.ArrivalTime)
                 };
@@ -386,6 +397,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = flight.DepartureTime,
                     ArrivalTime = flight.ArrivalTime,
                     DepartureAirportId = flight.DepartureAirportId,
+                    TicketPrice = flight.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = flight.DepartureAirport.Id,
@@ -406,6 +418,7 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
+                        Seats = flight.Plane.Seats.Count
                     }
                 });
 
@@ -436,7 +449,8 @@ namespace EasyFly.Infrastructure.Services
             Plane plane = await _planeRepository
                 .GetByIdAsync(existingFlight.PlaneId, true);
 
-            if (departureAirport == null || arrivalAirport == null || plane == null)
+            if (departureAirport == null || arrivalAirport == null || plane == null
+                || flight.ArrivalTime <= flight.DepartureTime || flight.DepartureAirportId == flight.ArrivalAirportId)
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.InvalidData;

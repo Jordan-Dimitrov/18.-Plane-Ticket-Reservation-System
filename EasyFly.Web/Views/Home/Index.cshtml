@@ -2,15 +2,64 @@
 @model HomeViewModel
 
 @{
-    ViewData["Title"] = "Welcome to Ticket Reservation";
+    ViewData["Title"] = "Welcome to EasyFly";
 }
 
 <div class="container mt-5">
     <div class="jumbotron text-center bg-primary text-white p-5 rounded">
-        <h1 class="display-4">Welcome to Ticket Reservation</h1>
+        <h3 class="display-4">Welcome to EasyFly</h3>
         <p class="lead">Find the best deals on flights and book your tickets easily.</p>
     </div>
 </div>
+
+<div class="container mt-4">
+    <div id="destinationCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="3000">
+                <img src="https://captainsboatpartysplit.com/wp-content/uploads/2023/09/9727-scaled.jpg" class="d-block w-100" alt="Croatia, Split">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Croatia, Split</h5>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+                <img src="https://lp-cms-production.imgix.net/2021-06/GettyRF_516791906.jpg" class="d-block w-100" alt="Dubrovnik, Croatia">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Dubrovnik, Croatia</h5>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+                <img src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2020/02/05/17/zadar-overview.jpg" class="d-block w-100" alt="Zadar, Croatia">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Zadar, Croatia</h5>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#destinationCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#destinationCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+<style>
+    .carousel-item img {
+        height: 300px;
+        object-fit: cover;
+    }
+    .carousel-caption {
+        color: #fff !important;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    }
+</style>
 
 <div class="container mt-4">
     <div class="row text-center">

@@ -23,43 +23,65 @@
 <br />
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            @if(Model.Flights is not null)
-            {
-                @foreach (var item in Model.Flights)
-                {
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h4 class="card-title">@item.FlightNumber</h4>
-                            <p class="card-text">Departure: @item.DepartureTime</p>
-                            <p class="card-text">Arrival: @item.ArrivalTime</p>
-                            <p class="card-text">Departure Airport: @item.DepartureAirport.Name</p>
-                            <p class="card-text">Arrival Airport: @item.ArrivalAirport.Name</p>
-                            <p class="card-text">Plane: @item.Plane.Name</p>
+    <div class="table-container mx-auto" style="max-width: 1500px;">
+        @if (Model.Flights is not null && Model.Flights.Any())
+        {
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Flight Number</th>
+                        <th>Departure Time</th>
+                        <th>Arrival Time</th>
+                        <th>Departure Airport</th>
+                        <th>Arrival Airport</th>
+                        <th>Plane</th>
+                        <th>Price</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Flights)
+                    {
+                        <tr>
+                            <td>@item.FlightNumber</td>
+                            <td>@item.DepartureTime</td>
+                            <td>@item.ArrivalTime</td>
+                            <td>@item.DepartureAirport.Name</td>
+                            <td>@item.ArrivalAirport.Name</td>
+                            <td>@item.Plane.Name</td>
+                            <td>@item.TicketPrice BGN</td>
                             @if (User.IsInRole("Admin"))
                             {
-                                <div class="d-flex mt-2">
-                                    <a href="@Url.Action("GetTickets", "Ticket", new { flightId = item.Id })" class="btn btn-info me-2">
-                                        View Tickets
-                                    </a>
-                                    <form method="get" asp-controller="Flight" asp-action="Remove" class="me-2">
-                                        @Html.Hidden("flightId", item.Id)
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                        @Html.AntiForgeryToken()
-                                    </form>
-                                    <form method="get" asp-controller="Flight" asp-action="Edit">
-                                        @Html.Hidden("flightId", item.Id)
-                                        <button type="submit" class="btn btn-primary">Edit</button>
-                                        @Html.AntiForgeryToken()
-                                    </form>
-                                </div>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="@Url.Action("GetTickets", "Ticket", new { flightId = item.Id })" class="btn btn-info btn-sm me-2">
+                                            Tickets
+                                        </a>
+                                        <form method="get" asp-controller="Flight" asp-action="Remove" class="me-2">
+                                            @Html.Hidden("flightId", item.Id)
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                        <form method="get" asp-controller="Flight" asp-action="Edit">
+                                            @Html.Hidden("flightId", item.Id)
+                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                    </div>
+                                </td>
                             }
-                        </div>
-                    </div>
-                }
-            }
-        </div>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-center">No flights found.</p>
+        }
     </div>
 
     <div class="row justify-content-center">
@@ -70,7 +92,7 @@
             }
             else
             {
-                <a></a>
+                <span></span>
             }
 
             @if (Model.PageNumber < Model.TotalPages)
@@ -105,10 +127,10 @@
                         <div class="form-group">
                             <label for="DepartureAirportId">Departure Airport:</label>
                             <select class="form-control" id="DepartureAirportId" name="DepartureAirportId">
-                                @foreach(var item in Model.Airports)
+                                @foreach (var item in Model.Airports)
                                 {
                                     <option value="@item.Id">@item.Name</option>
-                                }            
+                                }
                             </select>
                         </div>
                         <div class="form-group">
@@ -129,12 +151,12 @@
                             <input type="hidden" name="planeId" value="@ViewBag.PlaneId" />
                         }
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
 </div>

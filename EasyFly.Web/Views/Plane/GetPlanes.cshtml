@@ -23,37 +23,57 @@
 <br />
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            @foreach (var item in Model.Planes)
-            {
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h4 class="card-title">@item.Name</h4>
+    <div class="table-container mx-auto" style="max-width: 600px;">
+        @if (Model.Planes is not null && Model.Planes.Any())
+        {
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Seat Count</th>
                         @if (User.IsInRole("Admin"))
                         {
-                            <div class="d-flex mt-2">
-                                <form method="get" asp-controller="Plane" asp-action="Remove" class="me-2">
-                                    @Html.Hidden("planeId", item.Id)
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                    @Html.AntiForgeryToken()
-                                </form>
-                                <form method="get" asp-controller="Plane" asp-action="Edit" class="me-2">
-                                    @Html.Hidden("planeId", item.Id)
-                                    <button type="submit" class="btn btn-primary">Edit</button>
-                                    @Html.AntiForgeryToken()
-                                </form>
-                                <form method="get" asp-controller="Flight" asp-action="GetFlights">
-                                    @Html.Hidden("planeId", item.Id)
-                                    <button type="submit" class="btn btn-success">Add Flight</button>
-                                    @Html.AntiForgeryToken()
-                                </form>
-                            </div>
+                            <th>Actions</th>
                         }
-                    </div>
-                </div>
-            }
-        </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Planes)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Seats</td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>
+                                    <div class="d-flex">
+                                        <form method="get" asp-controller="Plane" asp-action="Remove" class="me-2">
+                                            @Html.Hidden("planeId", item.Id)
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                        <form method="get" asp-controller="Plane" asp-action="Edit" class="me-2">
+                                            @Html.Hidden("planeId", item.Id)
+                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                        <form method="get" asp-controller="Flight" asp-action="GetFlights">
+                                            @Html.Hidden("planeId", item.Id)
+                                            <button type="submit" class="btn btn-success btn-sm">Add Flight</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-center">No planes found.</p>
+        }
     </div>
 
     <div class="row justify-content-center">
@@ -64,7 +84,7 @@
             }
             else
             {
-                <a></a>
+                <span></span>
             }
 
             @if (Model.PageNumber < Model.TotalPages)
@@ -87,16 +107,18 @@
                         <div class="form-group">
                             <label for="Name">Name:</label>
                             <input type="text" class="form-control" id="Name" name="Name" />
+                        </div>
+                        <div class="form-group">
                             <label for="AvailableSeats">Available Seats:</label>
                             <input type="number" class="form-control" id="AvailableSeats" name="AvailableSeats" />
                         </div>
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
 </div>

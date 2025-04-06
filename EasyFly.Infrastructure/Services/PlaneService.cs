@@ -89,7 +89,8 @@ namespace EasyFly.Infrastructure.Services
             response.Data = new PlaneViewModel()
             {
                 Id = plane.Id,
-                Name = plane.Name
+                Name = plane.Name,
+                Seats = plane.Seats.Count
             };
 
             return response;
@@ -111,7 +112,8 @@ namespace EasyFly.Infrastructure.Services
                 .Select(plane => new PlaneViewModel()
                 {
                     Id = plane.Id,
-                    Name = plane.Name
+                    Name = plane.Name,
+                    Seats = plane.Seats.Count
                 });
 
             response.Data.TotalPages = await _PlaneRepository.GetPageCount(size);
