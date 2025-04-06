@@ -293,11 +293,10 @@ namespace EasyFly.Web.Controllers
 
             int half = model.Tickets.Count;
 
-            var clone = model.Tickets;
-            model.Tickets.AddRange(clone);
-
             if (model.ReturningFlightId.HasValue)
             {
+                var clone = model.Tickets;
+                model.Tickets.AddRange(clone);
                 foreach (var ticket in model.Tickets.Take(half))
                 {
                     ticket.FlightId = model.FlightId;
