@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
-    internal class TicketRepository : ITicketRepository
+    public class TicketRepository : ITicketRepository
     {
         private readonly ApplicationDbContext _Context;
 
