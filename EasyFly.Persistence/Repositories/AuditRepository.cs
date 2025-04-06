@@ -28,13 +28,14 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Audit>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Audits.Include(x => x.User);
+            var query = _Context.Audits.Include(x => x.User).OrderByDescending(x => x.ModifiedAt);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<ICollection<Audit>?> GetAllByAsync(Expression<Func<Audit, bool>> condition)
         {
-            return await _Context.Audits.Include(x => x.User).Where(condition).ToListAsync();
+            return await _Context.Audits.Include(x => x.User).Where(condition)
+                .OrderByDescending(x => x.ModifiedAt).ToListAsync();
         }
 
         public async Task<Audit?> GetByAsync(Expression<Func<Audit, bool>> condition)
@@ -57,7 +58,9 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Audit>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Audits.Include(x => x.User).Skip((page - 1) * size).Take(size);
+            var query = _Context.Audits.Include(x => x.User)
+                .Skip((page - 1) * size).Take(size)
+                .OrderByDescending(x => x.ModifiedAt);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
