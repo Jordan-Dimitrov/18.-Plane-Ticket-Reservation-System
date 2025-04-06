@@ -14,5 +14,6 @@ namespace EasyFly.Application.ViewModels
         public int RequiredSeats { get; set; }
         public List<ReserveTicketDto> Tickets { get; set; }
         public decimal TicketPrice { get; set; }
+        public decimal ReturningTicketPrice { get; set; }
     }
 }

@@ -270,6 +270,8 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
+            decimal sum = 0;
+
             if (returningFlightId.HasValue)
             {
                 var returningFlightResponse = await _flightService.GetFlight(returningFlightId.GetValueOrDefault());
@@ -279,6 +281,8 @@ namespace EasyFly.Web.Controllers
                     TempData["ErrorMessage"] = returningFlightResponse.ErrorMessage;
                     return RedirectToAction("Error");
                 }
+
+                sum = returningFlightResponse.Data.TicketPrice;
             }
 
             var model = new TicketDetailsViewModel
@@ -287,7 +291,8 @@ namespace EasyFly.Web.Controllers
                 ReturningFlightId = returningFlightId,
                 RequiredSeats = requiredSeats,
                 Tickets = new List<ReserveTicketDto>(new ReserveTicketDto[requiredSeats]),
-                TicketPrice = flightResponse.Data.TicketPrice
+                TicketPrice = flightResponse.Data.TicketPrice,
+                ReturningTicketPrice = sum
             };
 
             return View(model);
@@ -326,23 +331,35 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            int half = model.Tickets.Count;
+            var mainResponse = new DataResponse<CheckoutDto>();
+            mainResponse.Data = new CheckoutDto();
 
             if (model.ReturningFlightId.HasValue)
             {
-                var clone = model.Tickets;
-                model.Tickets.AddRange(clone);
-                foreach (var ticket in model.Tickets.Take(half))
+                var clone = model.Tickets.ToList();
+                foreach (var ticket in model.Tickets)
                 {
                     ticket.FlightId = model.FlightId;
                     ticket.UserId = userId;
                 }
 
-                foreach (var ticket in model.Tickets.Skip(half))
+                var response = await _ticketService.CreateTickets(model.Tickets);
+
+                foreach (var ticket in clone)
                 {
                     ticket.FlightId = model.ReturningFlightId.Value;
                     ticket.UserId = userId;
                 }
+
+                var response2 = await _ticketService.CreateTickets(clone);
+
+                mainResponse.Data.Amount = response.Data.Amount + response2.Data.Amount;
+                mainResponse.Data.Currency = response.Data.Currency;
+                mainResponse.Success = response.Success;
+                mainResponse.Data.ProductName = response.Data.ProductName;
+                mainResponse.Data.ProductDescription = response.Data.ProductDescription;
+                mainResponse.Data.Tickets = response.Data.Tickets;
+                mainResponse.Data.Tickets.AddRange(response2.Data.Tickets);
             }
             else
             {
@@ -351,15 +368,22 @@ namespace EasyFly.Web.Controllers
                     ticket.FlightId = model.FlightId;
                     ticket.UserId = userId;
                 }
+
+                var response = await _ticketService.CreateTickets(model.Tickets);
+
+                mainResponse.Data.Amount = response.Data.Amount;
+                mainResponse.Data.Currency = response.Data.Currency;
+                mainResponse.Success = response.Success;
+                mainResponse.Data.ProductName = response.Data.ProductName;
+                mainResponse.Data.ProductDescription = response.Data.ProductDescription;
+                mainResponse.Data.Tickets = response.Data.Tickets;
             }
 
-            var response = await _ticketService.CreateTickets(model.Tickets);
+            var session = _PaymentService.Checkout(mainResponse.Data, Request.Host, Request.Scheme);
 
-            var session = _PaymentService.Checkout(response.Data, Request.Host, Request.Scheme);
-
-            if (!response.Success)
+            if (!mainResponse.Success)
             {
-                TempData["ErrorMessage"] = response.ErrorMessage;
+                TempData["ErrorMessage"] = mainResponse.ErrorMessage;
                 return RedirectToAction("Error");
             }
 
