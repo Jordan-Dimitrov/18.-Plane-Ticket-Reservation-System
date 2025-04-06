@@ -2,4 +2,10 @@
     ViewData["Title"] = "Payment Successful";
 }
 <h2>Payment Successful</h2>
-<p>Thank you for your purchase! Your payment has been successfully processed.</p>
+<p>Thank you for your purchase! Your payment has been successfully processed. You will recieve an email shortly! Redirecting to your Tickets...</p>
+
+<script>
+    setTimeout(function () {
+        window.location.href = '/Ticket/GetTicketsForCurrentUser';
+    }, 3000);
+</script>
