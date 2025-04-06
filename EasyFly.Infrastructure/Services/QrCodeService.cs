@@ -1,5 +1,6 @@
 ﻿using EasyFly.Application.Abstractions;
 using IronBarCode;
+using QRCoder;
 
 namespace EasyFly.Infrastructure.Services
 {
@@ -7,11 +8,13 @@ namespace EasyFly.Infrastructure.Services
     {
         public byte[] GenerateQRCode(string inputText, int size)
         {
-            var temp = QRCodeWriter
-                .CreateQrCode(inputText, size, QRCodeWriter.QrErrorCorrectionLevel.Medium)
-                .ToJpegBinaryData();
-
-            return temp;
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(inputText, QRCodeGenerator.ECCLevel.Q))
+            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+            {
+                byte[] qrCodeImage = qrCode.GetGraphic(size);
+                return qrCodeImage;
+            }
         }
     }
 }

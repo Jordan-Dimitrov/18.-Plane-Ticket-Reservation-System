@@ -9,6 +9,7 @@ namespace EasyFly.Application.ViewModels
     {
         [Required]
         public Guid FlightId { get; set; }
+        public Guid? ReturningFlightId { get; set; }
         [Required]
         public int RequiredSeats { get; set; }
         public List<ReserveTicketDto> Tickets { get; set; }

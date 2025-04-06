@@ -106,8 +106,44 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            response.Data.Flights = flights
-                .Select(flight => new FlightViewModel()
+            var returningFlights = await _flightRepository.GetPagedByArrivalAndDepartureWithoutConcreteDateAsync(
+                   arrivalId, departureId, DateTime.UtcNow.AddDays(1), false, requiredSeats, page, size);
+
+
+            var flightViewModels = await Task.WhenAll(flights.Select(async flight =>
+            {
+                var returningFlightViewModels = returningFlights.Select(rf => new FlightViewModel
+                {
+                    Id = rf.Id,
+                    FlightNumber = rf.FlightNumber,
+                    DepartureTime = rf.DepartureTime,
+                    ArrivalTime = rf.ArrivalTime,
+                    DepartureAirportId = rf.DepartureAirportId,
+                    DepartureAirport = new AirportViewModel
+                    {
+                        Id = rf.DepartureAirport.Id,
+                        Name = rf.DepartureAirport.Name,
+                        Latitude = rf.DepartureAirport.Latitude,
+                        Longtitude = rf.DepartureAirport.Longtitude
+                    },
+                    ArrivalAirportId = rf.ArrivalAirportId,
+                    ArrivalAirport = new AirportViewModel
+                    {
+                        Id = rf.ArrivalAirport.Id,
+                        Name = rf.ArrivalAirport.Name,
+                        Latitude = rf.ArrivalAirport.Latitude,
+                        Longtitude = rf.ArrivalAirport.Longtitude
+                    },
+                    PlaneId = rf.PlaneId,
+                    Plane = new PlaneViewModel
+                    {
+                        Id = rf.Plane.Id,
+                        Name = rf.Plane.Name,
+                    },
+                    ReturningFlights = null
+                });
+
+                return new FlightViewModel
                 {
                     Id = flight.Id,
                     FlightNumber = flight.FlightNumber,
@@ -134,9 +170,12 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
-                    }
-                });
+                    },
+                    ReturningFlights = returningFlightViewModels.Where(x => x.DepartureTime > flight.ArrivalTime)
+                };
+            }));
 
+            response.Data.Flights = flightViewModels;
             response.Data.TotalPages = await _flightRepository.GetPageCount(size);
 
             return response;
@@ -236,21 +275,59 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
-        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByArrivalAndDepartureAsync(Guid departureId, Guid arrivalId,
-            DateTime departure, int requiredSeats, int page, int size)
+        public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByArrivalAndDepartureAsync(
+            Guid departureId, Guid arrivalId, DateTime departure, int requiredSeats, int page, int size)
         {
-            DataResponse<FlightPagedViewModel> response = new DataResponse<FlightPagedViewModel>();
-            response.Data = new FlightPagedViewModel();
+            var response = new DataResponse<FlightPagedViewModel>
+            {
+                Data = new FlightPagedViewModel()
+            };
 
-            var flights = await _flightRepository.GetPagedByArrivalAndDepartureAsync(departureId, arrivalId, departure, false, requiredSeats, page, size);
+            var flights = await _flightRepository.GetPagedByArrivalAndDepartureAsync(
+                departureId, arrivalId, departure, false, requiredSeats, page, size);
 
             if (!flights.Any())
             {
                 return response;
             }
 
-            response.Data.Flights = flights
-                .Select(flight => new FlightViewModel()
+            var returningFlights = await _flightRepository.GetPagedByArrivalAndDepartureWithoutConcreteDateAsync(
+                   arrivalId, departureId, departure.AddDays(1), false, requiredSeats, page, size);
+
+            var flightViewModels = await Task.WhenAll(flights.Select(async flight =>
+            {
+                var returningFlightViewModels = returningFlights.Select(rf => new FlightViewModel
+                {
+                    Id = rf.Id,
+                    FlightNumber = rf.FlightNumber,
+                    DepartureTime = rf.DepartureTime,
+                    ArrivalTime = rf.ArrivalTime,
+                    DepartureAirportId = rf.DepartureAirportId,
+                    DepartureAirport = new AirportViewModel
+                    {
+                        Id = rf.DepartureAirport.Id,
+                        Name = rf.DepartureAirport.Name,
+                        Latitude = rf.DepartureAirport.Latitude,
+                        Longtitude = rf.DepartureAirport.Longtitude
+                    },
+                    ArrivalAirportId = rf.ArrivalAirportId,
+                    ArrivalAirport = new AirportViewModel
+                    {
+                        Id = rf.ArrivalAirport.Id,
+                        Name = rf.ArrivalAirport.Name,
+                        Latitude = rf.ArrivalAirport.Latitude,
+                        Longtitude = rf.ArrivalAirport.Longtitude
+                    },
+                    PlaneId = rf.PlaneId,
+                    Plane = new PlaneViewModel
+                    {
+                        Id = rf.Plane.Id,
+                        Name = rf.Plane.Name,
+                    },
+                    ReturningFlights = null
+                });
+
+                return new FlightViewModel
                 {
                     Id = flight.Id,
                     FlightNumber = flight.FlightNumber,
@@ -277,13 +354,17 @@ namespace EasyFly.Infrastructure.Services
                     {
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
-                    }
-                });
+                    },
+                    ReturningFlights = returningFlightViewModels.Where(x => x.DepartureTime > flight.ArrivalTime)
+                };
+            }));
 
+            response.Data.Flights = flightViewModels;
             response.Data.TotalPages = await _flightRepository.GetPageCount(size);
 
             return response;
         }
+
 
         public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByPlane(Guid planeId, int page, int size)
         {

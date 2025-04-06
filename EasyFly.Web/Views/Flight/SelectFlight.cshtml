@@ -46,16 +46,28 @@
                 <td>@flight.DepartureAirport.Name</td>
                 <td>@flight.ArrivalAirport.Name</td>
                 <td>
-                    <form asp-action="ReserveTicket" method="post">
+                    <form id="reserveForm_@flight.Id" asp-action="ReserveTicket" method="post">
                         <input type="hidden" name="flightId" value="@flight.Id" />
-                        <input type="hidden" name="flightId" value="@flight.Id" />
-                        <input type="hidden" name="flightId" value="@flight.Id" />
-                        <button type="submit" class="btn btn-primary">Reserve</button>
                         <input type="hidden" name="requiredSeats" value="@ViewBag.RequiredSeats" />
-
+                        <button type="submit" class="btn btn-primary">Reserve</button>
                     </form>
                 </td>
             </tr>
+            if (flight.ReturningFlights != null && flight.ReturningFlights.Any())
+            {
+                <tr>
+                    <td colspan="6">
+                        <label for="returningFlightId_@flight.Id">Select Returning Flight (optional):</label>
+                        <select name="returningFlightId" id="returningFlightId_@flight.Id" class="form-control" form="reserveForm_@flight.Id">
+                            <option value="">None</option>
+                            @foreach (var ret in flight.ReturningFlights)
+                            {
+                                <option value="@ret.Id">@ret.FlightNumber - @ret.DepartureTime</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

@@ -213,7 +213,7 @@ namespace EasyFly.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReserveTicket(Guid flightId, int requiredSeats)
+        public async Task<IActionResult> ReserveTicket(Guid flightId, int requiredSeats, Guid? returningFlightId)
         {
             if (!ModelState.IsValid)
             {
@@ -221,7 +221,8 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("ReserveTicket");
             }
 
-            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId, requiredSeats = requiredSeats });
+            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId,
+                requiredSeats = requiredSeats, returningFlightId = returningFlightId });
         }
     }
 }

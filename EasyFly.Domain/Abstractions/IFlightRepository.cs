@@ -9,5 +9,6 @@ namespace EasyFly.Domain.Abstractions
         Task<IEnumerable<Flight>> GetPagedByPlaneIdAsync(Guid planeId, bool trackChanges, int page, int size);
         Task<IEnumerable<Flight>> GetPagedByArrivalAndDepartureAsync(Guid departureId, Guid arrivalId, DateTime departure, bool trackChanges, int requiredSeats, int page, int size);
         Task<IEnumerable<Flight>> GetPagedByArrivalAndDepartureAirportsAsync(Guid departureId, Guid arrivalId, bool trackChanges, int requiredSeats, int page, int size);
+        Task<IEnumerable<Flight>> GetPagedByArrivalAndDepartureWithoutConcreteDateAsync(Guid departureId, Guid arrivalId, DateTime departure, bool trackChanges, int requiredSeats, int page, int size);
     }
 }

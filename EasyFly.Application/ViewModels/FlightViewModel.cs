@@ -23,5 +23,6 @@ namespace EasyFly.Application.ViewModels
         public AirportViewModel ArrivalAirport { get; set; }
         public Guid PlaneId { get; set; }
         public PlaneViewModel Plane { get; set; }
+        public IEnumerable<FlightViewModel> ReturningFlights { get; set; }
     }
 }

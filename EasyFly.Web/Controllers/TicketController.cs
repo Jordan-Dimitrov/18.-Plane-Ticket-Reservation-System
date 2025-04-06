@@ -226,7 +226,7 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> EnterTicketDetails(Guid flightId, int requiredSeats)
+        public async Task<IActionResult> EnterTicketDetails(Guid flightId, int requiredSeats, Guid? returningFlightId)
         {
             var flightResponse = await _flightService.GetFlight(flightId);
 
@@ -236,9 +236,21 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
+            if (returningFlightId.HasValue)
+            {
+                var returningFlightResponse = await _flightService.GetFlight(returningFlightId.GetValueOrDefault());
+
+                if (!returningFlightResponse.Success)
+                {
+                    TempData["ErrorMessage"] = returningFlightResponse.ErrorMessage;
+                    return RedirectToAction("Error");
+                }
+            }
+
             var model = new TicketDetailsViewModel
             {
                 FlightId = flightId,
+                ReturningFlightId = returningFlightId,
                 RequiredSeats = requiredSeats,
                 Tickets = new List<ReserveTicketDto>(new ReserveTicketDto[requiredSeats])
             };
@@ -268,7 +280,8 @@ namespace EasyFly.Web.Controllers
             if (!ModelState.IsValid && ModelState.ErrorCount > model.Tickets.Count())
             {
                 TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction("EnterTicketDetails", new { flightId = model.FlightId, requiredSeats = model.RequiredSeats });
+                return RedirectToAction("EnterTicketDetails", new { flightId = model.FlightId,
+                    returningFlightId = model.ReturningFlightId, requiredSeats = model.RequiredSeats });
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -278,10 +291,32 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            foreach (var ticket in model.Tickets)
+            int half = model.Tickets.Count;
+
+            var clone = model.Tickets;
+            model.Tickets.AddRange(clone);
+
+            if (model.ReturningFlightId.HasValue)
             {
-                ticket.FlightId = model.FlightId;
-                ticket.UserId = userId;
+                foreach (var ticket in model.Tickets.Take(half))
+                {
+                    ticket.FlightId = model.FlightId;
+                    ticket.UserId = userId;
+                }
+
+                foreach (var ticket in model.Tickets.Skip(half))
+                {
+                    ticket.FlightId = model.ReturningFlightId.Value;
+                    ticket.UserId = userId;
+                }
+            }
+            else
+            {
+                foreach (var ticket in model.Tickets)
+                {
+                    ticket.FlightId = model.FlightId;
+                    ticket.UserId = userId;
+                }
             }
 
             var response = await _ticketService.CreateTickets(model.Tickets);
