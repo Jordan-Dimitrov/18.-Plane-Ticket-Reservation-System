@@ -77,7 +77,7 @@ namespace EasyFly.Persistence
                 {
                     new Plane
                     {
-                        Name = "Boeing 737"
+                        Name = "Boeing 737",
                     },
                     new Plane
                     {
@@ -97,7 +97,8 @@ namespace EasyFly.Persistence
                         ArrivalTime = DateTime.Now.AddHours(5),
                         DepartureAirportId = airports[0].Id,
                         ArrivalAirportId = airports[1].Id,
-                        PlaneId = planes[0].Id
+                        PlaneId = planes[0].Id,
+                        TicketPrice = 300.00m
                     },
                     new Flight
                     {
@@ -106,7 +107,8 @@ namespace EasyFly.Persistence
                         ArrivalTime = DateTime.Now.AddHours(6),
                         DepartureAirportId = airports[1].Id,
                         ArrivalAirportId = airports[0].Id,
-                        PlaneId = planes[1].Id
+                        PlaneId = planes[1].Id,
+                        TicketPrice = 500.00m
                     }
                 };
 
@@ -125,7 +127,7 @@ namespace EasyFly.Persistence
                     {
                         Row = 2,
                         SeatLetter = SeatLetter.B,
-                        PlaneId = planes[1].Id
+                        PlaneId = planes[0].Id
                     }
                 };
 

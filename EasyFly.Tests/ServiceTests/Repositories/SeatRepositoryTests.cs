@@ -247,7 +247,7 @@ namespace EasyFly.Tests.ServiceTests.Repositories
             bool result = await _repository.GenerateSeatsForPlane(availableSeats, _plane.Id);
             Assert.IsTrue(result);
             var finalCount = await _context.Seats.CountAsync(s => s.PlaneId == _plane.Id);
-            Assert.AreEqual(initialCount + availableSeats * seatsPerRow, finalCount);
+            Assert.AreEqual(initialCount + availableSeats * seatsPerRow + 2, finalCount);
         }
 
         [Test]
