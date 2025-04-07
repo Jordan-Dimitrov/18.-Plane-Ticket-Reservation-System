@@ -146,7 +146,7 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFlights([FromQuery] Guid planeId, [FromQuery] int page = 1)
         {
             if (planeId == Guid.Empty)
