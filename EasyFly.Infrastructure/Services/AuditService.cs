@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class AuditService : IAuditService
+    public class AuditService : IAuditService
     {
         private readonly IAuditRepository _auditRepository;
         private readonly IUserRepository _userRepository;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class EmailService : IEmailService
+    public class EmailService : IEmailService
     {
         private readonly IQrCodeService _QrCodeService;
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class AirportService : IAirportService
+    public class AirportService : IAirportService
     {
         private readonly IAirportRepository _airportRepository;
 

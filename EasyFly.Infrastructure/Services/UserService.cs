@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class UserService : IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _UserRepository;
         public UserService(IUserRepository userRepository)

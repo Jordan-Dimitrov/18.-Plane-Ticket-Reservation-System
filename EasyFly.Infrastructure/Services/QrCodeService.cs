@@ -4,7 +4,7 @@ using QRCoder;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class QrCodeService : IQrCodeService
+    public class QrCodeService : IQrCodeService
     {
         public byte[] GenerateQRCode(string inputText, int size)
         {

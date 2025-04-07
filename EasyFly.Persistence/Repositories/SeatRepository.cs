@@ -68,7 +68,7 @@ namespace EasyFly.Persistence.Repositories
         {
             for (int i = 0; i < availableSeats; i++)
             {
-                for (int j = 0; j < (int)SeatLetter.F; j++)
+                for (int j = 0; j <= (int)SeatLetter.F; j++)
                 {
                     Seat seat = new Seat()
                     {
@@ -92,20 +92,38 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Seat>> GetPagedForFlightAsync(Guid flightId, bool trackChanges, int page, int size)
         {
+            var flight = await _Context.Flights
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.Id == flightId);
+
+            if (flight == null)
+            {
+                return Enumerable.Empty<Seat>();
+            }
+
             var query = _Context.Seats
                 .Include(s => s.Tickets)
                 .Include(x => x.Plane)
-                .Where(s => !s.Tickets.Any(t => t.FlightId == flightId))
+                .Where(s => s.PlaneId == flight.PlaneId && !s.Tickets.Any(t => t.FlightId == flightId))
                 .Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<IEnumerable<Seat>> GetFreeSeatsForFlightAsync(Guid flightId, bool trackChanges, int size)
         {
+            var flight = await _Context.Flights
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.Id == flightId);
+
+            if (flight == null)
+            {
+                return Enumerable.Empty<Seat>();
+            }
+
             var query = _Context.Seats
                 .Include(s => s.Tickets)
                 .Include(s => s.Plane)
-                .Where(s => !s.Tickets.Any(t => t.FlightId == flightId))
+                .Where(s => s.PlaneId == flight.PlaneId && !s.Tickets.Any(t => t.FlightId == flightId))
                 .Take(size);
 
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());

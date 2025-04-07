@@ -7,7 +7,7 @@ using EasyFly.Domain.Models;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class SeatService : ISeatService
+    public class SeatService : ISeatService
     {
         private readonly ISeatRepository _SeatRepository;
         private readonly IPlaneRepository _PlaneRepository;

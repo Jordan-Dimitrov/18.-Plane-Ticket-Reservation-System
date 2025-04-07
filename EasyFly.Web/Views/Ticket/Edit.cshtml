@@ -15,15 +15,17 @@
 @if (Model is not null)
 {
     <form asp-controller="Ticket" asp-action="Edit" method="post">
-        <div class="form-group">
-            <label for="Seat">Seat:</label>
-            <select class="form-control" id="SeatId" name="SeatId">
-                @foreach (var item in Model.Seats)
-                {
-                    <option value="@item.Id">@($"{item.Row} - {item.SeatLetter}")</option>
-                }
-            </select>
-        </div>
+        @if(Model.Seats is not null &&Model.Seats.Any()){
+            <div class="form-group">
+                <label for="Seat">Seat:</label>
+                <select class="form-control" id="SeatId" name="SeatId">
+                    @foreach (var item in Model.Seats)
+                    {
+                        <option value="@item.Id">@($"{item.Row} - {item.SeatLetter}")</option>
+                    }
+                </select>
+            </div>
+        }
         <div class="form-group">
             <label for="PersonType">Person Type:</label>
             <select class="form-control" id="PersonType" name="PersonType">

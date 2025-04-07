@@ -4,22 +4,28 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using System.Net.Sockets;
 using System.Numerics;
 using Plane = EasyFly.Domain.Models.Plane;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class FlightService : IFlightService
+    public class FlightService : IFlightService
     {
         private readonly IFlightRepository _flightRepository;
         private readonly IAirportRepository _airportRepository;
         private readonly IPlaneRepository _planeRepository;
+        private readonly ISeatRepository _seatRepository;
 
-        public FlightService(IFlightRepository flightRepository, IAirportRepository airportRepository, IPlaneRepository planeRepository)
+        public FlightService(IFlightRepository flightRepository,
+            IAirportRepository airportRepository,
+            IPlaneRepository planeRepository,
+            ISeatRepository seatRepository)
         {
             _flightRepository = flightRepository;
             _airportRepository = airportRepository;
             _planeRepository = planeRepository;
+            _seatRepository = seatRepository;
         }
 
         public async Task<Response> CreateFlight(FlightDto flight)
@@ -198,6 +204,8 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
+            var seatResponse = await _seatRepository.GetFreeSeatsForFlightAsync(id, false, int.MaxValue);
+
             response.Data = new FlightViewModel()
             {
                 Id = flight.Id,
@@ -227,7 +235,8 @@ namespace EasyFly.Infrastructure.Services
                     Id = flight.Plane.Id,
                     Name = flight.Plane.Name,
                     Seats = flight.Plane.Seats.Count
-                }
+                },
+                FreeSeatCount = seatResponse.Count()
             };
 
             return response;
@@ -239,14 +248,16 @@ namespace EasyFly.Infrastructure.Services
             response.Data = new FlightPagedViewModel();
 
             var flights = await _flightRepository.GetPagedAsync(false, page, size);
-
             if (!flights.Any())
             {
                 return response;
             }
 
-            response.Data.Flights = flights
-                .Select(flight => new FlightViewModel()
+            var flightViewModels = new List<FlightViewModel>();
+            foreach (var flight in flights)
+            {
+                var freeSeats = await _seatRepository.GetFreeSeatsForFlightAsync(flight.Id, false, int.MaxValue);
+                flightViewModels.Add(new FlightViewModel()
                 {
                     Id = flight.Id,
                     FlightNumber = flight.FlightNumber,
@@ -274,13 +285,16 @@ namespace EasyFly.Infrastructure.Services
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
                         Seats = flight.Plane.Seats.Count
-                    }
+                    },
+                    FreeSeatCount = freeSeats.Count()
                 });
+            }
 
+            response.Data.Flights = flightViewModels;
             response.Data.TotalPages = await _flightRepository.GetPageCount(size);
-
             return response;
         }
+
 
         public async Task<DataResponse<FlightPagedViewModel>> GetFlightsPagedByArrivalAndDepartureAsync(
             Guid departureId, Guid arrivalId, DateTime departure, int requiredSeats, int page, int size)
@@ -383,14 +397,16 @@ namespace EasyFly.Infrastructure.Services
             response.Data = new FlightPagedViewModel();
 
             var flights = await _flightRepository.GetPagedByPlaneIdAsync(planeId, false, page, size);
-
             if (!flights.Any())
             {
                 return response;
             }
 
-            response.Data.Flights = flights
-                .Select(flight => new FlightViewModel()
+            var flightViewModels = new List<FlightViewModel>();
+            foreach (var flight in flights)
+            {
+                var freeSeats = await _seatRepository.GetFreeSeatsForFlightAsync(flight.Id, false, int.MaxValue);
+                flightViewModels.Add(new FlightViewModel()
                 {
                     Id = flight.Id,
                     FlightNumber = flight.FlightNumber,
@@ -419,13 +435,16 @@ namespace EasyFly.Infrastructure.Services
                         Id = flight.Plane.Id,
                         Name = flight.Plane.Name,
                         Seats = flight.Plane.Seats.Count
-                    }
+                    },
+                    FreeSeatCount = freeSeats.Count()
                 });
+            }
 
+            response.Data.Flights = flightViewModels;
             response.Data.TotalPages = await _flightRepository.GetPageCount(size);
-
             return response;
         }
+
 
         public async Task<Response> UpdateFlight(FlightDto flight, Guid id)
         {

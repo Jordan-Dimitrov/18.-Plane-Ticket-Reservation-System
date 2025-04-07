@@ -34,6 +34,7 @@
                         <th>Arrival Time</th>
                         <th>Departure Airport</th>
                         <th>Arrival Airport</th>
+                        <th>Free Seats</th>
                         <th>Plane</th>
                         <th>Price</th>
                         @if (User.IsInRole("Admin"))
@@ -51,6 +52,7 @@
                             <td>@item.ArrivalTime</td>
                             <td>@item.DepartureAirport.Name</td>
                             <td>@item.ArrivalAirport.Name</td>
+                            <td>@item.FreeSeatCount</td>
                             <td>@item.Plane.Name</td>
                             <td>@item.TicketPrice BGN</td>
                             @if (User.IsInRole("Admin"))

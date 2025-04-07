@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace EasyFly.Infrastructure.Services
 {
-    internal class TicketService : ITicketService
+    public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly ISeatRepository _seatRepository;
@@ -201,6 +201,20 @@ namespace EasyFly.Infrastructure.Services
                 Price = ticket.Price,
                 LuggageSize = ticket.LuggageSize,
                 FlightId = ticket.FlightId,
+                Flight = new FlightViewModel()
+                {
+                    FlightNumber = ticket.Flight.FlightNumber,
+                    DepartureTime = ticket.Flight.DepartureTime,
+                    ArrivalTime = ticket.Flight.ArrivalTime,
+                    ArrivalAirport = new AirportViewModel()
+                    {
+                        Name = ticket.Flight.ArrivalAirport.Name
+                    },
+                    DepartureAirport = new AirportViewModel()
+                    {
+                        Name = ticket.Flight.DepartureAirport.Name
+                    }
+                }
             };
 
             return response;
@@ -225,8 +239,11 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            response.Data.Tickets = tickets
-                .Select(ticket => new TicketViewModel()
+            var ticketViewModels = new List<TicketViewModel>();
+
+            foreach (var ticket in tickets)
+            {
+                var ticketViewModel = new TicketViewModel()
                 {
                     Id = ticket.Id,
                     Seat = new SeatViewModel
@@ -255,9 +272,27 @@ namespace EasyFly.Infrastructure.Services
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
                     FlightId = ticket.FlightId,
-                    CreatedAt = ticket.CreatedAt
-                });
+                    CreatedAt = ticket.CreatedAt,
+                    Flight = new FlightViewModel()
+                    {
+                        FlightNumber = ticket.Flight.FlightNumber,
+                        DepartureTime = ticket.Flight.DepartureTime,
+                        ArrivalTime = ticket.Flight.ArrivalTime,
+                        ArrivalAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.ArrivalAirport.Name
+                        },
+                        DepartureAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.DepartureAirport.Name
+                        }
+                    }
+                };
 
+                ticketViewModels.Add(ticketViewModel);
+            }
+
+            response.Data.Tickets = ticketViewModels;
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
 
             return response;
@@ -275,8 +310,11 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            response.Data.Tickets = tickets
-                .Select(ticket => new TicketViewModel()
+            var ticketViewModels = new List<TicketViewModel>();
+
+            foreach (var ticket in tickets)
+            {
+                var ticketViewModel = new TicketViewModel()
                 {
                     Id = ticket.Id,
                     Seat = new SeatViewModel
@@ -305,9 +343,27 @@ namespace EasyFly.Infrastructure.Services
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
                     FlightId = ticket.FlightId,
-                    CreatedAt = ticket.CreatedAt
-                });
+                    CreatedAt = ticket.CreatedAt,
+                    Flight = new FlightViewModel()
+                    {
+                        FlightNumber = ticket.Flight.FlightNumber,
+                        DepartureTime = ticket.Flight.DepartureTime,
+                        ArrivalTime = ticket.Flight.ArrivalTime,
+                        ArrivalAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.ArrivalAirport.Name
+                        },
+                        DepartureAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.DepartureAirport.Name
+                        }
+                    }
+                };
 
+                ticketViewModels.Add(ticketViewModel);
+            }
+
+            response.Data.Tickets = ticketViewModels;
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
 
             return response;
@@ -325,8 +381,11 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            response.Data.Tickets = tickets
-                .Select(ticket => new TicketViewModel()
+            var ticketViewModels = new List<TicketViewModel>();
+
+            foreach (var ticket in tickets)
+            {
+                var ticketViewModel = new TicketViewModel()
                 {
                     Id = ticket.Id,
                     Seat = new SeatViewModel
@@ -355,9 +414,27 @@ namespace EasyFly.Infrastructure.Services
                     Price = ticket.Price,
                     LuggageSize = ticket.LuggageSize,
                     FlightId = ticket.FlightId,
-                    CreatedAt = ticket.CreatedAt
-                });
+                    CreatedAt = ticket.CreatedAt,
+                    Flight = new FlightViewModel()
+                    {
+                        FlightNumber = ticket.Flight.FlightNumber,
+                        DepartureTime = ticket.Flight.DepartureTime,
+                        ArrivalTime = ticket.Flight.ArrivalTime,
+                        ArrivalAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.ArrivalAirport.Name
+                        },
+                        DepartureAirport = new AirportViewModel()
+                        {
+                            Name = ticket.Flight.DepartureAirport.Name
+                        }
+                    }
+                };
 
+                ticketViewModels.Add(ticketViewModel);
+            }
+
+            response.Data.Tickets = ticketViewModels;
             response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
 
             return response;
