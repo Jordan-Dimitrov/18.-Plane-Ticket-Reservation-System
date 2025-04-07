@@ -15,6 +15,13 @@
     </div>
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <input type="hidden" id="baseTicketPrice" value="@basePrice" />
 <input type="hidden" id="returningTicketPrice" value="@returningPrice" />
 

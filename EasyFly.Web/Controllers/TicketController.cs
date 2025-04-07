@@ -331,6 +331,13 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
+            if(!model.Tickets.Any(x => x.PersonType == Domain.Enums.PersonType.Adult))
+            {
+                TempData["ErrorMessage"] = "Kids cannot travel alone";
+                return RedirectToAction("EnterTicketDetails",
+                    new { flightId = model.FlightId, requiredSeats = model.RequiredSeats, returningFlightId = model.ReturningFlightId });
+            }
+
             var mainResponse = new DataResponse<CheckoutDto>();
             mainResponse.Data = new CheckoutDto();
 
