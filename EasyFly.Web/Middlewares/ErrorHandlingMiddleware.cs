@@ -36,6 +36,7 @@ namespace EasyFly.Web.Middlewares
             }
         }
 
+
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.Clear();
