@@ -39,6 +39,7 @@
                 <th>Returning Flight</th>
             }
             <th>Actions</th>
+            <th>Destination</th>
         </tr>
     </thead>
     <tbody>
@@ -69,6 +70,15 @@
                         <input type="hidden" name="requiredSeats" value="@ViewBag.RequiredSeats" />
                         <button type="submit" class="btn btn-primary">Reserve</button>
                     </form>
+                </td>
+                <td>
+                    <iframe width="200"
+                            height="150"
+                            style="border:0;"
+                            loading="lazy"
+                            allowfullscreen
+                            src="https://maps.google.com/maps?q=@flight.ArrivalAirport.Latitude,@flight.ArrivalAirport.Longtitude&z=10&output=embed">
+                    </iframe>
                 </td>
             </tr>
         }

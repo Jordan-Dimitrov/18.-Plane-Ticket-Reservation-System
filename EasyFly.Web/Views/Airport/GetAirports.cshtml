@@ -36,6 +36,7 @@
                         {
                             <th>Actions</th>
                         }
+                        <th>Location Map</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,6 +63,15 @@
                                     </div>
                                 </td>
                             }
+                            <td>
+                                <iframe width="200"
+                                        height="150"
+                                        style="border:0;"
+                                        loading="lazy"
+                                        allowfullscreen
+                                        src="https://maps.google.com/maps?q=@item.Latitude,@item.Longtitude&z=10&output=embed">
+                                </iframe>
+                            </td>
                         </tr>
                     }
                 </tbody>

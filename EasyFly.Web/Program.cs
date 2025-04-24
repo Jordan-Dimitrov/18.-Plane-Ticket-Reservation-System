@@ -4,7 +4,6 @@ using EasyFly.Persistence;
 using EasyFly.Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Quartz.Impl.Matchers;
 using Quartz;
 namespace EasyFly.Web
 {
@@ -26,7 +25,12 @@ namespace EasyFly.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddAuthentication();
+            var googleAuth = builder.Configuration.GetSection("GoogleAuth");
+            builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = googleAuth["GoogleClientId"];
+                googleOptions.ClientSecret = googleAuth["GoogleClientSecret"];
+            });
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped<Seed>();

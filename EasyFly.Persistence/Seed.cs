@@ -143,7 +143,8 @@ namespace EasyFly.Persistence
                         PersonType = PersonType.Adult,
                         UserId = user.Id,
                         PersonFirstName = "John",
-                        PersonLastName = "Doe"
+                        PersonLastName = "Doe",
+                        Price = flights[0].TicketPrice,
                     },
                     new Ticket
                     {
@@ -152,7 +153,8 @@ namespace EasyFly.Persistence
                         PersonType = PersonType.Kid,
                         UserId = admin.Id,
                         PersonFirstName = "Jane",
-                        PersonLastName = "Doe"
+                        PersonLastName = "Doe",
+                        Price = flights[1].TicketPrice,
                     }
                 };
 
