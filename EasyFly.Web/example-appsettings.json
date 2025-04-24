@@ -13,6 +13,10 @@
   "Stripe": {
     "SecretKey": "temp"
   },
+  "GoogleAuth": {
+    "GoogleClientId": "temp",
+    "GoogleClientSecret": "temp"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
