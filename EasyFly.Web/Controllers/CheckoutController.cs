@@ -71,8 +71,7 @@ namespace EasyFly.Web.Controllers
                     : string.Empty;
 
                 var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                string emailContent = _EmailService.BuildEmails(baseUrl, username, ticketIds);
-                await _EmailSender.SendEmailAsync(userEmail, "Tickets", emailContent);
+                await _EmailService.SendEmailMessage(userEmail, baseUrl, username, ticketIds);
                 TempData["SuccessMessage"] = "Payment successful. Your tickets are now reserved.";
             }
             else
