@@ -1,8 +1,10 @@
 using EasyFly.Domain.Models;
 using EasyFly.Infrastructure;
 using EasyFly.Persistence;
+using EasyFly.Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 namespace EasyFly.Web
 {
     public class Program
@@ -14,20 +16,27 @@ namespace EasyFly.Web
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddAuthentication();
+            var googleAuth = builder.Configuration.GetSection("GoogleAuth");
+            builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = googleAuth["GoogleClientId"];
+                googleOptions.ClientSecret = googleAuth["GoogleClientSecret"];
+            });
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped<Seed>();
 
             builder.Services
-                .AddInfrastructure()
+                .AddInfrastructure(builder.Configuration)
                 .AddPersistence(connectionString);
 
             var app = builder.Build();
@@ -41,6 +50,7 @@ namespace EasyFly.Web
                 seed.SeedContext().Wait();
             }
 
+            //app.UseMiddleware<ErrorHandlingMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -48,16 +58,20 @@ namespace EasyFly.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseExceptionHandler("/Error");
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

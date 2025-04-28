@@ -1,0 +1,24 @@
+﻿@model EasyFly.Application.ViewModels.FlightViewModel
+
+@{
+    ViewData["Title"] = "Delete Flight";
+}
+
+<h1>Delete Flight</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (Model is not null)
+{
+    <h3>Are you sure you want to delete flight @Model.FlightNumber?</h3>
+    <form asp-controller="Flight" asp-action="Delete" method="post">
+        @Html.Hidden("flightId", Model.Id)
+        <button type="submit" class="btn btn-primary">Delete</button>
+        <a asp-controller="Plane" asp-action="GetPlanes" class="btn btn-secondary ms-2">Back to Planes</a>
+    </form>
+}

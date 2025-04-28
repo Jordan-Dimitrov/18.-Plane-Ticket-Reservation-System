@@ -1,0 +1,127 @@
+﻿@model EasyFly.Application.ViewModels.TicketDetailsViewModel
+
+@{
+    ViewData["Title"] = "Enter Ticket Details";
+    var basePrice = Model.TicketPrice;
+    var returningPrice = Model.ReturningTicketPrice;
+}
+
+<h2>Enter Ticket Details</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<p class="text-muted">
+    The ticket price will be adjusted based on the luggage size you choose:
+    <ul>
+        <li><strong>Small:</strong> 40% discount on the total ticket price.</li>
+        <li><strong>Medium:</strong> 20% discount on the total ticket price.</li>
+        <li><strong>Large:</strong> No discount (full price).</li>
+    </ul>
+    These discounts apply to both the base ticket price and the returning ticket price.
+</p>
+
+<input type="hidden" id="baseTicketPrice" value="@basePrice" />
+<input type="hidden" id="returningTicketPrice" value="@returningPrice" />
+
+<form asp-action="EnterTicketDetails" method="post">
+    <input type="hidden" asp-for="FlightId" />
+    <input type="hidden" asp-for="ReturningFlightId" />
+    <input type="hidden" asp-for="RequiredSeats" />
+
+    @for (int i = 0; i < Model.RequiredSeats; i++)
+    {
+        <h4>Ticket @(i + 1)</h4>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonFirstName">First Name</label>
+            <input asp-for="Tickets[i].PersonFirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonLastName">Last Name</label>
+            <input asp-for="Tickets[i].PersonLastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].Gender"></label>
+            <select asp-for="Tickets[i].Gender" class="form-control">
+                @foreach (var gender in Enum.GetValues(typeof(EasyFly.Domain.Enums.Gender)))
+                {
+                    <option value="@gender">@gender</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].PersonType"></label>
+            <select asp-for="Tickets[i].PersonType" class="form-control">
+                @foreach (var personType in Enum.GetValues(typeof(EasyFly.Domain.Enums.PersonType)))
+                {
+                    <option value="@personType">@personType</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tickets[i].LuggageSize"></label>
+            <select asp-for="Tickets[i].LuggageSize" class="form-control luggage-size" data-index="@i">
+                @foreach (var size in Enum.GetValues(typeof(EasyFly.Domain.Enums.LuggageSize)))
+                {
+                    <option value="@size">@size</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Ticket Price (BGN)</label>
+            <span class="ticket-price" id="ticketPrice_@i">@((basePrice + returningPrice).ToString("F2"))</span>
+        </div>
+    }
+
+    <div id="totalContainer" class="mt-3">
+        <h3>Total Price: <span id="totalPrice">@((basePrice + returningPrice) * Model.RequiredSeats)</span> BGN</h3>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary mt-2">Checkout</button>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var basePrice = parseFloat(document.getElementById('baseTicketPrice').value);
+        var returningPrice = parseFloat(document.getElementById('returningTicketPrice').value);
+
+        function updateTicketPrice(selectElement, index) {
+            var multiplier = 1;
+            var selectedValue = selectElement.value;
+            if (selectedValue === 'Medium') {
+                multiplier = 0.8;
+            } else if (selectedValue === 'Small') {
+                multiplier = 0.6;
+            }
+            newPrice = (basePrice + returningPrice) * multiplier;
+            document.getElementById('ticketPrice_' + index).innerText = newPrice.toFixed(2);
+            updateTotal();
+        }
+
+        function updateTotal() {
+            var total = 0;
+            document.querySelectorAll('.ticket-price').forEach(function (elem) {
+                total += parseFloat(elem.innerText);
+            });
+            document.getElementById('totalPrice').innerText = total.toFixed(2);
+        }
+
+        var selects = document.querySelectorAll('.luggage-size');
+        selects.forEach(function (select, index) {
+            updateTicketPrice(select, index);
+            select.addEventListener('change', function () {
+                updateTicketPrice(select, index);
+            });
+        });
+    });
+</script>

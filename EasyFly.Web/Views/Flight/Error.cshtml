@@ -1,0 +1,7 @@
+﻿@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+    <a href="/Airport/Reservation" class="btn btn-secondary mt-3">Back</a>
+}

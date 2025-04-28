@@ -2,6 +2,7 @@
 {
     public enum PersonType
     {
+        Baby,
         Kid,
         Adult
     }

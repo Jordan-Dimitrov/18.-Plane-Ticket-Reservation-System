@@ -2,7 +2,7 @@
 
 namespace EasyFly.Domain.Models
 {
-    public class Airport
+    public class Airport : SoftDeletableEntity
     {
         public Airport()
         {
@@ -12,6 +12,7 @@ namespace EasyFly.Domain.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(Constants.NameLength)]
         public string Name { get; set; }
         [Required]
         public decimal Latitude { get; set; }

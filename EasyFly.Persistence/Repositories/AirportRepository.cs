@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
-    internal class AirportRepository : IAirportRepository
+    public class AirportRepository : IAirportRepository
     {
         private readonly ApplicationDbContext _Context;
 
@@ -16,7 +16,13 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<bool> DeleteAsync(Airport value)
         {
-            _Context.Remove(value);
+            value.DeletedAt = DateTime.UtcNow;
+
+            foreach (var item in value.Flights)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 
@@ -27,7 +33,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Airport>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Airports;
+            var query = _Context.Airports.Include(x => x.Flights);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
@@ -44,12 +50,14 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> GetPageCount(int size)
         {
-            return Math.Max(await _Context.Airports.CountAsync() / size, 1);
+            var count = (double)await _Context.Airports.CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
         }
 
         public async Task<IEnumerable<Airport>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Airports.Skip((page - 1) * size).Take(size);
+            var query = _Context.Airports.Include(x => x.Flights).Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 

@@ -36,16 +36,9 @@ namespace EasyFly.Persistence
                     await _RoleManager.CreateAsync(new IdentityRole(Role.Admin.ToString()));
                 }
 
-                User user = new User
-                {
-                    Address = "123 Main St",
-                    Phone = 1234567890
-                };
-                User admin = new User
-                {
-                    Address = "456 Admin St",
-                    Phone = 0828342405
-                };
+                User user = new User();
+
+                User admin = new User();
 
                 await _UserStore.SetUserNameAsync(admin, "admin@easyfly.com", default);
                 await ((IUserEmailStore<User>)_UserStore).SetEmailAsync(admin, "admin@easyfly.com", default);
@@ -84,7 +77,7 @@ namespace EasyFly.Persistence
                 {
                     new Plane
                     {
-                        Name = "Boeing 737"
+                        Name = "Boeing 737",
                     },
                     new Plane
                     {
@@ -104,7 +97,8 @@ namespace EasyFly.Persistence
                         ArrivalTime = DateTime.Now.AddHours(5),
                         DepartureAirportId = airports[0].Id,
                         ArrivalAirportId = airports[1].Id,
-                        PlaneId = planes[0].Id
+                        PlaneId = planes[0].Id,
+                        TicketPrice = 300.00m
                     },
                     new Flight
                     {
@@ -113,7 +107,8 @@ namespace EasyFly.Persistence
                         ArrivalTime = DateTime.Now.AddHours(6),
                         DepartureAirportId = airports[1].Id,
                         ArrivalAirportId = airports[0].Id,
-                        PlaneId = planes[1].Id
+                        PlaneId = planes[1].Id,
+                        TicketPrice = 500.00m
                     }
                 };
 
@@ -126,13 +121,13 @@ namespace EasyFly.Persistence
                     {
                         Row = 1,
                         SeatLetter = SeatLetter.A,
-                        FlightId = flights[0].Id
+                        PlaneId = planes[0].Id
                     },
                     new Seat
                     {
                         Row = 2,
                         SeatLetter = SeatLetter.B,
-                        FlightId = flights[1].Id
+                        PlaneId = planes[0].Id
                     }
                 };
 
@@ -144,22 +139,45 @@ namespace EasyFly.Persistence
                     new Ticket
                     {
                         SeatId = seats[0].Id,
+                        FlightId = flights[0].Id,
                         PersonType = PersonType.Adult,
                         UserId = user.Id,
                         PersonFirstName = "John",
-                        PersonLastName = "Doe"
+                        PersonLastName = "Doe",
+                        Price = flights[0].TicketPrice,
                     },
                     new Ticket
                     {
                         SeatId = seats[1].Id,
+                        FlightId = flights[1].Id,
                         PersonType = PersonType.Kid,
                         UserId = admin.Id,
                         PersonFirstName = "Jane",
-                        PersonLastName = "Doe"
+                        PersonLastName = "Doe",
+                        Price = flights[1].TicketPrice,
                     }
                 };
 
                 _Context.Tickets.AddRange(tickets);
+                await _Context.SaveChangesAsync();
+
+                List<Audit> audits = new List<Audit>
+                {
+                    new Audit
+                    {
+                        UserId = user.Id,
+                        Message = "Create something",
+                        ModifiedAt = DateTime.UtcNow
+                    },
+                    new Audit
+                    {
+                        UserId = admin.Id,
+                        Message = "Created other thing",
+                        ModifiedAt = DateTime.UtcNow.AddDays(-7)
+                    }
+                };
+
+                _Context.Audits.AddRange(audits);
                 await _Context.SaveChangesAsync();
             }
         }

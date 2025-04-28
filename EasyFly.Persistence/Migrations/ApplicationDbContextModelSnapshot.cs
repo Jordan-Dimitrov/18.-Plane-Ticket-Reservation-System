@@ -28,6 +28,9 @@ namespace EasyFly.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(18,2)");
 
@@ -36,11 +39,50 @@ namespace EasyFly.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
                     b.ToTable("Airports");
+                });
+
+            modelBuilder.Entity("EasyFly.Domain.Models.Audit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Audits");
                 });
 
             modelBuilder.Entity("EasyFly.Domain.Models.Flight", b =>
@@ -55,6 +97,9 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("DepartureAirportId")
                         .HasColumnType("uniqueidentifier");
 
@@ -63,10 +108,14 @@ namespace EasyFly.Persistence.Migrations
 
                     b.Property<string>("FlightNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<Guid>("PlaneId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("TicketPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -85,9 +134,18 @@ namespace EasyFly.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -100,21 +158,25 @@ namespace EasyFly.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FlightId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PlaneId")
+                    b.Property<Guid>("PlaneId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Row")
+                        .HasMaxLength(32)
                         .HasColumnType("int");
 
                     b.Property<int>("SeatLetter")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
-                    b.HasIndex("FlightId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PlaneId");
 
@@ -127,16 +189,42 @@ namespace EasyFly.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FlightId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FlightId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LuggageSize")
+                        .HasColumnType("int");
+
                     b.Property<string>("PersonFirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("PersonLastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<int>("PersonType")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Reserved")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uniqueidentifier");
@@ -145,11 +233,25 @@ namespace EasyFly.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("FlightId");
+
+                    b.HasIndex("FlightId1");
 
                     b.HasIndex("SeatId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Tickets");
                 });
@@ -162,13 +264,12 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -194,9 +295,6 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Phone")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -212,6 +310,11 @@ namespace EasyFly.Persistence.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -363,6 +466,17 @@ namespace EasyFly.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("EasyFly.Domain.Models.Audit", b =>
+                {
+                    b.HasOne("EasyFly.Domain.Models.User", "User")
+                        .WithMany("Audits")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EasyFly.Domain.Models.Flight", b =>
                 {
                     b.HasOne("EasyFly.Domain.Models.Airport", "ArrivalAirport")
@@ -392,32 +506,44 @@ namespace EasyFly.Persistence.Migrations
 
             modelBuilder.Entity("EasyFly.Domain.Models.Seat", b =>
                 {
-                    b.HasOne("EasyFly.Domain.Models.Flight", "Flight")
-                        .WithMany()
-                        .HasForeignKey("FlightId")
+                    b.HasOne("EasyFly.Domain.Models.Plane", "Plane")
+                        .WithMany("Seats")
+                        .HasForeignKey("PlaneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyFly.Domain.Models.Plane", null)
-                        .WithMany("Seats")
-                        .HasForeignKey("PlaneId");
-
-                    b.Navigation("Flight");
+                    b.Navigation("Plane");
                 });
 
             modelBuilder.Entity("EasyFly.Domain.Models.Ticket", b =>
                 {
-                    b.HasOne("EasyFly.Domain.Models.Seat", "Seat")
+                    b.HasOne("EasyFly.Domain.Models.Flight", "Flight")
                         .WithMany()
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("EasyFly.Domain.Models.Flight", null)
+                        .WithMany("Tickets")
+                        .HasForeignKey("FlightId1");
+
+                    b.HasOne("EasyFly.Domain.Models.Seat", "Seat")
+                        .WithMany("Tickets")
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EasyFly.Domain.Models.User", "User")
-                        .WithMany("Ticket")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("EasyFly.Domain.Models.User", null)
+                        .WithMany("Ticket")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Flight");
 
                     b.Navigation("Seat");
 
@@ -480,6 +606,11 @@ namespace EasyFly.Persistence.Migrations
                     b.Navigation("Flights");
                 });
 
+            modelBuilder.Entity("EasyFly.Domain.Models.Flight", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
             modelBuilder.Entity("EasyFly.Domain.Models.Plane", b =>
                 {
                     b.Navigation("Flights");
@@ -487,8 +618,15 @@ namespace EasyFly.Persistence.Migrations
                     b.Navigation("Seats");
                 });
 
+            modelBuilder.Entity("EasyFly.Domain.Models.Seat", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
             modelBuilder.Entity("EasyFly.Domain.Models.User", b =>
                 {
+                    b.Navigation("Audits");
+
                     b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618

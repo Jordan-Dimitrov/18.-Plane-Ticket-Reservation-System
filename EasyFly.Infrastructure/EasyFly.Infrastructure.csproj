@@ -7,8 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BarCode" Version="2025.2.11" />
+    <PackageReference Include="IronSoftware.ReaderInternals.Linux" Version="2025.1.32608" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="Quartz" Version="3.13.1" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.13.1" />
+    <PackageReference Include="QuartzHostedService" Version="0.0.7" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
+    <PackageReference Include="Stripe.net" Version="47.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EasyFly.Application\EasyFly.Application.csproj" />
-    <ProjectReference Include="..\EasyFly.Common\EasyFly.Common.csproj" />
   </ItemGroup>
 
 </Project>

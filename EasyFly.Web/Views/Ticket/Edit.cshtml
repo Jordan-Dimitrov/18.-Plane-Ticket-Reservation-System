@@ -1,0 +1,104 @@
+﻿@model EasyFly.Application.ViewModels.TicketEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Ticket";
+}
+
+<h1>Edit Ticket</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (Model is not null)
+{
+    <form asp-controller="Ticket" asp-action="Edit" method="post">
+        @if(Model.Seats is not null &&Model.Seats.Any()){
+            <div class="form-group">
+                <label for="Seat">Seat:</label>
+                <select class="form-control" id="SeatId" name="SeatId">
+                    @foreach (var item in Model.Seats)
+                    {
+                        <option value="@item.Id">@($"{item.Row} - {item.SeatLetter}")</option>
+                    }
+                </select>
+            </div>
+        }
+        <div class="form-group">
+            <label for="PersonType">Person Type:</label>
+            <select class="form-control" id="PersonType" name="PersonType">
+                @foreach (var personType in Enum.GetValues(typeof(EasyFly.Domain.Enums.PersonType)))
+                {
+                    <option value="@personType" selected="@(Model.TicketViewModel.PersonType == (EasyFly.Domain.Enums.PersonType)personType ? "selected" : null)">
+                        @personType
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Gender">Gender:</label>
+            <select class="form-control" id="Gender" name="Gender">
+                @foreach (var gender in Enum.GetValues(typeof(EasyFly.Domain.Enums.Gender)))
+                {
+                    <option value="@gender" selected="@(Model.TicketViewModel.Gender == (EasyFly.Domain.Enums.Gender)gender ? "selected" : null)">
+                        @gender
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="LuggageSize">Luggage Size:</label>
+            <select class="form-control" id="LuggageSize" name="LuggageSize">
+                @foreach (var size in Enum.GetValues(typeof(EasyFly.Domain.Enums.LuggageSize)))
+                {
+                    <option value="@size" selected="@(Model.TicketViewModel.LuggageSize == (EasyFly.Domain.Enums.LuggageSize)size ? "selected" : null)">
+                        @size
+                    </option>
+                }
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="UserId">User ID:</label>
+            <select class="form-control" id="UserId" name="UserId">
+                @foreach (var item in Model.Users)
+                {
+                    <option value="@item.Id">@item.Username</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="UserId">Flight:</label>
+            <select class="form-control" id="FlightId" name="FlightId">
+                @foreach (var item in Model.Flights)
+                {
+                    <option value="@item.Id">@item.FlightNumber</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="PersonFirstName">First Name:</label>
+            <input type="text" class="form-control" id="PersonFirstName" name="PersonFirstName" value="@Model.TicketViewModel.PersonFirstName" />
+        </div>
+        <div class="form-group">
+            <label for="PersonLastName">Last Name:</label>
+            <input type="text" class="form-control" id="PersonLastName" name="PersonLastName" value="@Model.TicketViewModel.PersonLastName" />
+        </div>
+        <div class="form-group">
+            <label for="Price">Price:</label>
+            <input type="text" class="form-control" id="Price" name="Price" value="@Model.TicketViewModel.Price" />
+        </div>
+        @Html.AntiForgeryToken()
+        @Html.Hidden("ticketId", Model.TicketViewModel.Id)
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-controller="Ticket" asp-action="GetTickets" class="btn btn-secondary ms-2">Back to Tickets</a>
+        </div>
+    </form>
+}

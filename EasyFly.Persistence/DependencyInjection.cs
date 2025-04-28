@@ -24,6 +24,7 @@ namespace EasyFly.Persistence
             services.AddScoped<ISeatRepository, SeatRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
 
             return services;
         }

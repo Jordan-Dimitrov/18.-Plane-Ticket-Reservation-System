@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
-    internal class PlaneRepository : IPlaneRepository
+    public class PlaneRepository : IPlaneRepository
     {
         private readonly ApplicationDbContext _Context;
 
@@ -16,7 +16,18 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<bool> DeleteAsync(Plane value)
         {
-            _Context.Remove(value);
+            value.DeletedAt = DateTime.UtcNow;
+
+            foreach (var item in value.Seats)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
+            foreach (var item in value.Flights)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 
@@ -27,29 +38,33 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<IEnumerable<Plane>> GetAllAsync(bool trackChanges)
         {
-            var query = _Context.Planes;
+            var query = _Context.Planes.Include(x => x.Flights).Include(x => x.Seats);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 
         public async Task<Plane?> GetByAsync(Expression<Func<Plane, bool>> condition)
         {
-            return await _Context.Planes.FirstOrDefaultAsync(condition);
+            return await _Context.Planes.Include(x => x.Flights).Include(x => x.Seats).FirstOrDefaultAsync(condition);
         }
 
         public async Task<Plane?> GetByIdAsync(Guid id, bool trackChanges)
         {
-            var query = _Context.Planes.Where(x => x.Id == id);
+            var query = _Context.Planes.Include(x => x.Flights).Include(x => x.Seats)
+                .Where(x => x.Id == id);
             return await (trackChanges ? query.FirstOrDefaultAsync() : query.AsNoTracking().FirstOrDefaultAsync());
         }
 
         public async Task<int> GetPageCount(int size)
         {
-            return Math.Max(await _Context.Planes.CountAsync() / size, 1);
+            var count = (double)await _Context.Planes.CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
         }
 
         public async Task<IEnumerable<Plane>> GetPagedAsync(bool trackChanges, int page, int size)
         {
-            var query = _Context.Planes.Skip((page - 1) * size).Take(size);
+            var query = _Context.Planes.Include(x => x.Flights).Include(x => x.Seats)
+                .Skip((page - 1) * size).Take(size);
             return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
         }
 

@@ -1,4 +1,3 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿const STRIPE_PUBLISHABLE_KEY = 'pk_test_51O5vnxA2SZQOqvK0u3K4WvFqTEeT5aEFik4XgEjcWLkjfnmPS9pgmnnFS4VoM1wM2mpORZD33y5yPr352f3eAgts00IsCPwELm';
 
-// Write your JavaScript code.
+window.STRIPE_PUBLISHABLE_KEY = STRIPE_PUBLISHABLE_KEY;

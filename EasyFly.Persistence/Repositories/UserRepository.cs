@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace EasyFly.Persistence.Repositories
 {
-    internal class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _Context;
 
@@ -14,9 +14,25 @@ namespace EasyFly.Persistence.Repositories
             _Context = context;
         }
 
+        public async Task<int> Count()
+        {
+            return await _Context.Users.CountAsync();
+        }
+
         public async Task<bool> DeleteAsync(User value)
         {
-            _Context.Remove(value);
+            value.DeletedAt = DateTime.UtcNow;
+
+            foreach (var item in value.Audits)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
+            foreach (var item in value.Ticket)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 
@@ -44,7 +60,9 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> GetPageCount(int size)
         {
-            return Math.Max(await _Context.Users.CountAsync() / size, 1);
+            var count = (double)await _Context.Users.CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
         }
 
         public async Task<IEnumerable<User>> GetPagedAsync(bool trackChanges, int page, int size)

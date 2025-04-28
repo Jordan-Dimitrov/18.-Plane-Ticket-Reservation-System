@@ -1,0 +1,27 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "temp",
+    "ApplicationDbContextConnection": "temp"
+  },
+  "EmailSettings": {
+    "Sender": "temp",
+    "SmtpServer": "temp",
+    "Port": 587,
+    "Username": "temp",
+    "Password": "temp"
+  },
+  "Stripe": {
+    "SecretKey": "temp"
+  },
+  "GoogleAuth": {
+    "GoogleClientId": "temp",
+    "GoogleClientSecret": "temp"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
