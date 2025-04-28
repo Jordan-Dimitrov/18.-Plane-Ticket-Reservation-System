@@ -248,7 +248,7 @@ namespace EasyFly.Web.Controllers
             else
             {
                 response = await _ticketService
-                               .GetTicketsPaged(page, _Size, search, typeFilter, luggageFilter);
+                               .GetTicketsPaged(page, _Size * 3, search, typeFilter, luggageFilter);
             }
 
             if (!response.Success)

@@ -366,7 +366,7 @@ namespace EasyFly.Infrastructure.Services
             }
 
             response.Data.Tickets = ticketViewModels;
-            response.Data.TotalPages = await _ticketRepository.GetPageCountWithFilter(size, search, typeFilter, luggageFilter);
+            response.Data.TotalPages = await _ticketRepository.GetPageCountForFlight(size, flightId, search, typeFilter, luggageFilter);
 
             return response;
         }
@@ -437,7 +437,7 @@ namespace EasyFly.Infrastructure.Services
             }
 
             response.Data.Tickets = ticketViewModels;
-            response.Data.TotalPages = await _ticketRepository.GetPageCountWithFilter(size, search, typeFilter, luggageFilter);
+            response.Data.TotalPages = await _ticketRepository.GetPageCountForUser(size, userId, search, typeFilter, luggageFilter);
 
             return response;
         }
