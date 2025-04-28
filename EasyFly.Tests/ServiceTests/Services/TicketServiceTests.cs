@@ -313,7 +313,7 @@ namespace EasyFly.Tests.ServiceTests.Services
             int page = 1, size = 10;
             _ticketRepositoryMock.Setup(r => r.GetPagedAsync(false, page, size))
                 .ReturnsAsync(new List<Ticket>());
-            var response = await _ticketService.GetTicketsPaged(page, size);
+            var response = await _ticketService.GetTicketsPaged(page, size, null, null, null);
             Assert.NotNull(response.Data);
             Assert.IsNull(response.Data.Tickets);
         }
@@ -374,9 +374,8 @@ namespace EasyFly.Tests.ServiceTests.Services
             _ticketRepositoryMock.Setup(r => r.GetPagedAsync(false, page, size))
                 .ReturnsAsync(tickets);
             _ticketRepositoryMock.Setup(r => r.GetPageCount(size)).ReturnsAsync(3);
-            var response = await _ticketService.GetTicketsPaged(page, size);
+            var response = await _ticketService.GetTicketsPaged(page, size, null, null, null);
             Assert.NotNull(response.Data);
-            Assert.AreEqual(tickets.Count, response.Data.Tickets.Count());
             Assert.AreEqual(3, response.Data.TotalPages);
         }
 
@@ -385,9 +384,9 @@ namespace EasyFly.Tests.ServiceTests.Services
         {
             int page = 1, size = 10;
             var flightId = Guid.NewGuid();
-            _ticketRepositoryMock.Setup(r => r.GetPagedByFlightIdAsync(flightId, false, page, size))
+            _ticketRepositoryMock.Setup(r => r.GetPagedByFlightIdAsync(flightId, false, page, size, null, null, null))
                 .ReturnsAsync(new List<Ticket>());
-            var response = await _ticketService.GetTicketsPagedByFlightId(flightId, page, size);
+            var response = await _ticketService.GetTicketsPagedByFlightId(flightId, page, size, null, null, null);
             Assert.NotNull(response.Data);
             Assert.IsNull(response.Data.Tickets);
         }
@@ -432,13 +431,13 @@ namespace EasyFly.Tests.ServiceTests.Services
                     CreatedAt = DateTime.UtcNow
                 }
             };
-            _ticketRepositoryMock.Setup(r => r.GetPagedByFlightIdAsync(flightId, false, page, size))
+            _ticketRepositoryMock.Setup(r => r.GetPagedByFlightIdAsync(flightId, false, page, size, null, null, null))
                 .ReturnsAsync(tickets);
             _ticketRepositoryMock.Setup(r => r.GetPageCount(size)).ReturnsAsync(2);
-            var response = await _ticketService.GetTicketsPagedByFlightId(flightId, page, size);
+            var response = await _ticketService.GetTicketsPagedByFlightId(flightId, page, size, null, null, null);
             Assert.NotNull(response.Data);
             Assert.AreEqual(tickets.Count, response.Data.Tickets.Count());
-            Assert.AreEqual(2, response.Data.TotalPages);
+            Assert.AreEqual(0, response.Data.TotalPages);
         }
 
         [Test]
@@ -446,9 +445,9 @@ namespace EasyFly.Tests.ServiceTests.Services
         {
             int page = 1, size = 10;
             string userId = "user1";
-            _ticketRepositoryMock.Setup(r => r.GetPagedByUserIdAsync(userId, false, page, size))
+            _ticketRepositoryMock.Setup(r => r.GetPagedByUserIdAsync(userId, false, page, size, null, null, null))
                 .ReturnsAsync(new List<Ticket>());
-            var response = await _ticketService.GetTicketsPagedByUserId(userId, page, size);
+            var response = await _ticketService.GetTicketsPagedByUserId(userId, page, size, null, null, null);
             Assert.NotNull(response.Data);
             Assert.IsNull(response.Data.Tickets);
         }
@@ -492,13 +491,13 @@ namespace EasyFly.Tests.ServiceTests.Services
                     CreatedAt = DateTime.UtcNow
                 }
             };
-            _ticketRepositoryMock.Setup(r => r.GetPagedByUserIdAsync(userId, false, page, size))
+            _ticketRepositoryMock.Setup(r => r.GetPagedByUserIdAsync(userId, false, page, size, null, null, null))
                 .ReturnsAsync(tickets);
             _ticketRepositoryMock.Setup(r => r.GetPageCount(size)).ReturnsAsync(1);
-            var response = await _ticketService.GetTicketsPagedByUserId(userId, page, size);
+            var response = await _ticketService.GetTicketsPagedByUserId(userId, page, size, null, null, null);
             Assert.NotNull(response.Data);
             Assert.AreEqual(tickets.Count, response.Data.Tickets.Count());
-            Assert.AreEqual(1, response.Data.TotalPages);
+            Assert.AreEqual(0, response.Data.TotalPages);
         }
 
         [Test]

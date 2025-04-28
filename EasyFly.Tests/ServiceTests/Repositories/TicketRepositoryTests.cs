@@ -266,7 +266,7 @@ namespace EasyFly.Tests.ServiceTests.Repositories
         public async Task GetPagedByFlightIdAsync_ShouldReturnTicketsForFlight()
         {
             int pageSize = 2;
-            var tickets = await _repository.GetPagedByFlightIdAsync(_flight.Id, false, 1, pageSize);
+            var tickets = await _repository.GetPagedByFlightIdAsync(_flight.Id, false, 1, pageSize, null, null, null);
             Assert.AreEqual(2, tickets.Count());
             Assert.IsTrue(tickets.All(t => t.FlightId == _flight.Id));
         }
@@ -275,7 +275,7 @@ namespace EasyFly.Tests.ServiceTests.Repositories
         public async Task GetPagedByUserIdAsync_ShouldReturnTicketsForUser()
         {
             int pageSize = 2;
-            var tickets = await _repository.GetPagedByUserIdAsync(_user1.Id, false, 1, pageSize);
+            var tickets = await _repository.GetPagedByUserIdAsync(_user1.Id, false, 1, pageSize, null, null, null);
             Assert.AreEqual(2, tickets.Count());
             Assert.IsTrue(tickets.All(t => t.UserId == _user1.Id));
         }
