@@ -21,7 +21,40 @@
 }
 
 <br />
-
+@{
+    var search = (string)ViewData["Search"] ?? "";
+    var typeFilter = (string)ViewData["TypeFilter"] ?? "";
+    var luggageFilter = (string)ViewData["LuggageFilter"] ?? "";
+}
+<form class="row g-2 mb-4" method="get" asp-action="GetTickets">
+    <div class="col-auto">
+        <input type="text"
+               name="search"
+               value="@search"
+               class="form-control"
+               placeholder="Search passenger, flight…" />
+    </div>
+    <div class="col-auto">
+        <select name="typeFilter" class="form-select">
+            <option value="">All types</option>
+            <option value="Adult" selected="@(typeFilter=="Adult")">Adult</option>
+            <option value="Kid" selected="@(typeFilter=="Kid")">Kid</option>
+            <option value="Baby" selected="@(typeFilter=="Baby")">Baby</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <select name="luggageFilter" class="form-select">
+            <option value="">All luggage</option>
+            <option value="Small" selected="@(luggageFilter=="Small")">Small</option>
+            <option value="Medium" selected="@(luggageFilter=="Medium")">Medium</option>
+            <option value="Large" selected="@(luggageFilter=="Large")">Large</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Apply</button>
+        <a asp-action="GetTickets" class="btn btn-link">Reset</a>
+    </div>
+</form>
 <div class="container-fluid">
     @if (Model.Tickets is not null)
     {

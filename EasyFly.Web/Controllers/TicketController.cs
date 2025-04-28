@@ -208,7 +208,7 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size);
+            response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size, null, null, null);
 
             if (!response.Success)
             {
@@ -227,21 +227,28 @@ namespace EasyFly.Web.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetTickets([FromQuery] int page = 1,
-            [FromQuery] string? userId = null, [FromQuery] Guid? flightId = null)
+            [FromQuery] string? search = null,
+            [FromQuery] string? typeFilter = null,
+            [FromQuery] string? luggageFilter = null,
+            [FromQuery] string? userId = null,
+            [FromQuery] Guid? flightId = null)
         {
             DataResponse<TicketPagedViewModel> response;
 
             if (!string.IsNullOrEmpty(userId))
             {
-                response = await _ticketService.GetTicketsPagedByUserId(userId, page, _Size * 3);
+                response = await _ticketService.
+                    GetTicketsPagedByUserId(userId, page, _Size * 3, search, typeFilter, luggageFilter);
             }
             else if (flightId.HasValue)
             {
-                response = await _ticketService.GetTicketsPagedByFlightId(flightId.Value, page, _Size * 3);
+                response = await _ticketService
+                               .GetTicketsPagedByFlightId(flightId.Value, page, _Size * 3, search, typeFilter, luggageFilter);
             }
             else
             {
-                response = await _ticketService.GetTicketsPaged(page, _Size);
+                response = await _ticketService
+                               .GetTicketsPaged(page, _Size, search, typeFilter, luggageFilter);
             }
 
             if (!response.Success)
@@ -299,7 +306,6 @@ namespace EasyFly.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetTicket(Guid ticketId)
         {
             var response = await _ticketService.GetTicket(ticketId);
@@ -320,8 +326,12 @@ namespace EasyFly.Web.Controllers
             if (!ModelState.IsValid && ModelState.ErrorCount > model.Tickets.Count())
             {
                 TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction("EnterTicketDetails", new { flightId = model.FlightId,
-                    returningFlightId = model.ReturningFlightId, requiredSeats = model.RequiredSeats });
+                return RedirectToAction("EnterTicketDetails", new
+                {
+                    flightId = model.FlightId,
+                    returningFlightId = model.ReturningFlightId,
+                    requiredSeats = model.RequiredSeats
+                });
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -331,7 +341,7 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            if(!model.Tickets.Any(x => x.PersonType == Domain.Enums.PersonType.Adult))
+            if (!model.Tickets.Any(x => x.PersonType == Domain.Enums.PersonType.Adult))
             {
                 TempData["ErrorMessage"] = "Kids cannot travel alone";
                 return RedirectToAction("EnterTicketDetails",

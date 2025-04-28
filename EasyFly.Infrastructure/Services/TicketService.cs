@@ -38,11 +38,11 @@ namespace EasyFly.Infrastructure.Services
                 return response;
             }
 
-            if(ticket.LuggageSize == Domain.Enums.LuggageSize.Medium)
+            if (ticket.LuggageSize == Domain.Enums.LuggageSize.Medium)
             {
                 ticket.Price = ticket.Price * 0.8m;
             }
-            else if(ticket.LuggageSize == Domain.Enums.LuggageSize.Small)
+            else if (ticket.LuggageSize == Domain.Enums.LuggageSize.Small)
             {
                 ticket.Price = ticket.Price * 0.6m;
             }
@@ -227,12 +227,13 @@ namespace EasyFly.Infrastructure.Services
             return response;
         }
 
-        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size)
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPaged(int page, int size,
+            string? search, string? typeFilter, string? luggageFilter)
         {
             DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
             response.Data = new TicketPagedViewModel();
 
-            var tickets = await _ticketRepository.GetPagedAsync(false, page, size);
+            var tickets = await _ticketRepository.GetPagedWithFilterAsync(false, page, size, search, typeFilter, luggageFilter);
 
             if (!tickets.Any())
             {
@@ -293,17 +294,18 @@ namespace EasyFly.Infrastructure.Services
             }
 
             response.Data.Tickets = ticketViewModels;
-            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+            response.Data.TotalPages = await _ticketRepository.GetPageCountWithFilter(size, search, typeFilter, luggageFilter);
 
             return response;
         }
 
-        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByFlightId(Guid flightId, int page, int size)
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByFlightId(Guid flightId, int page, int size,
+            string? search, string? typeFilter, string? luggageFilter)
         {
             DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
             response.Data = new TicketPagedViewModel();
 
-            var tickets = await _ticketRepository.GetPagedByFlightIdAsync(flightId, false, page, size);
+            var tickets = await _ticketRepository.GetPagedByFlightIdAsync(flightId, false, page, size, search, typeFilter, luggageFilter);
 
             if (!tickets.Any())
             {
@@ -364,17 +366,17 @@ namespace EasyFly.Infrastructure.Services
             }
 
             response.Data.Tickets = ticketViewModels;
-            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+            response.Data.TotalPages = await _ticketRepository.GetPageCountWithFilter(size, search, typeFilter, luggageFilter);
 
             return response;
         }
 
-        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByUserId(string userId, int page, int size)
+        public async Task<DataResponse<TicketPagedViewModel>> GetTicketsPagedByUserId(string userId, int page, int size, string? search, string? typeFilter, string? luggageFilter)
         {
             DataResponse<TicketPagedViewModel> response = new DataResponse<TicketPagedViewModel>();
             response.Data = new TicketPagedViewModel();
 
-            var tickets = await _ticketRepository.GetPagedByUserIdAsync(userId, false, page, size);
+            var tickets = await _ticketRepository.GetPagedByUserIdAsync(userId, false, page, size, search, typeFilter, luggageFilter);
 
             if (!tickets.Any())
             {
@@ -435,7 +437,7 @@ namespace EasyFly.Infrastructure.Services
             }
 
             response.Data.Tickets = ticketViewModels;
-            response.Data.TotalPages = await _ticketRepository.GetPageCount(size);
+            response.Data.TotalPages = await _ticketRepository.GetPageCountWithFilter(size, search, typeFilter, luggageFilter);
 
             return response;
         }
@@ -444,7 +446,7 @@ namespace EasyFly.Infrastructure.Services
         {
             Response response = new Response();
 
-            if(!await _ticketRepository.RemoveUnreservedTickets())
+            if (!await _ticketRepository.RemoveUnreservedTickets())
             {
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;

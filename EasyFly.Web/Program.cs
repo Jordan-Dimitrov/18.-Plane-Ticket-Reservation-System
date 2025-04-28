@@ -68,6 +68,7 @@ namespace EasyFly.Web
 
             app.UseRouting();
 
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
