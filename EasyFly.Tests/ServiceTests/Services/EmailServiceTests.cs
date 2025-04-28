@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using EasyFly.Infrastructure.Services;
 using EasyFly.Application.Abstractions;
+using Microsoft.Extensions.Configuration;
 
 namespace EasyFly.Tests.ServiceTests.Services
 {
@@ -12,13 +13,15 @@ namespace EasyFly.Tests.ServiceTests.Services
     public class EmailServiceTests
     {
         private Mock<IQrCodeService> _qrCodeServiceMock;
+        private Mock<IConfiguration> _configurationMock;
         private EmailService _emailService;
 
         [SetUp]
         public void Setup()
         {
             _qrCodeServiceMock = new Mock<IQrCodeService>();
-            _emailService = new EmailService(_qrCodeServiceMock.Object);
+            _configurationMock = new Mock<IConfiguration>();
+            _emailService = new EmailService(_qrCodeServiceMock.Object, _configurationMock.Object);
         }
 
         [Test]

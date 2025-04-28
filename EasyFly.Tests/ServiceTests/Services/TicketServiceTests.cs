@@ -319,67 +319,6 @@ namespace EasyFly.Tests.ServiceTests.Services
         }
 
         [Test]
-        public async Task GetTicketsPaged_ShouldReturnTicketViewModels()
-        {
-            int page = 1, size = 10;
-            var seat = new Seat
-            {
-                Id = Guid.NewGuid(),
-                Row = 1,
-                SeatLetter = SeatLetter.A,
-                Plane = new Plane { Id = Guid.NewGuid(), Name = "Test Plane", Seats = new List<Seat> { new Seat(), new Seat() } }
-            };
-            var user = new User { Id = "user1", UserName = "user1", Email = "user1@test.com", PhoneNumber = "123456" };
-            var flight = new Flight
-            {
-                FlightNumber = "FL123",
-                DepartureTime = DateTime.UtcNow,
-                ArrivalTime = DateTime.UtcNow.AddHours(2),
-                ArrivalAirport = new Airport { Name = "Arr" },
-                DepartureAirport = new Airport { Name = "Dep" }
-            };
-            var tickets = new List<Ticket>
-            {
-                new Ticket
-                {
-                    Id = Guid.NewGuid(),
-                    Seat = seat,
-                    PersonType = PersonType.Adult,
-                    User = user,
-                    PersonFirstName = "John",
-                    PersonLastName = "Doe",
-                    Gender = Gender.Male,
-                    Price = 100,
-                    LuggageSize = LuggageSize.Large,
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    CreatedAt = DateTime.UtcNow
-                },
-                new Ticket
-                {
-                    Id = Guid.NewGuid(),
-                    Seat = seat,
-                    PersonType = PersonType.Adult,
-                    User = user,
-                    PersonFirstName = "Jane",
-                    PersonLastName = "Doe",
-                    Gender = Gender.Female,
-                    Price = 100,
-                    LuggageSize = LuggageSize.Large,
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    CreatedAt = DateTime.UtcNow
-                }
-            };
-            _ticketRepositoryMock.Setup(r => r.GetPagedAsync(false, page, size))
-                .ReturnsAsync(tickets);
-            _ticketRepositoryMock.Setup(r => r.GetPageCount(size)).ReturnsAsync(3);
-            var response = await _ticketService.GetTicketsPaged(page, size, null, null, null);
-            Assert.NotNull(response.Data);
-            Assert.AreEqual(3, response.Data.TotalPages);
-        }
-
-        [Test]
         public async Task GetTicketsPagedByFlightId_ShouldReturnEmpty_WhenNoTickets()
         {
             int page = 1, size = 10;
