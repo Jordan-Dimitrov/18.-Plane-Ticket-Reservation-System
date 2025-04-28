@@ -1,0 +1,27 @@
+﻿@model EasyFly.Application.Dtos.UserDto
+
+<tr>
+    <td>@Model.Username</td>
+    <td>@Model.Email</td>
+    <td>@Model.PhoneNumber</td>
+    @if (User.IsInRole("Admin"))
+    {
+        <td>
+            <div class="d-flex">
+                <a href="@Url.Action("GetTickets", "Ticket", new { userId = Model.Id })" class="btn btn-info btn-sm me-2">
+                    View Tickets
+                </a>
+                <form method="post" asp-controller="User" asp-action="Delete" class="me-2">
+                    @Html.Hidden("userId", Model.Id)
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    @Html.AntiForgeryToken()
+                </form>
+                <form method="get" asp-controller="User" asp-action="Edit">
+                    @Html.Hidden("userId", Model.Id)
+                    <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                    @Html.AntiForgeryToken()
+                </form>
+            </div>
+        </td>
+    }
+</tr>

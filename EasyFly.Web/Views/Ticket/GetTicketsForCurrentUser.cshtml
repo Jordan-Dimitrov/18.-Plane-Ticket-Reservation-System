@@ -29,19 +29,7 @@
             {
                 @foreach (var item in Model.Tickets)
                 {
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h4 class="card-title">@item.Seat.Plane.Name - @item.Seat.Row @item.Seat.SeatLetter</h4>
-                            <p class="card-text">Passenger: @item.PersonFirstName @item.PersonLastName</p>
-                            <p class="card-text">Flight: @item.Flight.FlightNumber</p>
-                            <p class="card-text">Departure: @item.Flight.DepartureAirport.Name, @item.Flight.DepartureTime</p>
-                            <p class="card-text">Arrival: @item.Flight.ArrivalAirport.Name, @item.Flight.ArrivalTime</p>
-                            <p class="card-text">Gender: @item.Gender</p>
-                            <p class="card-text">Type: @item.PersonType</p>
-                            <p class="card-text">Luggage Size: @item.LuggageSize</p>
-                            <p class="card-text">Price: @item.Price BGN</p>
-                        </div>
-                    </div>
+                    <partial name="_TicketRow" model="item" />
                 }
             }
             else

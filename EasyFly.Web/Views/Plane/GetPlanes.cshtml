@@ -40,32 +40,7 @@
                 <tbody>
                     @foreach (var item in Model.Planes)
                     {
-                        <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Seats</td>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <td>
-                                    <div class="d-flex">
-                                        <form method="get" asp-controller="Plane" asp-action="Remove" class="me-2">
-                                            @Html.Hidden("planeId", item.Id)
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                        <form method="get" asp-controller="Plane" asp-action="Edit" class="me-2">
-                                            @Html.Hidden("planeId", item.Id)
-                                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                        <form method="get" asp-controller="Flight" asp-action="GetFlights">
-                                            @Html.Hidden("planeId", item.Id)
-                                            <button type="submit" class="btn btn-success btn-sm">Add Flight</button>
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                    </div>
-                                </td>
-                            }
-                        </tr>
+                        <partial name="_PlaneRow" model="item" />
                     }
                 </tbody>
             </table>

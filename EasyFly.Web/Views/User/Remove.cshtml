@@ -19,5 +19,6 @@
     <form asp-controller="User" asp-action="Delete" method="post">
         @Html.Hidden("userId", Model.Id)
         <button type="submit" class="btn btn-primary">Delete</button>
+        <a asp-controller="User" asp-action="GetUsers" class="btn btn-secondary ms-2">Back to Users</a>
     </form>
 }

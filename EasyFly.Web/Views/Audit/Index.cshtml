@@ -29,12 +29,7 @@
         <tbody>
             @foreach (var audit in Model.AuditViewModels)
             {
-                <tr>
-                    <td>@audit.Id</td>
-                    <td>@audit.User.Username</td>
-                    <td>@audit.Message</td>
-                    <td>@audit.ModifiedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                </tr>
+                <partial name="_AuditRow" model="audit" />
             }
         </tbody>
     </table>
