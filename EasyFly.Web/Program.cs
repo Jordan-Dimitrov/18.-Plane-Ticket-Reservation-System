@@ -50,7 +50,7 @@ namespace EasyFly.Web
                 seed.SeedContext().Wait();
             }
 
-            //app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

@@ -39,7 +39,7 @@ namespace EasyFly.Web.Middlewares
 
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            context.Response.Clear();
+           /* context.Response.Clear();
 
             object model;
             if (exception is DBConcurrencyException)
@@ -63,10 +63,10 @@ namespace EasyFly.Web.Middlewares
 
             string errorHtml = await RenderViewToStringAsync(context, "Error", model);
             context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(errorHtml);
+            await context.Response.WriteAsync(errorHtml);*/
         }
 
-        private static async Task<string> RenderViewToStringAsync(HttpContext context, string viewName, object model)
+       /* private static async Task<string> RenderViewToStringAsync(HttpContext context, string viewName, object model)
         {
             var serviceProvider = context.RequestServices;
             var razorViewEngine = (IRazorViewEngine)serviceProvider.GetService(typeof(IRazorViewEngine));
@@ -99,6 +99,6 @@ namespace EasyFly.Web.Middlewares
                 await viewResult.View.RenderAsync(viewContext);
                 return sw.ToString();
             }
-        }
+        }*/
     }
 }
