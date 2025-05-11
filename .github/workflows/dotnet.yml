@@ -63,10 +63,7 @@ jobs:
       run: dotnet build EasyFly.Web.sln --configuration Release --no-restore
 
     - name: Publish
-      run: dotnet publish ${{ env.Solution_Name }} \
-            --configuration Release \
-            --output ./publish \
-            --runtime win-x86
+      run: dotnet publish ${{ env.Solution_Name }} --configuration Release --output ./publish --runtime win-x86
 
     - name: Test (smoke)
       run: dotnet test ${{ env.Test_Project_Path }}
