@@ -2,50 +2,34 @@ name: CI
 
 on:
   push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build_and_deploy:
-    runs-on: windows-latest
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: EasyFly.Web.sln
+      Test_Project_Path: EasyFly.Tests/EasyFly.Tests.csproj
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Restore dependencies (with RID)
-        run: dotnet restore EasyFly.Web.sln -r win-x86
-
-      - name: Build solution (with RID)
-        run: |
-          dotnet build EasyFly.Web.sln \
-            --configuration Release \
-            --runtime win-x86 \
-            --no-restore
-
-      - name: Publish Web project
-        run: |
-          dotnet publish EasyFly.Web/EasyFly.Web.csproj \
-            --configuration Release \
-            --runtime win-x86 \
-            --output ./publish \
-            --no-build
-
-      - name: Test solution (with RID)
-        run: |
-          dotnet test EasyFly.Web.sln \
-            --configuration Release \
-            --runtime win-x86 \
-            --no-build \
-            --verbosity normal
-
-      - name: Deploy to MonsterASP.NET via WebDeploy
-        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
-        with:
-          website-name: ${{ secrets.WEBSITE_NAME }}
-          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
-          server-username: ${{ secrets.SERVER_USERNAME }}
-          server-password: ${{ secrets.SERVER_PASSWORD }}
+    - name: Run tests
+      run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults --filter "FullyQualifiedName~ServiceTests"
