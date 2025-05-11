@@ -24,6 +24,7 @@ namespace EasyFly.Application.ViewModels
         public decimal Price { get; set; }
         public LuggageSize LuggageSize { get; set;}
         public DateTime CreatedAt { get; set; }
+        public bool IsReserved { get; set; }
         public FlightViewModel Flight { get; set; }
     }
 }

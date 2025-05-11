@@ -33,6 +33,7 @@
                         <div class="card-body">
                             <h4 class="card-title">@item.Seat.Plane.Name - @item.Seat.Row @item.Seat.SeatLetter</h4>
                             <p class="card-text">Passenger: @item.PersonFirstName @item.PersonLastName</p>
+                            <p class="card-text">Reserved: @item.IsReserved</p>
                             <p class="card-text">Flight: @item.Flight.FlightNumber</p>
                             <p class="card-text">Departure: @item.Flight.DepartureAirport.Name, @item.Flight.DepartureTime</p>
                             <p class="card-text">Arrival: @item.Flight.ArrivalAirport.Name, @item.Flight.ArrivalTime</p>

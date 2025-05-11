@@ -187,6 +187,7 @@ namespace EasyFly.Infrastructure.Services
                         Seats = ticket.Seat.Plane.Seats.Count
                     }
                 },
+                IsReserved = ticket.Reserved,
                 PersonType = ticket.PersonType,
                 User = new UserDto
                 {
@@ -259,6 +260,7 @@ namespace EasyFly.Infrastructure.Services
                             Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
+                    IsReserved = ticket.Reserved,
                     PersonType = ticket.PersonType,
                     User = new UserDto
                     {
@@ -331,6 +333,7 @@ namespace EasyFly.Infrastructure.Services
                             Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
+                    IsReserved = ticket.Reserved,
                     PersonType = ticket.PersonType,
                     User = new UserDto
                     {
@@ -402,6 +405,7 @@ namespace EasyFly.Infrastructure.Services
                             Seats = ticket.Seat.Plane.Seats.Count
                         }
                     },
+                    IsReserved = ticket.Reserved,
                     PersonType = ticket.PersonType,
                     User = new UserDto
                     {
