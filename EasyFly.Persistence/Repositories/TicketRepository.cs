@@ -3,7 +3,6 @@ using EasyFly.Domain.Enums;
 using EasyFly.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace EasyFly.Persistence.Repositories
 {
@@ -81,6 +80,16 @@ namespace EasyFly.Persistence.Repositories
 
             return (int)Math.Ceiling(count);
         }
+
+        public async Task<int> GetPageCountForUser(int size, string userId, string? search,
+         string? typeFilter,
+         string? luggageFilter)
+        {
+            var count = (double)await BaseFilterQuery(true, search, typeFilter, luggageFilter).Where(x => x.UserId == userId).CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
+        }
+
 
         public async Task<IEnumerable<Ticket>> GetPagedWithFilterAsync(bool trackChanges, int page, int size, string? search, string? typeFilter, string? luggageFilter)
         {
@@ -209,5 +218,11 @@ namespace EasyFly.Persistence.Repositories
             return trackChanges ? q : q.AsNoTracking();
         }
 
+        public async Task<int> GetPageCountForFlight(int size, Guid flightId, string? search, string? typeFilter, string? luggageFilter)
+        {
+            var count = (double)await BaseFilterQuery(true, search, typeFilter, luggageFilter).Where(x => x.FlightId == flightId).CountAsync() / size;
+
+            return (int)Math.Ceiling(count);
+        }
     }
 }

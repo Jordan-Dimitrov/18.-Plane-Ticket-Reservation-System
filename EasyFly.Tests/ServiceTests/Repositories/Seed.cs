@@ -1,10 +1,5 @@
 ﻿using EasyFly.Domain.Models;
 using EasyFly.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyFly.Tests.ServiceTests.Repositories
 {

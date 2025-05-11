@@ -1,8 +1,7 @@
 ﻿using EasyFly.Infrastructure.Services;
+using EasyFly.Tests.Pages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using NUnit.Framework;
-using EasyFly.Tests.Pages;
 
 namespace EasyFly.Tests.FunctionalTests
 {

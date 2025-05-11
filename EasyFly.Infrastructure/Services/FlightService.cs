@@ -4,8 +4,6 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
-using System.Net.Sockets;
-using System.Numerics;
 using Plane = EasyFly.Domain.Models.Plane;
 
 namespace EasyFly.Infrastructure.Services
@@ -48,7 +46,7 @@ namespace EasyFly.Infrastructure.Services
             Plane plane = await _planeRepository
                 .GetByIdAsync(flight.PlaneId, true);
 
-            if (departureAirport == null || arrivalAirport == null || plane == null 
+            if (departureAirport == null || arrivalAirport == null || plane == null
                 || flight.ArrivalTime <= flight.DepartureTime || flight.DepartureAirportId == flight.ArrivalAirportId)
             {
                 response.Success = false;
