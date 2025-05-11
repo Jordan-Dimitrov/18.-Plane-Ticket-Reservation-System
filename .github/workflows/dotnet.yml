@@ -17,14 +17,10 @@ jobs:
 
       - name: Build
         run: dotnet build EasyFly.Web.sln --configuration Release --no-restore
-
+        
       - name: Publish
-        run: |
-          dotnet publish EasyFly.Web.sln \
-            --configuration Release \
-            --output ./publish \
-            --runtime win-x86 \
-            --no-build
+        run: dotnet publish EasyFly.Web.sln --configuration Release --output ./publish --runtime win-x86 --no-build
+
 
       - name: Test
         run: dotnet test EasyFly.Web.sln --no-build --verbosity normal
