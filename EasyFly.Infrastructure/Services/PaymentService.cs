@@ -17,6 +17,7 @@ namespace EasyFly.Infrastructure.Services
         public Session Checkout(CheckoutDto model, HostString host, string scheme)
         {
             StripeConfiguration.ApiKey = _Configuration["Stripe:SecretKey"];
+
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
@@ -32,7 +33,7 @@ namespace EasyFly.Infrastructure.Services
                             Name = model.ProductName,
                             Description = model.ProductDescription,
                         },
-                        UnitAmount = model.Amount * 100,
+                        UnitAmountDecimal = model.Amount,
                     },
                     Quantity = 1,
                 },
