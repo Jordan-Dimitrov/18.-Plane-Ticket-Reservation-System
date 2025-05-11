@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [ Debug, Release ]
 
     env:
       Solution_Name: EasyFly.Web.sln
@@ -44,17 +44,18 @@ jobs:
 
       - name: Publish
         if: ${{ matrix.configuration == 'Release' }}
-        run: dotnet publish EasyFly.Web/EasyFly.Web.csproj \
-          --configuration Release \
-          --output ./publish \
-          --runtime win-x86
+        run: |
+          dotnet publish EasyFly.Web/EasyFly.Web.csproj \
+            -c ${{ matrix.configuration }} \
+            -o ./publish \
+            -r win-x86
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         if: ${{ matrix.configuration == 'Release' }}
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
-          website-name:        ${{ secrets.WEBSITE_NAME }}
+          website-name:         ${{ secrets.WEBSITE_NAME }}
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
-          server-username:     ${{ secrets.SERVER_USERNAME }}
-          server-password:     ${{ secrets.SERVER_PASSWORD }}
-          source-path:         '\publish\'
+          server-username:      ${{ secrets.SERVER_USERNAME }}
+          server-password:      ${{ secrets.SERVER_PASSWORD }}
+          source-path:          '\publish\'
