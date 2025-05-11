@@ -1,8 +1,10 @@
-﻿using EasyFly.Application.Abstractions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
@@ -184,7 +186,7 @@ namespace EasyFly.Web.Controllers
             var flightsResponse = await _FlightService
                 .GetFlightsPagedByArrivalAndDepartureAsync(departureAirportId, arrivalAirportId, departure.ToDateTime(TimeOnly.MinValue), requiredSeats, 1, _Size);
 
-            if (flightsResponse.Data.Flights == null)
+            if(flightsResponse.Data.Flights == null)
             {
                 ViewBag.FoundDate = false;
                 flightsResponse = await _FlightService
@@ -219,12 +221,8 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("ReserveTicket");
             }
 
-            return RedirectToAction("EnterTicketDetails", "Ticket", new
-            {
-                flightId = flightId,
-                requiredSeats = requiredSeats,
-                returningFlightId = returningFlightId
-            });
+            return RedirectToAction("EnterTicketDetails", "Ticket", new { flightId = flightId,
+                requiredSeats = requiredSeats, returningFlightId = returningFlightId });
         }
     }
 }

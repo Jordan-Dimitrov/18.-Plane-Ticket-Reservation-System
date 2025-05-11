@@ -4,6 +4,7 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using System.Net.Sockets;
 
 namespace EasyFly.Infrastructure.Services
 {
@@ -126,7 +127,7 @@ namespace EasyFly.Infrastructure.Services
             {
                 ProductName = $"Ticket for {tickets[0].Flight.ArrivalAirport.Name}",
                 ProductDescription = $"Nice",
-                Amount = (long)tickets.Sum(x => x.Price),
+                Amount = tickets.Sum(x => x.Price),
                 Currency = "bgn",
                 Tickets = tickets.Select(x => x.Id).ToList()
             };

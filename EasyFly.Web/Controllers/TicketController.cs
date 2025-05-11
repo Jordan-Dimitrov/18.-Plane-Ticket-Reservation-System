@@ -1,11 +1,18 @@
-﻿using EasyFly.Application.Abstractions;
-using EasyFly.Application.Dtos;
-using EasyFly.Application.Responses;
-using EasyFly.Application.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using EasyFly.Application.Abstractions;
+using EasyFly.Application.Dtos;
+using EasyFly.Application.ViewModels;
+using EasyFly.Application.Responses;
+using EasyFly.Domain.Models;
 using System.Security.Claims;
+using System.Net.Sockets;
+using NuGet.Protocol;
+using Newtonsoft.Json;
 
 namespace EasyFly.Web.Controllers
 {

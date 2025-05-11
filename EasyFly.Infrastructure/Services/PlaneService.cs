@@ -39,7 +39,7 @@ namespace EasyFly.Infrastructure.Services
                 response.Success = false;
                 response.ErrorMessage = ResponseConstants.Unexpected;
             }
-
+            
             if (!await _SeatRepository.GenerateSeatsForPlane(plane.AvailableSeats, newPlane.Id))
             {
                 response.Success = false;

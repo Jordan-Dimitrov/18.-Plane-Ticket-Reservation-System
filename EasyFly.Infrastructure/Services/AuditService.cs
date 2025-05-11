@@ -4,6 +4,10 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EasyFly.Infrastructure.Services
 {
@@ -131,12 +135,12 @@ namespace EasyFly.Infrastructure.Services
 
             var audits = await _auditRepository.GetPagedAsync(false, page, size);
 
-            /*            if (!audits.Any())
-                        {
-                            response.Success = false;
-                            response.ErrorMessage = ResponseConstants.AuditNotFound;
-                            return response;
-                        }*/
+/*            if (!audits.Any())
+            {
+                response.Success = false;
+                response.ErrorMessage = ResponseConstants.AuditNotFound;
+                return response;
+            }*/
 
             response.Data.AuditViewModels = audits
                 .Select(audit => new AuditViewModel()

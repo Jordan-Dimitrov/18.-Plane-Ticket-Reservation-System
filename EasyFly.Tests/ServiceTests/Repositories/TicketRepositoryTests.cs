@@ -1,9 +1,15 @@
-﻿using EasyFly.Domain.Abstractions;
+﻿using NUnit.Framework;
+using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Enums;
 using EasyFly.Domain.Models;
-using EasyFly.Persistence;
 using EasyFly.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+using EasyFly.Persistence;
 
 namespace EasyFly.Tests.ServiceTests.Repositories
 {

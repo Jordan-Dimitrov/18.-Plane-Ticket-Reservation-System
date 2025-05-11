@@ -1,8 +1,11 @@
-﻿using EasyFly.Application.Abstractions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
@@ -186,11 +189,9 @@ namespace EasyFly.Web.Controllers
                 return RedirectToAction("Reservation");
             }
 
-            return RedirectToAction("SelectFlight", "Flight",
-                new
-                {
-                    departureAirportId = model.DepartureAirportId,
-                    arrivalAirportId = model.ArrivalAirportId,
+            return RedirectToAction("SelectFlight", "Flight", 
+                new { departureAirportId = model.DepartureAirportId,
+                    arrivalAirportId = model.ArrivalAirportId, 
                     requiredSeats = model.NumberOfTickets,
                     departure = model.Departure
                 });

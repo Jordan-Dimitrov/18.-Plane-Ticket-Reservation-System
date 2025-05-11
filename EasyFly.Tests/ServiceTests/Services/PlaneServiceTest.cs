@@ -1,10 +1,17 @@
-﻿using EasyFly.Application.Dtos;
-using EasyFly.Application.Responses;
-using EasyFly.Domain.Abstractions;
-using EasyFly.Domain.Models;
-using EasyFly.Infrastructure.Services;
+﻿using NUnit.Framework;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using EasyFly.Infrastructure.Services;
+using EasyFly.Application.Abstractions;
+using EasyFly.Application.Dtos;
+using EasyFly.Application.Responses;
+using EasyFly.Application.ViewModels;
+using EasyFly.Domain.Models;
+using EasyFly.Domain.Abstractions;
 
 namespace EasyFly.Tests.ServiceTests.Services
 {

@@ -1,9 +1,11 @@
-﻿using EasyFly.Application.Abstractions;
-using EasyFly.Application.Dtos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Stripe.Checkout;
+using Stripe.Forwarding;
 using Stripe;
-using Stripe.Checkout;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using EasyFly.Application.Dtos;
+using EasyFly.Application.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace EasyFly.Infrastructure.Services
 {
@@ -17,6 +19,8 @@ namespace EasyFly.Infrastructure.Services
         public Session Checkout(CheckoutDto model, HostString host, string scheme)
         {
             StripeConfiguration.ApiKey = _Configuration["Stripe:SecretKey"];
+            var totalCents = (long)Math.Round(model.Amount * 100, 0,
+                                    MidpointRounding.AwayFromZero);
 
             var options = new SessionCreateOptions
             {
@@ -33,7 +37,7 @@ namespace EasyFly.Infrastructure.Services
                             Name = model.ProductName,
                             Description = model.ProductDescription,
                         },
-                        UnitAmountDecimal = model.Amount,
+                        UnitAmount = totalCents,
                     },
                     Quantity = 1,
                 },
