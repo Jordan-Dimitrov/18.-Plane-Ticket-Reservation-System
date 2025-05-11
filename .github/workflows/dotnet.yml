@@ -1,29 +1,46 @@
 name: CI
-on: [push]
+
+on:
+  push:
 
 jobs:
   build_and_deploy:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0
 
-      - name: Restore dependencies
-        run: dotnet restore EasyFly.Web.sln
+      - name: Restore dependencies (with RID)
+        run: dotnet restore EasyFly.Web.sln -r win-x86
 
-      - name: Build
-        run: dotnet build EasyFly.Web.sln --configuration Release --no-restore
-        
-      - name: Publish
-        run: dotnet publish EasyFly.Web.sln --configuration Release --output ./publish --runtime win-x86 --no-build
+      - name: Build solution (with RID)
+        run: |
+          dotnet build EasyFly.Web.sln \
+            --configuration Release \
+            --runtime win-x86 \
+            --no-restore
 
+      - name: Publish Web project
+        run: |
+          dotnet publish EasyFly.Web/EasyFly.Web.csproj \
+            --configuration Release \
+            --runtime win-x86 \
+            --output ./publish \
+            --no-build
 
-      - name: Test
-        run: dotnet test EasyFly.Web.sln --no-build --verbosity normal
+      - name: Test solution (with RID)
+        run: |
+          dotnet test EasyFly.Web.sln \
+            --configuration Release \
+            --runtime win-x86 \
+            --no-build \
+            --verbosity normal
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
