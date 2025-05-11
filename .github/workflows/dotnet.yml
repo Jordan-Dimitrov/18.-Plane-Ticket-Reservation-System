@@ -7,43 +7,53 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: [Debug, Release]
-
-    runs-on: ubuntu-latest
+        configuration: [ Debug, Release ]
 
     env:
       Solution_Name: EasyFly.Web.sln
       Test_Project_Path: EasyFly.Tests/EasyFly.Tests.csproj
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Run tests
-      run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults --filter "FullyQualifiedName~ServiceTests"
-      
-    - name: Publish
-      run: dotnet publish EasyFly.Web/EasyFly.Web.csproj \
-        --configuration Release \
-        --output ./publish \
-        --runtime win-x86
+      - name: Restore
+        run: dotnet restore ${{ env.Solution_Name }}
 
-    - name: Deploy to MonsterASP.NET via WebDeploy
-      uses: rasmusbuchholdt/simply-web-deploy@2.1.0
-      with:
-          website-name: ${{ secrets.WEBSITE_NAME }}
+      - name: Build
+        run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
+
+      - name: Run tests
+        run: dotnet test ${{ env.Test_Project_Path }} \
+          --configuration ${{ matrix.configuration }} \
+          --logger trx \
+          --results-directory ./TestResults \
+          --filter "FullyQualifiedName~ServiceTests"
+
+      - name: Publish
+        if: ${{ matrix.configuration == 'Release' }}
+        run: dotnet publish EasyFly.Web/EasyFly.Web.csproj \
+          --configuration Release \
+          --output ./publish \
+          --runtime win-x86
+
+      - name: Deploy to MonsterASP.NET via WebDeploy
+        if: ${{ matrix.configuration == 'Release' }}
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name:      ${{ secrets.WEBSITE_NAME }}
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
-          server-username: ${{ secrets.SERVER_USERNAME }}
-          server-password: ${{ secrets.SERVER_PASSWORD }}
+          server-username:   ${{ secrets.SERVER_USERNAME }}
+          server-password:   ${{ secrets.SERVER_PASSWORD }}
+          source-path:       '\publish\'
