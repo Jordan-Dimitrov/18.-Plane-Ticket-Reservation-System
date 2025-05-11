@@ -1,8 +1,5 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
-using EasyFly.Domain.Abstractions;
-using EasyFly.Domain.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -55,7 +52,7 @@ namespace EasyFly.Web.Controllers
             {
                 var ticketIds = session.Metadata["ticketIds"].Split(',').Select(Guid.Parse).ToList();
 
-                var response =  await _TicketService.UpdateTicketStatus(ticketIds);
+                var response = await _TicketService.UpdateTicketStatus(ticketIds);
 
                 if (!response.Success)
                 {

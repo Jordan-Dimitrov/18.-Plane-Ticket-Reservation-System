@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using EasyFly.Application.Abstractions;
+﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
-using EasyFly.Application.ViewModels;
-using System;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EasyFly.Web.Controllers
 {

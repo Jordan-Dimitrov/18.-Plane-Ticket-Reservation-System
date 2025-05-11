@@ -4,7 +4,6 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
-using System.Net.Sockets;
 
 namespace EasyFly.Infrastructure.Services
 {

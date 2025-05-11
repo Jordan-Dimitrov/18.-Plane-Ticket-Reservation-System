@@ -1,11 +1,8 @@
-﻿using NUnit.Framework;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EasyFly.Application.Abstractions;
 using EasyFly.Infrastructure.Services;
-using EasyFly.Application.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Moq;
+using System.Text;
 
 namespace EasyFly.Tests.ServiceTests.Services
 {

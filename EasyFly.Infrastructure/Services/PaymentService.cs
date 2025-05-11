@@ -1,11 +1,9 @@
-﻿using Stripe.Checkout;
-using Stripe.Forwarding;
-using Stripe;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
+﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
-using EasyFly.Application.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Stripe;
+using Stripe.Checkout;
 
 namespace EasyFly.Infrastructure.Services
 {

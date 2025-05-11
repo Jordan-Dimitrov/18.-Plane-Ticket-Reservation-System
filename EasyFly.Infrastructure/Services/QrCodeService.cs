@@ -1,5 +1,4 @@
 ﻿using EasyFly.Application.Abstractions;
-using IronBarCode;
 using QRCoder;
 
 namespace EasyFly.Infrastructure.Services

@@ -1,9 +1,7 @@
-﻿using EasyFly.Application.Abstractions;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 
 namespace EasyFly.Infrastructure.Services
 {

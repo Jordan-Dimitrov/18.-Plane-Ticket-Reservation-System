@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using System;
-using System.Linq;
-using EasyFly.Infrastructure.Services;
+﻿using EasyFly.Infrastructure.Services;
 
 namespace EasyFly.Tests.ServiceTests.Services
 {
