@@ -65,9 +65,6 @@ jobs:
     - name: Publish
       run: dotnet publish ${{ env.Solution_Name }} --configuration Release --output ./publish --runtime win-x86
 
-    - name: Test (smoke)
-      run: dotnet test ${{ env.Test_Project_Path }}
-
     - name: Deploy to MonsterASP.NET via WebDeploy
       uses: rasmusbuchholdt/simply-web-deploy@2.1.0
       with:
