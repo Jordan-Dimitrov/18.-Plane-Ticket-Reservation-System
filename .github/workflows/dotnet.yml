@@ -11,18 +11,23 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0
-          
-      - name: Install dependencies
-        run: dotnet restore
-        
+
+      - name: Restore dependencies
+        run: dotnet restore EasyFly.Web.sln
+
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build EasyFly.Web.sln --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish --configuration Release --output ./publish --runtime win-x86 
-        
-      - name: Test with .NET
-        run: dotnet test
+        run: |
+          dotnet publish EasyFly.Web.sln \
+            --configuration Release \
+            --output ./publish \
+            --runtime win-x86 \
+            --no-build
+
+      - name: Test
+        run: dotnet test EasyFly.Web.sln --no-build --verbosity normal
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
