@@ -60,9 +60,7 @@ jobs:
       run: dotnet restore ${{ env.Solution_Name }}
 
     - name: Build (Release)
-      run: dotnet build ${{ env.Solution_Name }} \
-            --configuration Release \
-            --no-restore
+      run: dotnet build EasyFly.Web.sln --configuration Release --no-restore
 
     - name: Publish
       run: dotnet publish ${{ env.Solution_Name }} \
