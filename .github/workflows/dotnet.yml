@@ -35,11 +35,8 @@ jobs:
       run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} --no-restore
 
     - name: Run tests (${{ matrix.configuration }})
-      run: dotnet test ${{ env.Test_Project_Path }} \
-            --configuration ${{ matrix.configuration }} \
-            --logger trx \
-            --results-directory ./TestResults \
-            --filter "FullyQualifiedName~ServiceTests"
+      run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults --filter "FullyQualifiedName~ServiceTests"
+
 
   deploy:
     needs: build
