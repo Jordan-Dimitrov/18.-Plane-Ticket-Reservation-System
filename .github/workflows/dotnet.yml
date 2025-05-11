@@ -33,3 +33,18 @@ jobs:
 
     - name: Run tests
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults --filter "FullyQualifiedName~ServiceTests"
+      
+    - name: Publish
+      run: dotnet publish ${{ env.Solution_Name }} \
+              --configuration Release \
+              --output ./publish \
+              --runtime win-x86 \
+              --no-build
+
+    - name: Deploy to MonsterASP.NET via WebDeploy
+      uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+      with:
+          website-name: ${{ secrets.WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.SERVER_USERNAME }}
+          server-password: ${{ secrets.SERVER_PASSWORD }}
