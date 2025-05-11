@@ -1,5 +1,10 @@
 name: CI/CD
 
+env:
+  Solution_Name: EasyFly.Web.sln
+  Test_Project_Path: EasyFly.Tests/EasyFly.Tests.csproj
+
+
 on:
   push:
     branches: [ "main" ]
@@ -13,9 +18,6 @@ jobs:
       matrix:
         configuration: [Debug, Release]
     runs-on: ubuntu-latest
-    env:
-      Solution_Name: EasyFly.Web.sln
-      Test_Project_Path: EasyFly.Tests/EasyFly.Tests.csproj
 
     steps:
     - name: Checkout
