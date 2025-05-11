@@ -35,11 +35,12 @@ jobs:
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --logger trx --results-directory ./TestResults --filter "FullyQualifiedName~ServiceTests"
       
     - name: Publish
-      run: dotnet publish ${{ env.Solution_Name }} \
-              --configuration Release \
-              --output ./publish \
-              --runtime win-x86 \
-              --no-build
+      run: |
+        dotnet restore
+        dotnet publish EasyFly.Web/EasyFly.Web.csproj \
+          --configuration Release \
+          --output ./publish \
+          --runtime win-x86
 
     - name: Deploy to MonsterASP.NET via WebDeploy
       uses: rasmusbuchholdt/simply-web-deploy@2.1.0
