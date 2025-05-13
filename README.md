@@ -1,7 +1,6 @@
 # EasyFly [![CI](https://github.com/Jordan-Dimitrov/18.-Plane-Ticket-Reservation-System/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Jordan-Dimitrov/18.-Plane-Ticket-Reservation-System/actions/workflows/dotnet.yml)
 
 ![EasyFly Home Page](/easyfly.png)
-## Overview
 EasyFly is a Ticket Reservation System that makes travelling fast and easy. You can find the site deployed [here](https://easyfly.runasp.net/)
 
 ---
