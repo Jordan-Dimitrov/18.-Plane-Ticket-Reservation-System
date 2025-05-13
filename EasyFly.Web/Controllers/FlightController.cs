@@ -1,8 +1,13 @@
 ﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
+using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
+using EasyFly.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
+using System;
+using System.Threading.Tasks;
 
 namespace EasyFly.Web.Controllers
 {
@@ -11,12 +16,15 @@ namespace EasyFly.Web.Controllers
         private const int _Size = 30;
         private readonly IFlightService _FlightService;
         private readonly IAirportService _AirportService;
+        private readonly IPlaneService _PlaneService;
 
-        public FlightController(IFlightService flightService, IAirportService airportService, IAuditService auditService)
+        public FlightController(IFlightService flightService, IAirportService airportService,
+            IAuditService auditService, IPlaneService planeService)
             : base(auditService)
         {
             _FlightService = flightService;
             _AirportService = airportService;
+            _PlaneService = planeService;
         }
 
         [HttpGet]
@@ -145,34 +153,37 @@ namespace EasyFly.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetFlights([FromQuery] Guid planeId, [FromQuery] int page = 1)
+        public async Task<IActionResult> GetFlights([FromQuery] Guid? planeId, [FromQuery] int page = 1)
         {
-            if (planeId == Guid.Empty)
+            ViewBag.PlaneId = planeId;
+
+            DataResponse<FlightPagedViewModel> response;
+            if (planeId.HasValue)
             {
-                TempData["ErrorMessage"] = "Invalid plane";
-                return RedirectToAction("Error");
+                response = await _FlightService.GetFlightsPagedByPlane(planeId.Value, page, _Size);
+            }
+            else
+            {
+                response = await _FlightService.GetFlightsPaged(page, _Size);
             }
 
-            var response = await _FlightService.GetFlightsPagedByPlane(planeId, page, _Size);
             var airports = await _AirportService.GetAirportsPaged(1, int.MaxValue);
 
-            if (!response.Success || !airports.Success)
+            var planesResp = await _PlaneService.GetPlanesPaged(1, int.MaxValue);
+
+            if (!response.Success || !airports.Success || !planesResp.Success)
             {
-                TempData["ErrorMessage"] = response.ErrorMessage;
+                TempData["ErrorMessage"] = "Unable to load flights, airports or planes.";
                 return RedirectToAction("Error");
             }
 
-            string success = (string)TempData["Success"];
-
-            ViewBag.Success = success;
-
-            string error = (string)TempData["ErrorMessage"];
-
-            ViewBag.ErrorMessage = error;
+            ViewBag.Success = (string)TempData["Success"];
+            ViewBag.ErrorMessage = (string)TempData["ErrorMessage"];
 
             response.Data.Airports = airports.Data.Airports;
+            response.Data.Planes = planesResp.Data.Planes;
+            response.Data.SelectedPlaneId = planeId;
             response.Data.PageNumber = page;
-            ViewBag.PlaneId = planeId;
 
             return View(response.Data);
         }

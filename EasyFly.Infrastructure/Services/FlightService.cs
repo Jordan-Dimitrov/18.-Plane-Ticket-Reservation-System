@@ -4,6 +4,8 @@ using EasyFly.Application.Responses;
 using EasyFly.Application.ViewModels;
 using EasyFly.Domain.Abstractions;
 using EasyFly.Domain.Models;
+using System.Net.Sockets;
+using System.Numerics;
 using Plane = EasyFly.Domain.Models.Plane;
 
 namespace EasyFly.Infrastructure.Services
@@ -262,6 +264,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = flight.DepartureTime,
                     ArrivalTime = flight.ArrivalTime,
                     DepartureAirportId = flight.DepartureAirportId,
+                    TicketPrice = flight.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = flight.DepartureAirport.Id,

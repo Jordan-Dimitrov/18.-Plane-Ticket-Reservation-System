@@ -1,5 +1,6 @@
 ﻿using EasyFly.Infrastructure.Services;
 using EasyFly.Tests.Pages;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 

@@ -1,4 +1,8 @@
-﻿namespace EasyFly.Application.ViewModels
+﻿using EasyFly.Application.Dtos;
+using EasyFly.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace EasyFly.Application.ViewModels
 {
     public class AirportViewModel
     {

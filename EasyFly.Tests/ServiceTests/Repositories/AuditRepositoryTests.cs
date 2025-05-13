@@ -3,6 +3,12 @@ using EasyFly.Domain.Models;
 using EasyFly.Persistence;
 using EasyFly.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace EasyFly.Tests.ServiceTests.Repositories
 {

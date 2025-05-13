@@ -5,74 +5,157 @@
     ViewData["Title"] = "Welcome to EasyFly";
 }
 
-<div class="container mt-5">
-    <div class="jumbotron text-center bg-primary text-white p-5 rounded">
-        <h3 class="display-4">Welcome to EasyFly</h3>
-        <p class="lead">Find the best deals on flights and book your tickets easily.</p>
-    </div>
-</div>
-
-<div class="container mt-4">
-    <div id="destinationCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="3000">
-                <img src="https://captainsboatpartysplit.com/wp-content/uploads/2023/09/9727-scaled.jpg" class="d-block w-100" alt="Croatia, Split">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Croatia, Split</h5>
-                </div>
-            </div>
-            <div class="carousel-item" data-bs-interval="3000">
-                <img src="https://lp-cms-production.imgix.net/2021-06/GettyRF_516791906.jpg" class="d-block w-100" alt="Dubrovnik, Croatia">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Dubrovnik, Croatia</h5>
-                </div>
-            </div>
-            <div class="carousel-item" data-bs-interval="3000">
-                <img src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2020/02/05/17/zadar-overview.jpg" class="d-block w-100" alt="Zadar, Croatia">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Zadar, Croatia</h5>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#destinationCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#destinationCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-</div>
-
 <style>
-    .carousel-item img {
-        height: 300px;
+    .hero {
+        background: url('https://captainsboatpartysplit.com/wp-content/uploads/2023/09/9727-scaled.jpg') center/cover no-repeat;
+        height: 60vh;
+        position: relative;
+        color: #fff;
+    }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .hero .hero-content {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+
+    .features .card {
+        border: none;
+        transition: transform .3s, box-shadow .3s;
+    }
+
+        .features .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .1);
+        }
+
+        .stats .stat-card {
+            border: none;
+            border-radius: .5rem;
+            transition: transform .3s;
+            color: #fff;
+        }
+
+            .stats .stat-card:hover {
+                transform: scale(1.05);
+            }
+
+            .stats .stat-card .display-4 {
+                color: #ffc107;
+            }
+
+
+    .destinations h2 {
+        margin-bottom: 2rem;
+    }
+
+    .destinations .card img {
+        height: 180px;
         object-fit: cover;
     }
-    .carousel-caption {
-        color: #fff !important;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+
+    .cta {
+        background: #007bff;
+        color: #fff;
+        padding: 2rem;
+        text-align: center;
+        border-radius: .5rem;
     }
+
+        .cta .btn {
+            padding: .75rem 1.5rem;
+        }
 </style>
 
-<div class="container mt-4">
+<div class="hero mb-5">
+    <div class="hero-content">
+        <h1 class="display-3">EasyFly</h1>
+        <p class="lead">Discover unbeatable flight deals worldwide. Your next adventure is just a click away.</p>
+        <a href="#deals" class="btn btn-lg btn-light mt-3">Explore Deals</a>
+    </div>
+</div>
+
+<div class="container features mb-5">
     <div class="row text-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm p-4">
-                <h3>Registered Users</h3>
-                <p class="display-5">@Model.RegisteredUsersCount</p>
+        <div class="col-md-4 mb-4">
+            <div class="card p-4 h-100">
+                <div class="mb-3"><i class="fas fa-search fa-2x"></i></div>
+                <h5>Smart Search</h5>
+                <p>Compare flights across carriers with one simple search.</p>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm p-4">
-                <h3>Tickets Sold</h3>
-                <p class="display-5">@Model.TicketCount</p>
+        <div class="col-md-4 mb-4">
+            <div class="card p-4 h-100">
+                <div class="mb-3"><i class="fas fa-wallet fa-2x"></i></div>
+                <h5>Best Price Guarantee</h5>
+                <p>Find lower fares? We’ll match or beat them, guaranteed.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card p-4 h-100">
+                <div class="mb-3"><i class="fas fa-headset fa-2x"></i></div>
+                <h5>Easy to use</h5>
+                <p>Made to get you straight to the point without wasting time</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-6 mb-4">
+                <div class="card stat-card p-5">
+                    <h4>Registered Users</h4>
+                    <p class="display-4">@Model.RegisteredUsersCount</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card stat-card p-5">
+                    <h4>Tickets Sold</h4>
+                    <p class="display-4">@Model.TicketCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container destinations mb-5" id="deals">
+    <h2 class="text-center">Popular Destinations</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="https://captainsboatpartysplit.com/wp-content/uploads/2023/09/9727-scaled.jpg" class="card-img-top" alt="Split">
+                <div class="card-body">
+                    <h5 class="card-title">Split, Croatia</h5>
+                    <p class="card-text">Historic charm meets Adriatic beauty.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="https://lp-cms-production.imgix.net/2021-06/GettyRF_516791906.jpg" class="card-img-top" alt="Dubrovnik">
+                <div class="card-body">
+                    <h5 class="card-title">Dubrovnik, Croatia</h5>
+                    <p class="card-text">Marvel at ancient walls and sea vistas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2020/02/05/17/zadar-overview.jpg" class="card-img-top" alt="Zadar">
+                <div class="card-body">
+                    <h5 class="card-title">Zadar, Croatia</h5>
+                    <p class="card-text">Experience unique sea organ sounds.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -80,11 +163,11 @@
 
 @if (!User.Identity.IsAuthenticated)
 {
-    <div class="container text-center mt-4">
-        <div class="alert alert-info">
-            <h4 class="mb-3">Want to book a ticket?</h4>
-            <p>Register now to get the best deals on flights and manage your reservations easily.</p>
-            <a href="/Identity/Account/Register" class="btn btn-success btn-lg">Register Now</a>
+    <div class="container mb-5">
+        <div class="cta">
+            <h3>Ready for takeoff?</h3>
+            <p>Register now to unlock exclusive fares and manage bookings seamlessly.</p>
+            <a href="/Identity/Account/Register" class="btn btn-light btn-lg">Register Now</a>
         </div>
     </div>
 }

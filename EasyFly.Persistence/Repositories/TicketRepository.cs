@@ -3,6 +3,7 @@ using EasyFly.Domain.Enums;
 using EasyFly.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace EasyFly.Persistence.Repositories
 {

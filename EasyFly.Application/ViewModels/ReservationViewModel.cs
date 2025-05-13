@@ -1,4 +1,6 @@
 ﻿using EasyFly.Application.Dtos;
+using System;
+using System.Collections.Generic;
 
 namespace EasyFly.Application.ViewModels
 {
