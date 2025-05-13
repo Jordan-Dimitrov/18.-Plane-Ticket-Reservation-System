@@ -159,9 +159,13 @@ namespace EasyFly.Web.Controllers
 
             DataResponse<FlightPagedViewModel> response;
             if (planeId.HasValue)
+            {
                 response = await _FlightService.GetFlightsPagedByPlane(planeId.Value, page, _Size);
+            }
             else
+            {
                 response = await _FlightService.GetFlightsPaged(page, _Size);
+            }
 
             var airports = await _AirportService.GetAirportsPaged(1, int.MaxValue);
 
