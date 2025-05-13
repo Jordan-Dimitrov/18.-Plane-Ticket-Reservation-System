@@ -6,10 +6,10 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-4">
         <section>
+            <h1 class="text-center mb-4">@ViewData["Title"]</h1>
             <form id="account" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
@@ -33,13 +33,19 @@
                 </div>
             </form>
 
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1" />
+                <span class="mx-2 text-muted">OR</span>
+                <hr class="flex-grow-1" />
+            </div>
+
             <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal mt-2">
                 <div>
                     @foreach (var provider in Model.ExternalLogins!)
                     {
                         if (provider.Name == "Google")
                         {
-                            <button type="submit" class="btn btn-primary mb-2" name="provider" value="@provider.Name" title="Log in using your Google account">
+                            <button type="submit" class="w-100 btn btn-lg btn-primary" name="provider" value="@provider.Name" title="Log in using your Google account">
                                     <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google logo" style="width: 20px; height: 20px;" />
                                     Log in with Google
                             </button>
