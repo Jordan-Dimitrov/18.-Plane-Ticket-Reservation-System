@@ -264,6 +264,7 @@ namespace EasyFly.Infrastructure.Services
                     DepartureTime = flight.DepartureTime,
                     ArrivalTime = flight.ArrivalTime,
                     DepartureAirportId = flight.DepartureAirportId,
+                    TicketPrice = flight.TicketPrice,
                     DepartureAirport = new AirportViewModel
                     {
                         Id = flight.DepartureAirport.Id,

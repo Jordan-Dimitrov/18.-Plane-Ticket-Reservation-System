@@ -20,5 +20,6 @@
         @Html.Hidden("flightId", Model.Id)
         <button type="submit" class="btn btn-primary">Delete</button>
         <a asp-controller="Plane" asp-action="GetPlanes" class="btn btn-secondary ms-2">Back to Planes</a>
+        <a asp-controller="Flight" asp-action="GetFlights" class="btn btn-secondary ms-2">Back to Flights</a>
     </form>
 }
