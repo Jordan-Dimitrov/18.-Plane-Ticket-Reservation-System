@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using EasyFly.Application.Abstractions;
+﻿using EasyFly.Application.Abstractions;
 using EasyFly.Application.Dtos;
 using EasyFly.Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 

@@ -1,13 +1,13 @@
-﻿using EasyFly.Domain.Enums;
+﻿using EasyFly.Domain;
+using EasyFly.Domain.Enums;
 using EasyFly.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EasyFly.Domain;
 
 namespace EasyFly.Application.Dtos
 {
@@ -28,10 +28,10 @@ namespace EasyFly.Application.Dtos
         [Required]
         public Gender Gender { get; set; }
         [Required]
-        [Range(0,99999)]
+        [Range(0, 99999)]
         public decimal Price { get; set; }
         [Required]
-        public LuggageSize LuggageSize { get; set;}
+        public LuggageSize LuggageSize { get; set; }
         [Required]
         public Guid FlightId { get; set; }
     }

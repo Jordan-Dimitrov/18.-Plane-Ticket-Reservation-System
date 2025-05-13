@@ -55,7 +55,7 @@ namespace EasyFly.Web.Controllers
             {
                 var ticketIds = session.Metadata["ticketIds"].Split(',').Select(Guid.Parse).ToList();
 
-                var response =  await _TicketService.UpdateTicketStatus(ticketIds);
+                var response = await _TicketService.UpdateTicketStatus(ticketIds);
 
                 if (!response.Success)
                 {
