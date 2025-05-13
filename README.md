@@ -13,7 +13,7 @@ EasyFly is a Ticket Reservation System that makes travelling fast and easy. You 
     - Can search, filter and reserve flight tickets
     - Uses OAuth for login/register
     - Recieves ticket information on email with QR Codes
-    - Pays tickets with Stripe
+    - Pays tickets with [Stripe](https://stripe.com/en-bg)
   
 ---
 ## 🎬 Getting Started
