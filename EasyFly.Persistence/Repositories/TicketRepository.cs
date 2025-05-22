@@ -18,7 +18,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<int> Count()
         {
-            return await _Context.Tickets.Where(x => x.Reserved == true).CountAsync();
+            return await _Context.Tickets.Where(x => x.Reserved == true && x.DeletedAt == null).CountAsync();
         }
 
         public async Task<bool> DeleteAsync(Ticket value)
