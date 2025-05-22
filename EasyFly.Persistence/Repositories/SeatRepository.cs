@@ -66,7 +66,7 @@ namespace EasyFly.Persistence.Repositories
 
         public async Task<bool> GenerateSeatsForPlane(int availableSeats, Guid planeId)
         {
-            for (int i = 0; i < availableSeats; i++)
+            for (int i = 1; i <= availableSeats; i++)
             {
                 for (int j = 0; j <= (int)SeatLetter.F; j++)
                 {
