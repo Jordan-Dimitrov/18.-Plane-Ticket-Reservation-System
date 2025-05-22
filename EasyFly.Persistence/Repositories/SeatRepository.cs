@@ -20,6 +20,11 @@ namespace EasyFly.Persistence.Repositories
         {
             value.DeletedAt = DateTime.UtcNow;
 
+            foreach (var item in value.Tickets)
+            {
+                item.DeletedAt = DateTime.UtcNow;
+            }
+
             return await _Context.SaveChangesAsync() > 0;
         }
 

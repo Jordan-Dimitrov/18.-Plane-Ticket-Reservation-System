@@ -21,6 +21,10 @@ namespace EasyFly.Persistence.Repositories
             foreach (var item in value.Flights)
             {
                 item.DeletedAt = DateTime.UtcNow;
+                foreach (var thing in item.Tickets)
+                {
+                    thing.DeletedAt = DateTime.UtcNow;
+                }
             }
 
             return await _Context.SaveChangesAsync() > 0;
