@@ -120,14 +120,43 @@ namespace EasyFly.Persistence.Repositories
                 return Enumerable.Empty<Seat>();
             }
 
-            var query = _Context.Seats
+            var freeSeatsQuery = _Context.Seats
                 .Include(s => s.Tickets)
                 .Include(s => s.Plane)
-                .Where(s => s.PlaneId == flight.PlaneId && !s.Tickets.Any(t => t.FlightId == flightId))
-                .Take(size);
+                .Where(s => s.PlaneId == flight.PlaneId && !s.Tickets.Any(t => t.FlightId == flightId));
 
-            return await (trackChanges ? query.ToListAsync() : query.AsNoTracking().ToListAsync());
+            var freeSeats = await (trackChanges ? freeSeatsQuery.ToListAsync() : freeSeatsQuery.AsNoTracking().ToListAsync());
+
+            var groupedSeats = freeSeats
+                .GroupBy(s => s.Row)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            foreach (var group in groupedSeats)
+            {
+                var orderedSeats = group.OrderBy(s => s.SeatLetter).ToList();
+
+                for (int i = 0; i <= orderedSeats.Count - size; i++)
+                {
+                    bool adjacent = true;
+
+                    for (int j = 0; j < size - 1; j++)
+                    {
+                        if ((int)orderedSeats[i + j + 1].SeatLetter - (int)orderedSeats[i + j].SeatLetter != 1)
+                        {
+                            adjacent = false;
+                            break;
+                        }
+                    }
+
+                    if (adjacent)
+                    {
+                        return orderedSeats.Skip(i).Take(size);
+                    }
+                }
+            }
+
+            return freeSeats.Take(size);
         }
-
     }
 }
